@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -19,21 +19,22 @@ import {
   Heading,
   Image,
   SimpleGrid,
-  Stack,
   Flex,
-  IconButton,
   Tooltip,
 } from "@chakra-ui/react";
 import { AddIcon, InfoOutlineIcon } from "@chakra-ui/icons";
+import { useReactToPrint } from "react-to-print";
 import logo from "../../../public/logo.jpeg";
+import { PageHeader } from "../../components/PageHeader";
 
 const BillComponent = () => {
   const [rows, setRows] = useState([{ id: 1 }]);
   const [advancePayment, setAdvancePayment] = useState(0);
   const [previousBalance, setPreviousBalance] = useState(0);
   const toast = useToast();
+  const componentRef = useRef();
 
-  const calculateBill = () => {
+  const calculateBill = () => { // for calculating the bill
     let total = 0;
     rows.forEach((row) => {
       const quantity = parseFloat(row.quantity) || 0;
@@ -46,11 +47,11 @@ const BillComponent = () => {
     return { total: total.toFixed(2), subtotal: subtotal.toFixed(2) };
   };
 
-  const addRow = () => {
+  const addRow = () => { // for adding the rows vehicle
     setRows([...rows, { id: rows.length + 1 }]);
   };
 
-  const updateRow = (index, field, value) => {
+  const updateRow = (index, field, value) => { //updating the rows
     const updatedRows = rows.map((row, i) =>
       i === index ? { ...row, [field]: value } : row
     );
@@ -59,16 +60,30 @@ const BillComponent = () => {
 
   const { total, subtotal } = calculateBill();
 
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current, //to makesure to print the bill area of component
+  });
+
   return (
+    <>
+    <PageHeader title={"Sales Bill"}/>
     <Box
       bg="#f4f4f4"
       minH="100vh"
-      p={5}
+      p={4}
       display="flex"
       justifyContent="center"
       alignItems="center"
     >
-      <Box bg="white" p={8} rounded="lg" shadow="lg" width="100%" maxW="1000px">
+      <Box
+        ref={componentRef}
+        bg="white"
+        p={8}
+        rounded="lg"
+        shadow="lg"
+        width="100%"
+        maxW="1000px"
+      >
         <HStack justifyContent="space-between" mb={8}>
           <Image src={logo} alt="Factory Logo" boxSize="80px" />
           <VStack align="flex-start">
@@ -118,62 +133,61 @@ const BillComponent = () => {
                   </Tooltip>
                 </Td>
                 <Td>
-                <Tooltip label="Gate Pass Number">
-                  <Input
-                    type="text"
-                    placeholder="Gate Pass Number"
-                    value={row.gatePassNumber || ""}
-                    onChange={(e) =>
-                      updateRow(index, "gatePassNumber", e.target.value)
-                    }
-                  />
+                  <Tooltip label="Gate Pass Number">
+                    <Input
+                      type="text"
+                      placeholder="Gate Pass Number"
+                      value={row.gatePassNumber || ""}
+                      onChange={(e) =>
+                        updateRow(index, "gatePassNumber", e.target.value)
+                      }
+                    />
                   </Tooltip>
                 </Td>
                 <Td>
-                    <Tooltip label="Vehicle Number">
-                  <Input
-                    type="text"
-                    placeholder="Vehicle Number"
-                    value={row.vehicleNumber || ""}
-                    onChange={(e) =>
-                      updateRow(index, "vehicleNumber", e.target.value)
-                    }
-                  />
+                  <Tooltip label="Vehicle Number">
+                    <Input
+                      type="text"
+                      placeholder="Vehicle Number"
+                      value={row.vehicleNumber || ""}
+                      onChange={(e) =>
+                        updateRow(index, "vehicleNumber", e.target.value)
+                      }
+                    />
                   </Tooltip>
                 </Td>
                 <Td>
                   <Tooltip label="Item Type">
-                  <Input
-                    type="text"
-                    placeholder="Item Type"
-                    value={row.itemType || ""}
-                    onChange={(e) =>
-                      updateRow(index, "itemType", e.target.value)
-                    }
-                  />
+                    <Input
+                      type="text"
+                      placeholder="Item Type"
+                      value={row.itemType || ""}
+                      onChange={(e) =>
+                        updateRow(index, "itemType", e.target.value)
+                      }
+                    />
                   </Tooltip>
-                  
                 </Td>
                 <Td>
                   <Tooltip label="Quantity">
-                  <Input
-                    type="number"
-                    placeholder="Quantity"
-                    value={row.quantity || ""}
-                    onChange={(e) =>
-                      updateRow(index, "quantity", e.target.value)
-                    }
-                  />
+                    <Input
+                      type="number"
+                      placeholder="Quantity"
+                      value={row.quantity || ""}
+                      onChange={(e) =>
+                        updateRow(index, "quantity", e.target.value)
+                      }
+                    />
                   </Tooltip>
                 </Td>
                 <Td>
                   <Tooltip label="Price">
-                  <Input
-                    type="number"
-                    placeholder="Price"
-                    value={row.price || ""}
-                    onChange={(e) => updateRow(index, "price", e.target.value)}
-                  />
+                    <Input
+                      type="number"
+                      placeholder="Price"
+                      value={row.price || ""}
+                      onChange={(e) => updateRow(index, "price", e.target.value)}
+                    />
                   </Tooltip>
                 </Td>
                 <Td>{((row.quantity || 0) * (row.price || 0)).toFixed(2)}</Td>
@@ -227,11 +241,12 @@ const BillComponent = () => {
             <Text mt={2}>Receiver</Text>
           </Box>
         </HStack>
-        <Button mt={5} colorScheme="teal" onClick={() => window.print()}>
+        <Button mt={5} colorScheme="teal" onClick={handlePrint}>
           Print/Save
         </Button>
       </Box>
     </Box>
+    </>
   );
 };
 

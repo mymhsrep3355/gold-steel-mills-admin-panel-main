@@ -2,12 +2,12 @@ import React from "react";
 import { Box, Text, VStack, Link, useColorModeValue } from "@chakra-ui/react";
 import { Card } from "antd";
 
-const InfoCard = ({ title, totalNumber }) => {
+const InfoCard = ({ title, totalNumber, bgColor = "#ffffff"  }) => {
   return (
     <Card
       style={{
         borderRadius: "15px",
-        backgroundColor: "#00FFE0",
+        backgroundColor: bgColor,
         width: "300px",
         textAlign: "left",
         padding: "20px",
@@ -22,7 +22,7 @@ const InfoCard = ({ title, totalNumber }) => {
         left="0"
         right="0"
         bottom="0"
-        bgGradient="linear(to-r, teal.200, transparent)"
+        bgGradient="linear(to-r, white, transparent)"
         zIndex="0"
       />
       <VStack align="flex-start" spacing={4} zIndex="1" position="relative">

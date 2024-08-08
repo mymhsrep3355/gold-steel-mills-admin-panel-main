@@ -35,7 +35,8 @@ export const Sidebar = () => {
                     </Link>
                 );
             })}
-           <Button title={'Logout'} onClickHandler={handleLogout}/>
+            
+           <Button title={'Logout'} onClickHandler={handleLogout} />
         </div>
     );
 };

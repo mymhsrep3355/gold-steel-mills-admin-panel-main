@@ -14,6 +14,8 @@ import {LoginPage} from "./pages/Auth/LoginPage.jsx";
 import {AuthProvider} from "./services/AuthProvider.jsx";
 import {PurchaseEdit} from "./pages/purchase/Edit.jsx";
 import BillComponent from "./pages/Bills/BillComponent.jsx";
+import ExpenseTracking from "./pages/Expenses/ExpenseTracking.jsx";
+import SuppliesLoadingForm from "./pages/WGS-Supplies/SuppliesLoadingForm.jsx";
 
 const router = createBrowserRouter([
     {
@@ -43,6 +45,14 @@ const router = createBrowserRouter([
 
                 path: '/bills',
                 element: <BillComponent/>
+            },
+            {
+                path: '/expenses',
+                element: <ExpenseTracking/>
+            },
+            {
+                path: '/supplies',
+                element: <SuppliesLoadingForm/>
             },
             {
                 path:'/purchases',

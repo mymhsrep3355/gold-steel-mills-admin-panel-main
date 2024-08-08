@@ -1,36 +1,46 @@
 import {
-  HomeOutlined,
-  RiseOutlined,
-  UserSwitchOutlined,
-
-} from "@ant-design/icons";
-
-import { FaMoneyBills } from "react-icons/fa6";
+  FaHome,
+  FaTruck,
+  FaShoppingCart,
+  FaFileInvoiceDollar,
+  FaMoneyCheckAlt,
+  FaSignInAlt,
+} from "react-icons/fa";
 
 export const routes = [
   {
-    name: "Dashboard",
-    icon: HomeOutlined,
+    name: "Home",
+    icon: FaHome,
     routeURL: "/",
   },
   {
     name: "Suppliers",
-    icon: UserSwitchOutlined,
+    icon: FaTruck,
     routeURL: "/suppliers",
   },
   {
     name: "Purchases",
-    icon: RiseOutlined,
+    icon: FaShoppingCart,
     routeURL: "/purchases",
   },
   {
-    name: "Bills",
-    icon: FaMoneyBills,
+    name: "Sales Invoices",
+    icon: FaFileInvoiceDollar,
     routeURL: "/bills",
   },
   {
-    name: "Login",
-    icon: RiseOutlined,
+    name: "Expense Tracker",
+    icon: FaMoneyCheckAlt,
+    routeURL: "/expenses",
+  },
+  {
+    name: "Supplies Tracker",
+    icon: FaMoneyCheckAlt,
+    routeURL: "/supplies",
+  },
+  {
+    name: "Logout",
+    icon: FaSignInAlt,
     routeURL: "/auth/login",
   },
 ];
