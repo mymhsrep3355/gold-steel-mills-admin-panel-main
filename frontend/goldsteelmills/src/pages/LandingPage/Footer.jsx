@@ -45,11 +45,11 @@ const Footer = () => {
             single manufacturing unit in Gujranwala, Pakistan.
           </Text>
           <HStack spacing={4}>
-            <Icon as={FaFacebookF} boxSize={6} />
+            <Icon as={FaFacebookF} boxSize={6} color={"#9D152D"} />
             <Icon as={FaGoogle} boxSize={6} />
-            <Icon as={FaTwitter} boxSize={6} />
+            <Icon as={FaTwitter} boxSize={6} color={"#9D152D"} />
             <Icon as={FaPinterest} boxSize={6} />
-            <Icon as={FaInstagram} boxSize={6} />
+            <Icon as={FaInstagram} boxSize={6} color={"#9D152D"} />
           </HStack>
         </VStack>
 
@@ -59,7 +59,7 @@ const Footer = () => {
           w={["100%", "48%", "25%"]}
           mb={[8, 8, 0]}
         >
-          <Heading as="h4" size="md" mb={4} color="white" fontWeight={"500"}>
+          <Heading as="h4" size="md" mb={4} color="#9D152D" fontWeight={"500"}>
             PRODUCTS
           </Heading>
           <Link href="#" fontSize="sm" _hover={{ color: "white" }} color="#9d9d9d">
@@ -85,7 +85,7 @@ const Footer = () => {
           w={["100%", "48%", "25%"]}
           mb={[8, 8, 0]}
         >
-          <Heading as="h4" size="md" mb={4} color="white" fontWeight={"500"}>
+          <Heading as="h4" size="md" mb={4} fontWeight={"500"} color={"#9D152D"}>
             CONTACT INFO
           </Heading>
           <Text fontSize="sm" color="#9d9d9d">
@@ -110,7 +110,7 @@ const Footer = () => {
 
 
         <VStack align="flex-start" spacing={4} w={["100%", "50%", "25%"]}>
-          <Heading as="h4" size="md" mb={4} color="white" fontWeight={"500"}>
+          <Heading as="h4" size="md" mb={4} color={"#9D152D"} fontWeight={"500"}>
             OUR LOCATION
           </Heading>
           <Box w="100%" h="200px">
