@@ -16,8 +16,13 @@ import {PurchaseEdit} from "./pages/purchase/Edit.jsx";
 import BillComponent from "./pages/Bills/BillComponent.jsx";
 import ExpenseTracking from "./pages/Expenses/ExpenseTracking.jsx";
 import SuppliesLoadingForm from "./pages/WGS-Supplies/SuppliesLoadingForm.jsx";
+import LandingPageLayout from "./pages/LandingPageLayout.jsx";
 
 const router = createBrowserRouter([
+    {
+        path: "/landing",
+        element: <LandingPageLayout/>,
+    },
     {
         path:'/auth',
         element:<AuthLayout/>,
