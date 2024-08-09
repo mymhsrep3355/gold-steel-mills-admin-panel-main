@@ -11,7 +11,7 @@ const ScrollToTopButton = () => {
     <Box
       position="fixed"
       bottom="20px"
-      left="20px"
+      right="20px"
       zIndex="999"
     >
       <Button
