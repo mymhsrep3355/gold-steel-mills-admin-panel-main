@@ -73,7 +73,7 @@ async function loginUser(req, res) {
   }
 
   // Generate the authentication token
-  const token = jsonwebtoken.sign({ user: user }, process.env.JWT_SECRET);
+  const token = jsonwebtoken.sign({ user_id: user._id }, process.env.JWT_SECRET);
 
   // Return the authentication token in the response
   console.log('User logged in:', user);
@@ -106,9 +106,13 @@ async function changeAccountStatus(req, res) {
   // Toggle the account status
   user.account_status = !user.account_status;
   await user.save();
+
+  const token = jsonwebtoken.sign({ user_id: user._id }, process.env.JWT_SECRET);
+  console.log(token)
   // Return the updated user in the response
   console.log('User account status changed:', user);
-  res.send(user);
+
+  res.send({user, token});
 }
 
 /**

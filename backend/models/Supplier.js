@@ -27,12 +27,12 @@ const supplierSchema = new Schema({
     default: 0,
     required: false,
   },
-  paymentDue: {
+  advance: { //reprensents the amount paid in advance
     type: Number,
     default: 0,
     required: false,
   },
-  balance:{
+  balance:{  //Represents the amount due
     type: Number,
     default: 0,
     required: false,
