@@ -21,6 +21,8 @@ app.use(express.static('public'));
 app.use(requestLogger);
 app.use('/users', require('./routes/UserRoute'));
 app.use('/suppliers', require('./routes/SupplierRoute'));
+app.use('/categories', require('./routes/CategoryRoute'));
+
 app.get('/hello', (req, res) => {
     res.send('Hello, world!');
 });

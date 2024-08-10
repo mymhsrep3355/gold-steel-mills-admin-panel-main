@@ -12,7 +12,7 @@ const purchaseSchema = new Schema({
     bills:
         [
             {
-                type: mongoose.Schema.Types.ObjectId,
+                type: Schema.Types.ObjectId,
                 ref: 'Bill',
                 required: true
             }
