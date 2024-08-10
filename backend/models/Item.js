@@ -5,6 +5,19 @@ const ItemSchema = new Schema.Schema({
         type: String,
         required: true
     },
+    stock: {
+        type: Number,
+        required: true,
+        default: 0,
+        validate: {
+            validator: function(value) {
+                return value >= 0;
+            },
+            message: props => `${props.value} is not a positive number`
+        },
+        
+
+    }
 
 
 });
