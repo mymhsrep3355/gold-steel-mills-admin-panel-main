@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jsonwebtoken = require('jsonwebtoken');
-
+require('dotenv').config();
 // Import the User model
 const User = require('../models/User');
 
@@ -73,7 +73,7 @@ async function loginUser(req, res) {
   }
 
   // Generate the authentication token
-  const token = jsonwebtoken.sign({ _id: user._id }, process.env.JWT_SECRET);
+  const token = jsonwebtoken.sign({ user: user }, process.env.JWT_SECRET);
 
   // Return the authentication token in the response
   console.log('User logged in:', user);
