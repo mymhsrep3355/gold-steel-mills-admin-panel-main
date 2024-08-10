@@ -23,6 +23,7 @@ app.use('/users', require('./routes/UserRoute'));
 app.use('/suppliers', require('./routes/SupplierRoute'));
 app.use('/categories', require('./routes/CategoryRoute'));
 app.use('/expenses', require('./routes/ExpenseRoute'));
+app.use('/items', require('./routes/ItemRoute'));
 
 app.get('/hello', (req, res) => {
     res.send('Hello, world!');
