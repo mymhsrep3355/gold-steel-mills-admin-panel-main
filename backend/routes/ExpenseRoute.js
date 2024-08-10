@@ -9,6 +9,7 @@ const expenseController = require('../controller/ExpenseController');
 
 router.get('/', expenseController.getAllExpenses);
 router.get('/:id', expenseController.getExpenseById);
+router.get('/date/:date', expenseController.getExpensesByDate);
 
 router.post('/register', expenseController.createExpense);
 

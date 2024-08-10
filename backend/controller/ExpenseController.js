@@ -110,10 +110,26 @@ async function deleteExpense(req, res) {
     }
 }
 
+//Get Expenses By Date 
+
+async function getExpensesByDate(req, res) {
+    try {
+        const expenses = await Expense.find({ date: new Date(req.params.date) }).populate('category');
+        if (!expenses) {
+            return res.status(404).json({ message: 'Expenses not found' });
+        }
+        res.status(200).json(expenses);
+    } catch (error) {
+        console.error('Error getting expenses:', error.message);
+        res.status(500).json({ message: 'Internal server error: ' + error.message });
+    }
+}
+
 module.exports = {
     getAllExpenses,
     getExpenseById,
     createExpense,
     updateExpense,
-    deleteExpense
+    deleteExpense,
+    getExpensesByDate,
 };
