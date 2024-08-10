@@ -7,7 +7,6 @@ const requestLogger = require('./middleware/SystemMiddleware');
 
 const connectDB = require('./config/db');
 
-console.log()
 
 const app = express();
 app.use(cors());
@@ -18,8 +17,9 @@ app.use(bodyparser.urlencoded({ extended: true }));
 
 app.use(express.static('public'));
 
-app.use(requestLogger);
 
+app.use(requestLogger);
+app.use('/users', require('./routes/UserRoute'));
 app.get('/hello', (req, res) => {
     res.send('Hello, world!');
 });
