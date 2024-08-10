@@ -6,6 +6,13 @@ const ProductSchema = new Schema({
         type: String,
         required: true
     },
+
+    stock : {
+        type: Number,
+        required: true,
+        default: 0
+    }
+
 });
 
 module.exports = model('Product', ProductSchema)

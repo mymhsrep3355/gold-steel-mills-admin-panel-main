@@ -7,7 +7,7 @@ const BillSchema = new Schema({
     },
 
     itemType: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Item',
         required: true
     },
