@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Supplier = require('../models/Supplier');
 
+const { applyThirdPayment, applyThirdPaymentToAdvancedFirst } = require('../utils/PaymentUtils');
+
 async function getAllSuppliers(req, res) {
     try {
         console.log('Getting all suppliers...');
@@ -97,20 +99,20 @@ async function deleteSupplier(req, res) {
     }
 }
 
-function applyThirdPayment(balance, advance, thirdPayment) {
-    console.log('Applying third payment...');
-    if (thirdPayment >= balance) {
-        thirdPayment -= balance;
-        balance = 0;
-    } else {
-        balance -= thirdPayment;
-        thirdPayment = 0;
-    }
+// function applyThirdPayment(balance, advance, thirdPayment) {
+//     console.log('Applying third payment...');
+//     if (thirdPayment >= balance) {
+//         thirdPayment -= balance;
+//         balance = 0;
+//     } else {
+//         balance -= thirdPayment;
+//         thirdPayment = 0;
+//     }
 
-    advance += thirdPayment;
-    console.log('Third payment applied successfully.');
-    return { balance, advance };
-}
+//     advance += thirdPayment;
+//     console.log('Third payment applied successfully.');
+//     return { balance, advance };
+// }
 
 async function paymentReceived(req, res) {
     console.log('Processing payment received...');
@@ -145,20 +147,20 @@ async function paymentReceived(req, res) {
     }
 }
 
-function applyThirdPaymentToAdvancedFirst(advance, balance, thirdPayment) {
-    console.log('Applying third payment to advance first...');
-    if (thirdPayment >= advance) {
-        thirdPayment -= advance;
-        advance = 0;
-    } else {
-        advance -= thirdPayment;
-        thirdPayment = 0;
-    }
+// function applyThirdPaymentToAdvancedFirst(advance, balance, thirdPayment) {
+//     console.log('Applying third payment to advance first...');
+//     if (thirdPayment >= advance) {
+//         thirdPayment -= advance;
+//         advance = 0;
+//     } else {
+//         advance -= thirdPayment;
+//         thirdPayment = 0;
+//     }
 
-    balance += thirdPayment;
-    console.log('Third payment applied to advance first successfully.');
-    return { advance, balance };
-}
+//     balance += thirdPayment;
+//     console.log('Third payment applied to advance first successfully.');
+//     return { advance, balance };
+// }
 
 async function paymentSent(req, res) {
     console.log('Processing payment sent...');
