@@ -1,6 +1,7 @@
 const Purchase = require('../models/Purchase');
 const Supplier = require('../models/Supplier');
 const Bill = require('../models/Bill');
+const Item = require('../models/Item');
 const mongoose = require('mongoose');
 
 // Get all purchases with optional date filtering
@@ -125,6 +126,12 @@ async function createPurchase(req, res) {
         const billIds = [];
         for (let billData of bills) {
             const newBill = new Bill(billData);
+            const item = await Item.findById(billData.itemType).exec();
+            
+            item.stock += billData.quantity;
+            const savedItem = await item.save();
+            
+            
             const savedBill = await newBill.save(); // Save without session
             billIds.push(savedBill._id);
         }
@@ -211,6 +218,19 @@ async function deletePurchase(req, res) {
         if (!purchase) {
             return res.status(404).json({ message: 'Purchase not found' });
         }
+
+        // Delete associated bills
+        for (let billId of purchase.bills) {
+            const bill = await Bill.findByIdAndDelete(billId);
+            if (!bill) {
+                return res.status(404).json({ message: `Bill not found: ${billId}` });
+            }
+
+            const item = await Item.findById(bill.itemType).exec();
+            item.stock -= bill.quantity;
+            const savedItem = await item.save();
+        }
+
         res.status(200).json({ message: 'Purchase deleted successfully' });
     } catch (error) {
         console.error('Error deleting purchase:', error.message);
