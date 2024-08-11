@@ -13,10 +13,12 @@ async function getAllExpenses(req, res) {
         if (startDate || endDate) {
             query.date = {};
             if (startDate) {
-                query.date.$gte = new Date(startDate);
+                // Set start date to the beginning of the day
+                query.date.$gte = new Date(new Date(startDate).setHours(0, 0, 0, 0));
             }
             if (endDate) {
-                query.date.$lte = new Date(endDate);
+                // Set end date to the end of the day
+                query.date.$lte = new Date(new Date(endDate).setHours(23, 59, 59, 999));
             }
         }
 
