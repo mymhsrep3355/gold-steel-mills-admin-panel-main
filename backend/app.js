@@ -25,6 +25,7 @@ app.use('/categories', require('./routes/CategoryRoute'));
 app.use('/expenses', require('./routes/ExpenseRoute'));
 app.use('/items', require('./routes/ItemRoute'));
 app.use('/bills', require('./routes/BillRoute'));
+app.use('/purchases', require('./routes/PurchaseRoute'));
 
 app.get('/hello', (req, res) => {
     res.send('Hello, world!');

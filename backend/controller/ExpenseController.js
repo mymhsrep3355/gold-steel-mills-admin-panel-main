@@ -5,13 +5,29 @@ const mongoose = require('mongoose');
 // Get all expenses
 async function getAllExpenses(req, res) {
     try {
-        const expenses = await Expense.find().populate('category');
+        const { startDate, endDate } = req.query;
+
+        // Build the query object
+        let query = {};
+
+        if (startDate || endDate) {
+            query.date = {};
+            if (startDate) {
+                query.date.$gte = new Date(startDate);
+            }
+            if (endDate) {
+                query.date.$lte = new Date(endDate);
+            }
+        }
+
+        const expenses = await Expense.find(query).populate('category');
         res.status(200).json(expenses);
     } catch (error) {
         console.error('Error getting expenses:', error.message);
         res.status(500).json({ message: 'Internal server error: ' + error.message });
     }
 }
+
 
 // Get expense by ID
 async function getExpenseById(req, res) {

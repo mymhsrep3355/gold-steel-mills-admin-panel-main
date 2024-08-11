@@ -9,7 +9,7 @@ const BillSchema = new Schema({
     itemType: {
         type: Schema.Types.ObjectId,
         ref: 'Item',
-        required: true
+        required: false
     },
     quantity: {
         type: Number,
