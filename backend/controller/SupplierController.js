@@ -176,7 +176,7 @@ async function paymentSent(req, res) {
             return res.status(404).json({ message: 'Supplier not found' });
         }
 
-        const { advance, balance } = applyThirdPaymentToAdvancedFirst(
+        const { balance, advance } = applyThirdPaymentToAdvancedFirst(
             supplier.advance || 0,
             supplier.balance || 0,
             req.body.paymentSent

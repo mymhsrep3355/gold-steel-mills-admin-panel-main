@@ -32,8 +32,16 @@ const DaybookSchema = new Schema({
     balance : {
         type: Number,
         required: true
+    }, 
+
+    cash_or_bank: {
+        type: String,
+        required: true,
+        default: 'cash'
     }
 
 
 
 }, { timestamps: true });
+
+module.exports = model('Daybook', DaybookSchema);

@@ -1,13 +1,11 @@
-const Daybook = require('../models/Daybook'); // Adjust the path based on your project structure
-// Function to record a new transaction in the daybook
-const Daybook = require('../models/Daybook');
+const Daybook = require('../models/Daybook'); 
 const Supplier = require('../models/Supplier');
 const { applyThirdPayment, applyThirdPaymentToAdvancedFirst } = require('../utils/PaymentUtils');
 
 // Function to record a new daybook entry with optional supplier updates
 async function recordDaybookEntry(req, res) {
     console.log('Recording new daybook entry...');
-    const { supplierId, date, description, amount, type } = req.body;
+    const { supplierId, date, description, amount, type, cash_or_bank } = req.body;
 
     try {
         // Create a new daybook entry
@@ -17,15 +15,20 @@ async function recordDaybookEntry(req, res) {
             description,
             amount,
             type,
+            cash_or_bank,
             balance: 0 // Will be recalculated based on the type
         });
+        // Fetch the latest balance
+        const lastTransaction = await Daybook.findOne().sort({ date: -1, _id: -1 });
+
+        const previousBalance = lastTransaction ? lastTransaction.balance : 0;
+        console.log(previousBalance);
+        // Calculate the new balance
+        const newBalance = type === 'credit' ? previousBalance + amount : previousBalance - amount;
+        console.log(newBalance);
 
         // Update the balance based on the type (credit or debit)
-        if (type === 'credit') {
-            daybookEntry.balance += amount;
-        } else if (type === 'debit') {
-            daybookEntry.balance -= amount;
-        }
+        daybookEntry.balance = newBalance;
 
         // Save the daybook entry
         const savedDaybookEntry = await daybookEntry.save();
@@ -39,8 +42,8 @@ async function recordDaybookEntry(req, res) {
                 return res.status(404).json({ message: 'Supplier not found' });
             }
 
-            if (type === 'credit') {
-                const { advance, balance } = applyThirdPaymentToAdvancedFirst(
+            if (type === 'debit') {
+                const { balance, advance } = applyThirdPaymentToAdvancedFirst(
                     supplier.advance || 0,
                     supplier.balance || 0,
                     amount
@@ -48,7 +51,7 @@ async function recordDaybookEntry(req, res) {
                 supplier.advance = advance;
                 supplier.balance = balance;
                 supplier.paymentSent += amount;
-            } else if (type === 'debit') {
+            } else if (type === 'credit') {
                 const { balance, advance } = applyThirdPayment(
                     supplier.balance || 0,
                     supplier.advance || 0,
@@ -146,7 +149,7 @@ const deleteTransaction = async (req, res) => {
 const updateTransaction = async (req, res) => {
     try {
         const { id } = req.params;
-        const { description, amount, type } = req.body;
+        const { description, amount, type, cash_or_bank } = req.body;
 
         // Fetch the transaction to update
         let transaction = await Daybook.findById(id);
@@ -158,6 +161,7 @@ const updateTransaction = async (req, res) => {
         transaction.description = description || transaction.description;
         transaction.amount = amount || transaction.amount;
         transaction.type = type || transaction.type;
+        transaction.cash_or_bank = cash_or_bank || transaction.cash_or_bank;
 
         // Recalculate the balance based on the updated transaction
         const previousTransactions = await Daybook.find({ date: { $lt: transaction.date } }).sort({ date: -1 });

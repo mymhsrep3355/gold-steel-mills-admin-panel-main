@@ -27,7 +27,7 @@ function applyThirdPaymentToAdvancedFirst(advance, balance, thirdPayment) {
 
     balance += thirdPayment;
     console.log('Third payment applied to advance first successfully.');
-    return { advance, balance };
+    return { balance, advance };
 }
 
 module.exports = {
