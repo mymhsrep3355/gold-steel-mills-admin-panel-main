@@ -31,7 +31,7 @@ export const Purchases = () => {
   };
   return (
     <div className="flex flex-col gap-3">
-      <PageHeader title="Suppliers" />
+      <PageHeader title="Purchases" />
       <InputField
         value={searchQuery}
         setValue={setSearchQuery}

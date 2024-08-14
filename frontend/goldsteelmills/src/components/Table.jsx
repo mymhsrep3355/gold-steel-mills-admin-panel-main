@@ -1,59 +1,153 @@
-import { useDeleteSource } from "../hooks/useDeleteSource.js";
-import {Button} from "./Button.jsx";
+import React, { useState } from "react";
+import {
+  Table as ChakraTable,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Checkbox,
+  Button,
+  Box,
+  useColorModeValue,
+  Stack,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
+import axios from "axios";
+import { BASE_URL } from "../utils";
+import { useAuthProvider } from "../hooks/useAuthProvider";
 
 // eslint-disable-next-line react/prop-types
-export const Table = ({ columns, data,deleteURL,handleNavigation }) => {
-    const { handleDelete, isAnySourceSelected, handleSourceSelectionChange,isChecked } = useDeleteSource(deleteURL);
+export const Table = ({ columns, data, deleteURL, handleNavigation, refreshData }) => {
+  const [selectedItems, setSelectedItems] = useState([]);
+  const toast = useToast();
+  const { token } = useAuthProvider();
 
-    return (
-        <div className="overflow-x-auto">
+  console.log(data);
 
-            <table className="min-w-full bg-white border border-gray-300">
-                <thead className="">
-                <tr>
-                    <th className="px-2 py-1 border border-gray-300"></th>
-                    {columns.map((column, index) => (
-                        <th
-                            key={index}
-                            className="px-2 py-1 text-sm border border-gray-300 text-left text-gray-600 uppercase  ">
-                            {column}
-                        </th>
-                    ))}
-                    <th className="px-2 py-1 border border-gray-300">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {data.map((item, rowIndex) => (
-                    <tr key={rowIndex} className="hover:bg-gray-100">
-                        <td className="px-4 py-2 border border-gray-300">
-                            <input
-                                value={item.id}
-                                onChange={(event) => handleSourceSelectionChange(event, item.id)}
-                                type="checkbox"
-                                checked={isChecked(item.id)}
-                                className="w-4 h-4"
-                            />
-                        </td>
-                        {columns.map((column, colIndex) => (
-                            <td
-                                key={colIndex}
-                                className="px-2 border py-1 border-gray-300 text-sm text-gray-600">
-                                {column==='createdAt'?new Date(item[column]).toString():item[column]}
-                            </td>
-                        ))}
-                        <td
-                            className="px-2 border py-1  border-gray-300 text-gray-600 " >
-                         <Button onClickHandler={()=>handleNavigation(item)} size={'sm'} type={'danger'} title={'Edit'}></Button>
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-            {isAnySourceSelected&&<div className={'my-6'}>
-                <Button onClickHandler={handleDelete} title={'delete'}>
-                </Button>
-            </div>}
-        </div>
+  const bg = useColorModeValue("gray.50", "gray.800");
+  const borderColor = useColorModeValue("gray.200", "gray.700");
 
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      const allIds = data.map((item) => item._id);
+      setSelectedItems(allIds);
+    } else {
+      setSelectedItems([]);
+    }
+  };
+
+  const handleSelectOne = (id) => {
+    if (selectedItems.includes(id)) {
+      setSelectedItems(selectedItems.filter((item) => item !== id));
+    } else {
+      setSelectedItems([...selectedItems, id]);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const deletePromises = selectedItems.map((id) =>
+        axios.delete(`${BASE_URL}suppliers/delete/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
     );
+      await Promise.all(deletePromises);
+      toast({
+        title:
+          selectedItems.length > 1 ? "Suppliers deleted" : "Supplier deleted",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      setSelectedItems([]);
+      refreshData();
+    } catch (error) {
+      console.error("Error deleting suppliers:", error);
+      toast({
+        title: "Failed to delete suppliers",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  return (
+    <Box
+      overflowX="auto"
+      bg={bg}
+      border="1px"
+      borderColor={borderColor}
+      borderRadius="md"
+      p={4}
+    >
+      <ChakraTable variant="simple" size="md">
+        <Thead bg={useColorModeValue("gray.100", "gray.700")}>
+          <Tr>
+            <Th>
+              <Checkbox
+                isChecked={
+                  selectedItems.length === data.length && data.length > 0
+                }
+                onChange={handleSelectAll}
+                colorScheme="teal"
+              />
+            </Th>
+            {columns.map((column, index) => (
+              <Th key={index} textTransform="capitalize" color="gray.600">
+                {column}
+              </Th>
+            ))}
+            <Th>Actions</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {data.map((item, rowIndex) => (
+            <Tr
+              key={rowIndex}
+              _hover={{ bg: useColorModeValue("gray.100", "gray.700") }}
+            >
+              <Td>
+                <Checkbox
+                  isChecked={selectedItems.includes(item._id)}
+                  onChange={() => handleSelectOne(item._id)}
+                  colorScheme="teal"
+                />
+              </Td>
+              {columns.map((column, colIndex) => (
+                <Td key={colIndex} color="gray.600">
+                  {column === "createdAt"
+                    ? new Date(item[column]).toLocaleDateString()
+                    : item[column]}
+                </Td>
+              ))}
+              <Td>
+                <Button
+                  onClick={() => handleNavigation(item)}
+                  colorScheme="teal"
+                  size="sm"
+                  variant="outline"
+                >
+                  Edit
+                </Button>
+              </Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </ChakraTable>
+      {selectedItems.length > 0 && (
+        <Box mt={4}>
+          <Button onClick={handleDelete} colorScheme="red" size="md">
+            {selectedItems.length > 1
+              ? `Delete All (${selectedItems.length})`
+              : "Delete"}
+          </Button>
+        </Box>
+      )}
+    </Box>
+  );
 };

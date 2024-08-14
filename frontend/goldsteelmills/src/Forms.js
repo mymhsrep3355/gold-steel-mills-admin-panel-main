@@ -20,6 +20,18 @@ export class Forms{
             placeholder:'Contact Number*',
             type:'text'
         },
+        {
+            label: 'Email',
+            name: 'email',
+            placeholder: 'Email*',
+            type: 'email',
+        },
+        {
+            label:'Phone',
+            name:'phone',
+            placeholder:'Phone*',
+            type:'text'
+        },
     ];
     static PURCHASE_CREATE=[
         {

@@ -34,7 +34,7 @@
 import { Box, Select, Button as ChakraButton } from '@chakra-ui/react';
 import { Button } from './Button.jsx';
 
-// eslint-disable-next-line react/prop-types
+
 export const PaginatedButtons = ({ currentPage, setCurrentPage, totalDataCount, hasMore, ITEMS_PER_PAGE, goOnPrevPage, goOnNextPage }) => {
   return (
     <Box display="flex" justifyContent="space-between" alignItems="center" mt={4}>

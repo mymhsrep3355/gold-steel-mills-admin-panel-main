@@ -13,37 +13,62 @@ import {
   AlertDescription,
   VStack,
   Text,
+  useToast,
 } from '@chakra-ui/react';
+import { BASE_URL } from '../utils.js';
+import { useAuthProvider } from '../hooks/useAuthProvider.js';
 
 export const SupplierCreate = () => {
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+  const toast = useToast();
+
+  const { token } = useAuthProvider();
+
+  console.log(token);
 
   const handleSupplierCreate = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccess(false);
+
     try {
       const formData = new FormData(e.currentTarget);
-      const res = await axios.post('supplier/store', {
+      const res = await axios.post(`${BASE_URL}suppliers/register`, {
         firstName: formData.get('firstName'),
         lastName: formData.get('lastName'),
         contactNumber: formData.get('contactNumber'),
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+      },{
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        }
       });
 
       if (res.status === 201) {
-        alert('Supplier added successfully.');
+        setSuccess(true);
+        toast({
+          title: "Supplier added successfully.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        e.currentTarget.reset();
       }
     } catch (e) {
       console.log(e);
-      setError(e.response.data.error);
-      setTimeout(() => {
-        setError('');
-      }, 3000);
+      setError(e.response?.data?.message || 'Something went wrong.');
     }
   };
 
   return (
-    <Box maxW="md" mx="auto" mt="8" p="6" bg="white" boxShadow="lg" borderRadius="md">
+    <Box maxW="lg" mx="auto" mt="8" p="8" bg="white" boxShadow="lg" borderRadius="md">
+      <Text fontSize="2xl" mb="6" fontWeight="bold" textAlign="center">
+        Create New Supplier
+      </Text>
       <form onSubmit={handleSupplierCreate}>
-        <VStack spacing={4}>
+        <VStack spacing={5}>
           {Forms.SUPPLIER_CREATE.map((field, index) => (
             <FormControl key={index} isRequired>
               <FormLabel htmlFor={field.name}>{field.label}</FormLabel>
@@ -57,16 +82,28 @@ export const SupplierCreate = () => {
               />
             </FormControl>
           ))}
-          <Button type="submit" bg="teal.600" width="full">
-            <Text color="white">
-                Create
-            </Text>
+          <Button
+            type="submit"
+            bg="teal.500"
+            color="white"
+            width="full"
+            _hover={{ bg: "teal.600" }}
+            _active={{ bg: "teal.700" }}
+          >
+            Create Supplier
           </Button>
           {error && (
-            <Alert status="error" borderRadius="md">
+            <Alert status="error" borderRadius="md" mt={4}>
               <AlertIcon />
               <AlertTitle mr={2}>Error!</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          {success && (
+            <Alert status="success" borderRadius="md" mt={4}>
+              <AlertIcon />
+              <AlertTitle mr={2}>Success!</AlertTitle>
+              <AlertDescription>Supplier has been created successfully.</AlertDescription>
             </Alert>
           )}
         </VStack>
