@@ -23,7 +23,6 @@ export const Dashboard = () => {
         Analytics
       </Heading>
 
-      {/* <VStack spacing={10} mt={10} align="stretch"> */}
       <SimpleGrid columns={[1, null, 2]} spacing={10} mt={5}>
         <Box p={5} boxShadow="lg" borderRadius="md" bg="white">
           <PieChartDemo />
@@ -35,7 +34,6 @@ export const Dashboard = () => {
         <Box p={5} boxShadow="lg" borderRadius="md" bg="white">
           <LineDemo />
         </Box>
-      {/* </VStack> */}
       </SimpleGrid>
     </Box>
   );

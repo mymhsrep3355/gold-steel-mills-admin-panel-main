@@ -110,7 +110,7 @@ const BillComponent = () => {
               <Th color="white">Bill Number</Th>
               <Th color="white">Gate Pass Number</Th>
               <Th color="white">Vehicle Number</Th>
-              <Th color="white">Item Type</Th>
+              {/* <Th color="white">Item Type</Th> */}
               <Th color="white">Weight/Quantity</Th>
               <Th color="white">Rate/Price</Th>
               <Th color="white">Total</Th>
@@ -156,7 +156,7 @@ const BillComponent = () => {
                     />
                   </Tooltip>
                 </Td>
-                <Td>
+                {/* <Td>
                   <Tooltip label="Item Type">
                     <Input
                       type="text"
@@ -167,7 +167,7 @@ const BillComponent = () => {
                       }
                     />
                   </Tooltip>
-                </Td>
+                </Td> */}
                 <Td>
                   <Tooltip label="Quantity">
                     <Input

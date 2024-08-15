@@ -1,45 +1,80 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Box,
   Button,
   Container,
   Flex,
-  FormControl,
-  FormLabel,
   Heading,
-  Input,
-  Select,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
   Text,
   VStack,
   useToast,
-  Tooltip,
   Image,
+  Divider,
+  useColorModeValue,
 } from "@chakra-ui/react";
-import { AddIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { useReactToPrint } from "react-to-print";
 import logo from "../../../public/logo.jpeg";
 import { PageHeader } from "../../components/PageHeader";
+
+import CategoryInput from "../../components/ExpenseTracking/CategoryInput";
+import CategoryTable from "../../components/ExpenseTracking/CategoryTable";
+import ExpenseTable from "../../components/ExpenseTracking/ExpenseTable";
+import CategorySelect from "../../components/ExpenseTracking/CategorySelect";
+import axios from "axios";
+import { useAuthProvider } from "../../hooks/useAuthProvider";
+import { BASE_URL } from "../../utils";
 
 const ExpenseTracking = () => {
   const [categories, setCategories] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [newCategory, setNewCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [date, setDate] = useState("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState("");
+  const [selectedCategoryName, setSelectedCategoryName] = useState("");
+  const { token } = useAuthProvider();
   const toast = useToast();
   const componentRef = useRef();
 
-  const addCategory = () => {
-    if (newCategory) {
-      setCategories([...categories, newCategory]);
-      setNewCategory("");
-    }
+  const bgColor = useColorModeValue("white", "gray.800");
+  const textColor = useColorModeValue("gray.700", "gray.200");
+  const subTextColor = useColorModeValue("gray.500", "gray.400");
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}categories`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 200) {
+          setCategories(response.data || []);
+          setSelectedCategoryId(response?.data[0]?._id);
+          console.log(selectedCategoryId);
+          console.log(response.data);
+          
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        toast({
+          title: "Failed to fetch categories.",
+          description: error.response?.data?.message || "Something went wrong.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+    };
+
+    fetchCategories();
+  }, [token, toast]);
+
+  console.log(categories);
+  
+
+  const addCategory = (category) => {
+    setCategories([...categories, category]);
   };
 
   const addExpenseRow = (category) => {
@@ -49,7 +84,7 @@ const ExpenseTracking = () => {
       description: "",
       amount: 0,
     };
-    setExpenses([...expenses, expense]);
+    setExpenses((prevExpenses) => [...prevExpenses, expense]);
   };
 
   const updateExpense = (index, field, value) => {
@@ -67,8 +102,10 @@ const ExpenseTracking = () => {
     return subtotal.toFixed(2);
   };
 
-  const filterExpensesByCategory = (category) => {
-    return expenses.filter((expense) => expense.category === category);
+  const filterExpensesByCategory = () => {
+    return expenses.filter(
+      (expense) => expense.category === selectedCategory
+    );
   };
 
   const handlePrint = useReactToPrint({
@@ -81,165 +118,61 @@ const ExpenseTracking = () => {
 
       <Container
         ref={componentRef}
-        bg="white"
+        bg={bgColor}
         p={8}
         mt={4}
         rounded="lg"
         shadow="lg"
-        width="100%"
         maxW="1000px"
       >
-          <Flex justifyContent="space-between" mb={8}>
-            <Image src={logo} alt="Factory Logo" boxSize="80px" />
-            <VStack align="flex-start">
-              <Heading as="h1" size="lg" color="gray.700">
-                White Gold Steel Industry
-              </Heading>
-              <Text color="gray.500">Glotian Mor, Daska</Text>
-            </VStack>
-          </Flex>
+        <Flex justifyContent="space-between" alignItems="center" mb={8}>
+          <Image src={logo} alt="Factory Logo" boxSize="80px" />
+          <VStack align="flex-start">
+            <Heading as="h1" size="lg" color={textColor}>
+              White Gold Steel Industry
+            </Heading>
+            <Text color={subTextColor}>Glotian Mor, Daska</Text>
+          </VStack>
+        </Flex>
 
-          <FormControl mb={4}>
-            <FormLabel>Date</FormLabel>
-            <Input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-            />
-          </FormControl>
+        <Divider my={6} borderColor="gray.300" />
 
-          <FormControl mb={4}>
-            <FormLabel>New Category</FormLabel>
-            <Flex>
-              <Input
-                type="text"
-                value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value)}
-              />
-              <Button ml={2} bg="teal.600" onClick={addCategory}>
-                <Text color={"white"}>Add Category</Text>
-              </Button>
-            </Flex>
-          </FormControl>
+        <CategoryInput
+          newCategory={newCategory}
+          setNewCategory={setNewCategory}
+          addCategory={addCategory}
+        />
 
-          <FormControl mb={4}>
-            <FormLabel>Select Category</FormLabel>
-            <Select
-              placeholder="-- All Categories --"
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-            >
-              {categories.map((category, index) => (
-                <option key={index} value={category}>
-                  {category}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
+        <Divider my={6} borderColor="gray.300" />
 
-          <Box mb={6}>
-            {categories.map((category, categoryIndex) => (
-              <Box key={categoryIndex} mb={4}>
-                <Heading size="md" color="blue.500" mt={4} mb={2}>
-                  {category}
-                </Heading>
-                <Table variant="simple" colorScheme="blue">
-                  <Thead bg="teal.600">
-                    <Tr>
-                      <Th color="white">#</Th>
-                      <Th color="white">Date</Th>
-                      <Th color="white">Expense Description</Th>
-                      <Th color="white">Amount</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {filterExpensesByCategory(category).map(
-                      (expense, expenseIndex) => (
-                        <Tr key={expenseIndex}>
-                          <Td>{expenseIndex + 1}</Td>
-                          <Td>
-                            <Input
-                              type="date"
-                              value={expense.date}
-                              onChange={(e) =>
-                                updateExpense(
-                                  expenseIndex,
-                                  "date",
-                                  e.target.value
-                                )
-                              }
-                            />
-                          </Td>
-                          <Td>
-                            <Input
-                              type="text"
-                              placeholder="Expense Description"
-                              value={expense.description}
-                              onChange={(e) =>
-                                updateExpense(
-                                  expenseIndex,
-                                  "description",
-                                  e.target.value
-                                )
-                              }
-                            />
-                          </Td>
-                          <Td>
-                            <Input
-                              type="number"
-                              placeholder="Amount"
-                              value={expense.amount}
-                              onChange={(e) =>
-                                updateExpense(
-                                  expenseIndex,
-                                  "amount",
-                                  e.target.value
-                                )
-                              }
-                            />
-                          </Td>
-                        </Tr>
-                      )
-                    )}
-                  </Tbody>
-                  <tfoot>
-                    <Tr>
-                      <Td colSpan="3" textAlign="right" fontWeight="bold">
-                        Total:
-                      </Td>
-                      <Td fontWeight="bold">
-                        {filterExpensesByCategory(category)
-                          .reduce(
-                            (total, expense) =>
-                              total + (parseFloat(expense.amount) || 0),
-                            0
-                          )
-                          .toFixed(2)}
-                      </Td>
-                    </Tr>
-                  </tfoot>
-                </Table>
-                <Button
-                  leftIcon={<AddIcon color={"white"} />}
-                  bg={"teal.600"}
-                  onClick={() => addExpenseRow(category)}
-                  mt={4}
-                >
-                  <Text color={"white"}>Add Expense</Text>
-                </Button>
-              </Box>
-            ))}
-          </Box>
+        <CategorySelect
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+        />
 
-          <Box mt={4} fontSize="xl" fontWeight="bold" color="teal.600">
-            Subtotal: {calculateSubtotal()}
-          </Box>
+        {selectedCategory && (
+          <ExpenseTable
+            selectedCategoryId={selectedCategoryId}
+            category={selectedCategory}
+            expenses={expenses}
+            addExpenseRow={addExpenseRow}
+            updateExpense={updateExpense}
+            filterExpensesByCategory={filterExpensesByCategory}
+          />
+        )}
 
-          <Button mt={5} bg="teal.600" onClick={handlePrint}>
-            <Text color={"white"}>Print/Save</Text>
-          </Button>
-        </Container>
+        <Divider my={6} borderColor="gray.300" />
 
+        <CategoryTable categories={categories} setCategories={setCategories} />
+
+        <Box mt={6} fontSize="2xl" fontWeight="bold" color="teal.600" textAlign="right">
+          Subtotal: {calculateSubtotal()}
+        </Box>
+
+        <Button mt={5} bg="teal.600" onClick={handlePrint} size="lg">
+          <Text color={"white"}>Print/Save</Text>
+        </Button>
+      </Container>
     </>
   );
 };

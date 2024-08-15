@@ -24,6 +24,11 @@ export const routes = [
     routeURL: "/purchases",
   },
   {
+    name: 'Production',
+    icon: FaShoppingCart,
+    routeURL: '/production'
+  },
+  {
     name: "Sales Invoices",
     icon: FaFileInvoiceDollar,
     routeURL: "/bills",

@@ -17,6 +17,7 @@ import BillComponent from "./pages/Bills/BillComponent.jsx";
 import ExpenseTracking from "./pages/Expenses/ExpenseTracking.jsx";
 import SuppliesLoadingForm from "./pages/WGS-Supplies/SuppliesLoadingForm.jsx";
 import LandingPageLayout from "./pages/LandingPageLayout.jsx";
+import { Production } from "./pages/Production/Production.jsx";
 
 const router = createBrowserRouter([
     {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
             {
                 path:'/suppliers',
                 element:<Suppliers/>
+            },
+            {
+                path:'/production',
+                element:<Production/>
             },
             {
 
