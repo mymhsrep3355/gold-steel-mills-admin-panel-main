@@ -10,6 +10,11 @@ import {
   useToast,
   Image,
   Divider,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useReactToPrint } from "react-to-print";
@@ -20,6 +25,7 @@ import CategoryInput from "../../components/ExpenseTracking/CategoryInput";
 import CategoryTable from "../../components/ExpenseTracking/CategoryTable";
 import ExpenseTable from "../../components/ExpenseTracking/ExpenseTable";
 import CategorySelect from "../../components/ExpenseTracking/CategorySelect";
+import ExpenseResults from "../../components/ExpenseTracking/ExpenseResults";
 import axios from "axios";
 import { useAuthProvider } from "../../hooks/useAuthProvider";
 import { BASE_URL } from "../../utils";
@@ -53,7 +59,6 @@ const ExpenseTracking = () => {
           setSelectedCategoryId(response?.data[0]?._id);
           console.log(selectedCategoryId);
           console.log(response.data);
-          
         }
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -71,7 +76,6 @@ const ExpenseTracking = () => {
   }, [token, toast]);
 
   console.log(categories);
-  
 
   const addCategory = (category) => {
     setCategories([...categories, category]);
@@ -103,9 +107,7 @@ const ExpenseTracking = () => {
   };
 
   const filterExpensesByCategory = () => {
-    return expenses.filter(
-      (expense) => expense.category === selectedCategory
-    );
+    return expenses.filter((expense) => expense.category === selectedCategory);
   };
 
   const handlePrint = useReactToPrint({
@@ -137,41 +139,65 @@ const ExpenseTracking = () => {
 
         <Divider my={6} borderColor="gray.300" />
 
-        <CategoryInput
-          newCategory={newCategory}
-          setNewCategory={setNewCategory}
-          addCategory={addCategory}
-        />
+        <Tabs variant="soft-rounded" colorScheme="teal">
+          <TabList mb={4}>
+            <Tab>Add Expenses</Tab>
+            <Tab>Results</Tab>
+          </TabList>
 
-        <Divider my={6} borderColor="gray.300" />
+          <TabPanels>
+            <TabPanel>
+              <CategoryInput
+                newCategory={newCategory}
+                setNewCategory={setNewCategory}
+                addCategory={addCategory}
+              />
 
-        <CategorySelect
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-        />
+              <Divider my={6} borderColor="gray.300" />
 
-        {selectedCategory && (
-          <ExpenseTable
-            selectedCategoryId={selectedCategoryId}
-            category={selectedCategory}
-            expenses={expenses}
-            addExpenseRow={addExpenseRow}
-            updateExpense={updateExpense}
-            filterExpensesByCategory={filterExpensesByCategory}
-          />
-        )}
+              <CategorySelect
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+              />
 
-        <Divider my={6} borderColor="gray.300" />
+              {selectedCategory && (
+                <ExpenseTable
+                  selectedCategoryId={selectedCategoryId}
+                  category={selectedCategory}
+                  expenses={expenses}
+                  addExpenseRow={addExpenseRow}
+                  updateExpense={updateExpense}
+                  filterExpensesByCategory={filterExpensesByCategory}
+                />
+              )}
 
-        <CategoryTable categories={categories} setCategories={setCategories} />
+              <Divider my={6} borderColor="gray.300" />
 
-        <Box mt={6} fontSize="2xl" fontWeight="bold" color="teal.600" textAlign="right">
-          Subtotal: {calculateSubtotal()}
-        </Box>
+              <CategoryTable
+                categories={categories}
+                setCategories={setCategories}
+              />
 
-        <Button mt={5} bg="teal.600" onClick={handlePrint} size="lg">
-          <Text color={"white"}>Print/Save</Text>
-        </Button>
+              <Box
+                mt={6}
+                fontSize="2xl"
+                fontWeight="bold"
+                color="teal.600"
+                textAlign="right"
+              >
+                Subtotal: {calculateSubtotal()}
+              </Box>
+
+              <Button mt={5} bg="teal.600" onClick={handlePrint} size="lg">
+                <Text color={"white"}>Print/Save</Text>
+              </Button>
+            </TabPanel>
+
+            <TabPanel>
+              <ExpenseResults />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </Container>
     </>
   );
