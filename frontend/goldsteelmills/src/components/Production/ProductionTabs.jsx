@@ -1,8 +1,9 @@
-import { Tabs, TabList, TabPanels, Tab, TabPanel, Button } from "@chakra-ui/react";
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Button, Box, Input, Flex } from "@chakra-ui/react";
 import { ProductTable } from "./ProductTable";
 import { ProductionTable } from "./ProductionTable";
 import { ProductModal } from "./ProductModal";
 import { ProductionModal } from "./ProductionModal";
+import { ResultsTable } from "./ResultsTable";
 import { useState, useEffect } from "react";
 import { useAuthProvider } from "../../hooks/useAuthProvider";
 import { BASE_URL } from "../../utils";
@@ -17,6 +18,9 @@ export const ProductionTabs = () => {
   const [quantity, setQuantity] = useState("");
   const [waste, setWaste] = useState("");
   const [productions, setProductions] = useState([]);
+  const [results, setResults] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [subtotal, setSubtotal] = useState(0);
   const { token } = useAuthProvider();
   const [isEditing, setIsEditing] = useState(false);
@@ -28,17 +32,13 @@ export const ProductionTabs = () => {
         const response = await fetch(`${BASE_URL}products`, {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
           },
         });
 
         if (response.ok) {
-            console.log(response);
-            
           const data = await response.json();
           setProducts(data);
-          console.log(products);
-          
         } else {
           console.error("Failed to fetch products");
         }
@@ -49,6 +49,11 @@ export const ProductionTabs = () => {
 
     fetchProducts();
   }, [token]);
+
+  const calculateSubtotal = (quantity, waste) => {
+    const subtotalValue = Number(quantity) - Number(waste);
+    setSubtotal(subtotalValue);
+  };
 
   const handleCreateProduct = () => {
     setProducts([...products, { name: productName, stock: Number(stock), _id: Date.now().toString() }]);
@@ -83,14 +88,12 @@ export const ProductionTabs = () => {
       const response = await fetch(`${BASE_URL}products/delete/${id}`, {
         method: "DELETE",
         headers: {
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (response.ok) {
-        console.log("Product deleted successfully");
-        
-        setProducts(products.filter(product => product._id !== id));
+        setProducts(products.filter((product) => product._id !== id));
       } else {
         console.error("Failed to delete product");
       }
@@ -110,22 +113,37 @@ export const ProductionTabs = () => {
   };
 
   const handleDeleteProduction = (id) => {
-    setProductions(productions.filter(production => production._id !== id));
+    setProductions(productions.filter((production) => production._id !== id));
   };
 
   const handleEditProduction = (id) => {
-    const production = productions.find(production => production._id === id);
+    const production = productions.find((production) => production._id === id);
     setSelectedProduct(production.product);
     setQuantity(production.quantity.toString());
     setWaste(production.waste.toString());
     setSubtotal(production.subtotal);
-    setProductions(productions.filter(production => production._id !== id));
+    setProductions(productions.filter((production) => production._id !== id));
     setIsProductionModalOpen(true);
   };
 
-  const calculateSubtotal = () => {
-    const subtotal = Number(quantity) - Number(waste);
-    setSubtotal(subtotal);
+  const fetchResults = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}productions?startDate=${startDate}&endDate=${endDate}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setResults(data);
+      } else {
+        console.error("Failed to fetch production results");
+      }
+    } catch (error) {
+      console.error("Error fetching production results:", error);
+    }
   };
 
   return (
@@ -133,6 +151,7 @@ export const ProductionTabs = () => {
       <TabList>
         <Tab>Create Product</Tab>
         <Tab>Create Production</Tab>
+        <Tab>Results</Tab>
       </TabList>
 
       <TabPanels>
@@ -181,6 +200,32 @@ export const ProductionTabs = () => {
             onSave={handleCreateProduction}
             calculateSubtotal={calculateSubtotal}
           />
+        </TabPanel>
+
+        <TabPanel>
+          <Flex mb={4}>
+            <Box mr={4}>
+              <Input
+                type="date"
+                placeholder="Start Date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+            </Box>
+            <Box mr={4}>
+              <Input
+                type="date"
+                placeholder="End Date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </Box>
+            <Button colorScheme="teal" onClick={fetchResults}>
+              Fetch Results
+            </Button>
+          </Flex>
+
+          <ResultsTable results={results} />
         </TabPanel>
       </TabPanels>
     </Tabs>
