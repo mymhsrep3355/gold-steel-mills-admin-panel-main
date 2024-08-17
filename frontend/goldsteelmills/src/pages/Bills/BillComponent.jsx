@@ -24,11 +24,14 @@ import { useAuthProvider } from "../../hooks/useAuthProvider";
 import Bill from "../../components/Bills/Bill";
 import AddItemModal from "../../components/Bills/AddItemModal";
 import AllBills from "../../components/Bills/AllBills";
+import EditBillModal from "../../components/Bills/EditBillModal"; // Import the new component
 
 const BillComponent = () => {
   const [items, setItems] = useState([]);
   const [bills, setBills] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedBill, setSelectedBill] = useState(null);
   const toast = useToast();
   const { token } = useAuthProvider();
 
@@ -44,8 +47,6 @@ const BillComponent = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response.data);
-      
       setItems(response.data);
     } catch (error) {
       console.error("Error fetching items:", error);
@@ -92,12 +93,40 @@ const BillComponent = () => {
   };
 
   const handleEditBill = (bill) => {
-  
+    setSelectedBill(bill);
+    setEditModalOpen(true);
+  };
+
+  const handleUpdateBill = async (billId, updatedBill) => {
+    try {
+      await axios.put(`${BASE_URL}bills/update/${billId}`, updatedBill, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast({
+        title: "Bill updated successfully.",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+      fetchBills();
+      setEditModalOpen(false);
+    } catch (error) {
+      console.error("Error updating bill:", error);
+      toast({
+        title: "Failed to update bill.",
+        description: error.response?.data?.message || "Something went wrong.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
 
   const handleDeleteBill = async (billId) => {
     try {
-      await axios.delete(`${BASE_URL}bills/${billId}`, {
+      await axios.delete(`${BASE_URL}bills/delete/${billId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -166,10 +195,24 @@ const BillComponent = () => {
             </Box>
           </TabPanel>
           <TabPanel>
-            <AllBills bills={bills} handleEditBill={handleEditBill} handleDeleteBill={handleDeleteBill} />
+            <AllBills
+              bills={bills}
+              handleEditBill={handleEditBill}
+              handleDeleteBill={handleDeleteBill}
+            />
           </TabPanel>
         </TabPanels>
       </Tabs>
+
+      {selectedBill && (
+        <EditBillModal
+          isOpen={editModalOpen}
+          onClose={() => setEditModalOpen(false)}
+          bill={selectedBill}
+          items={items}
+          onUpdate={handleUpdateBill}
+        />
+      )}
     </>
   );
 };
