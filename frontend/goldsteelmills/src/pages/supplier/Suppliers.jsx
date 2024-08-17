@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Table } from "../../components/Table.jsx";
@@ -15,6 +14,7 @@ import { useAuthProvider } from "../../hooks/useAuthProvider.js";
 
 export const Suppliers = () => {
   const [suppliers, setSuppliers] = useState([]);
+  const [filteredSuppliers, setFilteredSuppliers] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [isFetching, setIsFetching] = useState(false);
@@ -49,7 +49,22 @@ export const Suppliers = () => {
     };
 
     fetchSuppliers();
-  }, [token, pageNumber, searchQuery]);
+  }, [token]);
+
+  useEffect(() => {
+    const filterSuppliers = () => {
+      const lowercasedQuery = searchQuery.toLowerCase();
+      const filtered = suppliers.filter((supplier) =>
+        `${supplier.firstName} ${supplier.lastName}`
+          .toLowerCase()
+          .includes(lowercasedQuery) ||
+        supplier.contactNumber.toLowerCase().includes(lowercasedQuery)
+      );
+      setFilteredSuppliers(filtered);
+    };
+
+    filterSuppliers();
+  }, [searchQuery, suppliers]);
 
   const handleNavigation = (data) => {
     navigate("/supplier/edit", { state: data });
@@ -66,7 +81,7 @@ export const Suppliers = () => {
   const handleRefresh = () => {
     setPageNumber(1);
     setSearchQuery("");
-    setSuppliers([]); 
+    setSuppliers([]);
   };
 
   return (
@@ -86,22 +101,22 @@ export const Suppliers = () => {
         <Box textAlign="center" my={4}>
           <Text color="red.500">{error}</Text>
         </Box>
-      ) : suppliers.length === 0 ? (
+      ) : filteredSuppliers.length === 0 ? (
         <Text>No Data Found...</Text>
       ) : (
         <Table
           handleNavigation={handleNavigation}
           deleteURL={`${BASE_URL}/suppliers`}
           columns={["firstName", "lastName", "contactNumber"]}
-          data={suppliers} 
-          refreshData={suppliers}
+          data={filteredSuppliers} 
+          refreshData={filteredSuppliers}
         />
       )}
       <PaginatedButtons
-        hasMore={suppliers.length > 0}
+        hasMore={filteredSuppliers.length > 0}
         currentPage={pageNumber}
         setCurrentPage={setPageNumber}
-        totalDataCount={suppliers.length}
+        totalDataCount={filteredSuppliers.length}
         ITEMS_PER_PAGE={10}
         goOnNextPage={goOnNextPage}
         goOnPrevPage={goOnPrevPage}
