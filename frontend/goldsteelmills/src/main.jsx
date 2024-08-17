@@ -12,7 +12,6 @@ const theme = extendTheme({
   },
 });
 
-axios.defaults.baseURL='http://localhost:8080/api/v1/'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Box,
   Button,
@@ -21,16 +21,41 @@ import {
   useToast,
   Image,
   SimpleGrid,
+  Select,
 } from "@chakra-ui/react";
 import { AddIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { useReactToPrint } from "react-to-print";
+import axios from "axios";
 import logo from "../../../public/logo.jpeg";
+import { BASE_URL } from "../../utils";
+import { useAuthProvider } from "../../hooks/useAuthProvider";
 
 const Bill = () => {
   const [rows, setRows] = useState([{ id: 1 }]);
   const [advancePayment, setAdvancePayment] = useState(0);
   const [previousBalance, setPreviousBalance] = useState(0);
+  const [items, setItems] = useState([]);
+  const [selectedItem, setSelectedItem] = useState("");
   const componentRef = useRef();
+  const toast = useToast();
+  const { token } = useAuthProvider();
+
+  useEffect(() => {
+    fetchItems();
+  }, []);
+
+  const fetchItems = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}items`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setItems(response.data);
+    } catch (error) {
+      console.error("Error fetching items:", error);
+    }
+  };
 
   const addRow = () => {
     setRows([...rows, { id: rows.length + 1 }]);
@@ -61,6 +86,43 @@ const Bill = () => {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
+
+  const handleSubmit = async () => {
+    const billData = {
+      weight: rows.reduce((acc, row) => acc + parseFloat(row.quantity || 0), 0),
+      itemType: selectedItem,
+      quantity: rows.reduce((acc, row) => acc + parseFloat(row.quantity || 0), 0),
+      vehicle_no: rows[0]?.vehicleNumber || "",
+      rate: rows.reduce((acc, row) => acc + parseFloat(row.price || 0), 0) / rows.length,
+      total: parseFloat(total),
+      gatePassNo: rows[0]?.gatePassNumber || "",
+      bill_no: rows[0]?.billNumber || "",
+      date: new Date().toISOString().split("T")[0],
+    };
+
+    try {
+      await axios.post(`${BASE_URL}bills/register`, billData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast({
+        title: "Bill registered successfully.",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error("Error registering bill:", error);
+      toast({
+        title: "Failed to register bill.",
+        description: error.response?.data?.message || "Something went wrong.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
 
   return (
     <Box
@@ -97,6 +159,19 @@ const Bill = () => {
           <FormControl>
             <FormLabel>Date</FormLabel>
             <Input type="date" />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Item Type</FormLabel>
+            <Select
+              placeholder="Select item"
+              onChange={(e) => setSelectedItem(e.target.value)}
+            >
+              {items.map((item) => (
+                <option key={item._id} value={item._id}>
+                  {item.name}
+                </option>
+              ))}
+            </Select>
           </FormControl>
         </SimpleGrid>
         <Table variant="simple" colorScheme="teal" mb={8}>
@@ -230,6 +305,9 @@ const Bill = () => {
         </HStack>
         <Button mt={5} colorScheme="teal" onClick={handlePrint}>
           Print/Save
+        </Button>
+        <Button mt={5} ml={3} colorScheme="teal" onClick={handleSubmit}>
+          Register Bill
         </Button>
       </Box>
     </Box>
