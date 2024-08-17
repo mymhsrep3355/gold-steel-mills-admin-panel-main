@@ -7,8 +7,10 @@ router.use(middleware.verifyToken);
 router.use(middleware.verifyAccountStatus);
 
 
+router.get('/reports', daybookController.generateReports); // Report generation route
 router.get('/', daybookController.getTransactions);
 router.get('/:id', daybookController.getTransactionById);
+
 
 router.post('/register', daybookController.recordDaybookEntry);
 

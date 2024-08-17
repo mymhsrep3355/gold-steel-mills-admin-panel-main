@@ -22,7 +22,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"johndoe@example.com\",\n    \"password\": \"password123\"\n}"
+							"raw": "{\n    \"name\": \"Bunty\",\n    \"email\": \"Bunty@example.com\",\n    \"password\": \"Bunty123\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/users/register",
@@ -50,7 +50,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"johndoe@example.com\",\n    \"password\": \"password123\"\n}"
+							"raw": "{\n    \"name\": \"Bunty\",\n    \"email\": \"Bunty@example.com\",\n    \"password\": \"Bunty123\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/users/login",
@@ -174,14 +174,14 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/users/changeAccountStatus/66b7c56d5ad340508ea465b0",
+							"raw": "{{base_url}}/users/changeAccountStatus/66c042fe05add31edb1944d6",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"users",
 								"changeAccountStatus",
-								"66b7c56d5ad340508ea465b0"
+								"66c042fe05add31edb1944d6"
 							]
 						}
 					},
@@ -974,7 +974,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"supplier\": \"66b869310bae9db901a21aea\",\n    \"bills\": [\n        {\n            \"weight\": 1000,\n            \"itemType\": \"66b869580bae9db901a21af0\",\n            \"quantity\": 10,\n            \"vehicle_no\": \"ABC1234\",\n            \"rate\": 50,\n            \"total\": 50000,\n            \"gatePassNo\": \"GP1234\",\n            \"bill_no\": \"BILL1234\"\n        },\n        {\n            \"weight\": 1500,\n            \"itemType\": \"66b8694b0bae9db901a21aed\",\n            \"quantity\": 15,\n            \"vehicle_no\": \"DEF5678\",\n            \"rate\": 60,\n            \"total\": 90000,\n            \"gatePassNo\": \"GP5678\",\n            \"bill_no\": \"BILL5678\"\n        }\n    ],\n    \"totalAmount\": 140000\n}"
+							"raw": "{\n    \"supplier\": \"66b869310bae9db901a21aea\",\n    \"bills\": [\n        {\n            \"weight\": 1000,\n            \"itemType\": \"66b869580bae9db901a21af0\",\n            \"quantity\": 10,\n            \"vehicle_no\": \"ABC1234\",\n            \"rate\": 50,\n            \"total\": 50000,\n            \"gatePassNo\": \"GP1234\",\n            \"bill_no\": \"BILL1234\"\n        },\n        {\n            \"weight\": 1500,\n            \"itemType\": \"66b8694b0bae9db901a21aed\",\n            \"quantity\": 15,\n            \"vehicle_no\": \"DEF5678\",\n            \"rate\": 60,\n            \"total\": 90000,\n            \"gatePassNo\": \"GP5678\",\n            \"bill_no\": \"BILL5678\"\n        },\n        {\n            \"weight\": 1500,\n            \"itemType\": \"66b7dce29e5677b44e78f67e\",\n            \"quantity\": 15,\n            \"vehicle_no\": \"DEF5678\",\n            \"rate\": 60,\n            \"total\": 90000,\n            \"gatePassNo\": \"GP5678\",\n            \"bill_no\": \"BILL5678\"\n        },\n        {\n            \"weight\": 1500,\n            \"itemType\": \"66b8694b0bae9db901a21aed\",\n            \"quantity\": 15,\n            \"vehicle_no\": \"DEF5678\",\n            \"rate\": 60,\n            \"total\": 90000,\n            \"gatePassNo\": \"GP5678\",\n            \"bill_no\": \"BILL5678\"\n        }\n    ],\n    \"totalAmount\": 140000\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/purchases/register",
@@ -1295,6 +1295,34 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get Reports",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/daybook/reports?startDate=2024-08-01&endDate=2024-08-31",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"daybook",
+								"reports"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2024-08-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2024-08-31"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1365,7 +1393,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"product\": \"66bc8c18cb9cf25d80e6c96d\",\n    \"quantity\": 20,\n    \"waste\": 10\n}"
+							"raw": "{\n    \"product\": \"66c0956c5f1c793bafa0cd53\",\n    \"quantity\": 20,\n    \"waste\": 10\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/productions/register",
@@ -1554,6 +1582,140 @@
 							],
 							"path": [
 								"products",
+								"delete",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "60c72b2f9b1d8a001c8e4d7e"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sales Management API",
+			"item": [
+				{
+					"name": "Get All Sales",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/sales",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sales"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Sales by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/sales/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sales",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "60c72b2f9b1d8a001c8e4d7e"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Sales",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"supplier\": \"66b869310bae9db901a21aea\",\n    \"bills\": [\n        {\n            \"weight\": 1000,\n            \"quantity\": 10,\n            \"vehicle_no\": \"ABC1234\",\n            \"rate\": 50,\n            \"total\": 50000,\n            \"gatePassNo\": \"GP1234\",\n            \"bill_no\": \"BILL1234\"\n        },\n        {\n            \"weight\": 1500,\n            \"quantity\": 15,\n            \"vehicle_no\": \"DEF5678\",\n            \"rate\": 60,\n            \"total\": 90000,\n            \"gatePassNo\": \"GP5678\",\n            \"bill_no\": \"BILL5678\"\n        }\n    ],\n    \"totalAmount\": 140000\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/sales/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sales",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Sales",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"supplier\": \"60c72b2f9b1d8a001c8e4d7e\",\n    \"bills\": [\n        {\"_id\": \"60c72b2f9b1d8a001c8e4d7e\", \"quantity\": 15},\n        {\"_id\": \"60c72b2f9b1d8a001c8e4d7e\", \"quantity\": 25}\n    ],\n    \"totalAmount\": 7500\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/sales/update/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sales",
+								"update",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "60c72b2f9b1d8a001c8e4d7e"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Sales",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/sales/delete/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sales",
 								"delete",
 								":id"
 							],
