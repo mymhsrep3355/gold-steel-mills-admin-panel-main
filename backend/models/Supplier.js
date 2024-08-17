@@ -16,6 +16,7 @@ const supplierSchema = new Schema({
   email: {
     type: String,
     required: false,
+    unique: true,
   },
   paymentReceived: {
     type: Number,

@@ -9,18 +9,20 @@ import { SupplierCreate } from "../../components/SupplierCreate.jsx";
 import { PaginatedButtons } from "../../components/PaginatedButtons.jsx";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../utils.js";
-import { Spinner, Box, Text } from "@chakra-ui/react";
+import { Spinner, Box, Text, InputGroup, InputRightElement } from "@chakra-ui/react";
 import { useAuthProvider } from "../../hooks/useAuthProvider.js";
 
 export const Suppliers = () => {
   const [suppliers, setSuppliers] = useState([]);
-  const [filteredSuppliers, setFilteredSuppliers] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchInput, setSearchInput] = useState(""); // To store input field value
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState(null);
   const { token } = useAuthProvider();
   const navigate = useNavigate();
+  const ITEMS_PER_PAGE = 10;
 
   useEffect(() => {
     const fetchSuppliers = async () => {
@@ -31,12 +33,18 @@ export const Suppliers = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          params: {
+            page: pageNumber,
+            limit: ITEMS_PER_PAGE,
+            search: searchQuery, // Pass search query to backend
+          },
         });
 
         console.log("API Response:", response.data);
 
-        if (Array.isArray(response.data)) {
-          setSuppliers(response.data);
+        if (Array.isArray(response.data.suppliers)) {
+          setSuppliers(response.data.suppliers);
+          setTotalPages(response.data.totalPages);
         } else {
           setSuppliers([]);
         }
@@ -49,25 +57,15 @@ export const Suppliers = () => {
     };
 
     fetchSuppliers();
-  }, [token]);
-
-  useEffect(() => {
-    const filterSuppliers = () => {
-      const lowercasedQuery = searchQuery.toLowerCase();
-      const filtered = suppliers.filter((supplier) =>
-        `${supplier.firstName} ${supplier.lastName}`
-          .toLowerCase()
-          .includes(lowercasedQuery) ||
-        supplier.contactNumber.toLowerCase().includes(lowercasedQuery)
-      );
-      setFilteredSuppliers(filtered);
-    };
-
-    filterSuppliers();
-  }, [searchQuery, suppliers]);
+  }, [token, pageNumber, searchQuery]); // Only searchQuery triggers data fetching
 
   const handleNavigation = (data) => {
     navigate("/supplier/edit", { state: data });
+  };
+
+  const handleSearch = () => {
+    setPageNumber(1); // Reset to the first page on new search
+    setSearchQuery(searchInput); // Update searchQuery with the input value
   };
 
   const goOnPrevPage = () => {
@@ -75,23 +73,31 @@ export const Suppliers = () => {
   };
 
   const goOnNextPage = () => {
-    if (!isFetching) setPageNumber(pageNumber + 1);
+    if (!isFetching && pageNumber < totalPages) setPageNumber(pageNumber + 1);
   };
 
   const handleRefresh = () => {
     setPageNumber(1);
     setSearchQuery("");
+    setSearchInput(""); // Clear search input
     setSuppliers([]);
   };
 
   return (
     <div className="flex flex-col gap-3">
       <PageHeader title="Suppliers" />
-      <InputField
-        value={searchQuery}
-        setValue={setSearchQuery}
-        placeholder="Search*"
-      />
+      <InputGroup size="md">
+        <InputField
+          value={searchInput}
+          setValue={setSearchInput}
+          placeholder="Search"
+        />
+        <InputRightElement width="4.5rem">
+          <Button h="1.75rem" size="sm" onClickHandler={handleSearch}>
+            Search
+          </Button>
+        </InputRightElement>
+      </InputGroup>
       {isFetching ? (
         <Box textAlign="center" my={4}>
           <Spinner size="xl" color="teal.500" />
@@ -101,23 +107,23 @@ export const Suppliers = () => {
         <Box textAlign="center" my={4}>
           <Text color="red.500">{error}</Text>
         </Box>
-      ) : filteredSuppliers.length === 0 ? (
+      ) : suppliers.length === 0 ? (
         <Text>No Data Found...</Text>
       ) : (
         <Table
           handleNavigation={handleNavigation}
           deleteURL={`${BASE_URL}/suppliers`}
           columns={["firstName", "lastName", "contactNumber"]}
-          data={filteredSuppliers} 
-          refreshData={filteredSuppliers}
+          data={suppliers}
+          refreshData={suppliers}
         />
       )}
       <PaginatedButtons
-        hasMore={filteredSuppliers.length > 0}
+        hasMore={pageNumber < totalPages}
         currentPage={pageNumber}
         setCurrentPage={setPageNumber}
-        totalDataCount={filteredSuppliers.length}
-        ITEMS_PER_PAGE={10}
+        totalDataCount={totalPages}
+        ITEMS_PER_PAGE={ITEMS_PER_PAGE}
         goOnNextPage={goOnNextPage}
         goOnPrevPage={goOnPrevPage}
       />
