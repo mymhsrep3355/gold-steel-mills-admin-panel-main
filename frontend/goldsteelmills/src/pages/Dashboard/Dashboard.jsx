@@ -1,16 +1,15 @@
 import React from "react";
 import { Box, SimpleGrid, VStack, Heading, Flex } from "@chakra-ui/react";
-import { PageHeader } from "../components/PageHeader";
-import PieChartDemo from "../components/Dashboard/PieChart";
-import HorizontalBarDemo from "../components/Dashboard/HorizontalBar";
-import InfoCard from "../components/Dashboard/InfoCards";
-import LineDemo from "../components/Dashboard/LineChart";
+import { PageHeader } from "../../components/PageHeader";
+import PieChartDemo from "../../components/Dashboard/PieChart";
+import HorizontalBarDemo from "../../components/Dashboard/HorizontalBar";
+import InfoCard from "../../components/Dashboard/InfoCards";
+import LineDemo from "../../components/Dashboard/LineChart";
 
 
 export const Dashboard = () => {
   return (
     <Box p={3}>
-      <PageHeader title="Dashboard" />
       
       <SimpleGrid columns={[1, null, 3]} spacing={10} mt={5}>
         <InfoCard title="Total Revenue" totalNumber="PKR 130M" bgColor="#FF6F61" />

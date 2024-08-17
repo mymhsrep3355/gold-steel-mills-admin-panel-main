@@ -22,7 +22,7 @@ export const Purchases = () => {
   const goOnPrevPage = () => {
     if (!isFetching) setPageNumber(pageNumber - 1);
   };
-  // Handle next page button click
+
   const goOnNextPage = () => {
     if (!isFetching) setPageNumber(pageNumber + 1);
   };
