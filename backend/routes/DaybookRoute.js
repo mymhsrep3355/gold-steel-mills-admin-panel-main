@@ -9,6 +9,7 @@ router.use(middleware.verifyAccountStatus);
 
 router.get('/', daybookController.getTransactions);
 router.get('/:id', daybookController.getTransactionById);
+router.get('/reports', daybookController.generateReports); // Report generation route
 
 router.post('/register', daybookController.recordDaybookEntry);
 

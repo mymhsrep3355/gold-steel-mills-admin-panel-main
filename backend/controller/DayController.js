@@ -189,10 +189,67 @@ const updateTransaction = async (req, res) => {
     }
 };
 
+
+// Function to generate financial reports (Revenues, Expenses, Profit & Loss)
+const generateReports = async (req, res) => {
+    try {
+        const { startDate, endDate } = req.query;
+
+        // Build the date filter query
+        let dateFilter = {};
+
+        if (startDate && endDate) {
+            dateFilter.date = {
+                $gte: new Date(new Date(startDate).setHours(0, 0, 0, 0)),
+                $lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
+            };
+        } else if (startDate) {
+            dateFilter.date = {
+                $gte: new Date(new Date(startDate).setHours(0, 0, 0, 0)),
+                $lte: new Date(new Date(startDate).setHours(23, 59, 59, 999))
+            };
+        } else if (endDate) {
+            dateFilter.date = {
+                $gte: new Date(new Date(endDate).setHours(0, 0, 0, 0)),
+                $lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
+            };
+        }
+
+        // Fetch transactions with the date filter if provided
+        const transactions = await Daybook.find(dateFilter).sort({ date: 1 });
+
+        // Calculate total revenues, expenses, and net profit/loss
+        let totalRevenues = 0;
+        let totalExpenses = 0;
+        transactions.forEach(transaction => {
+            if (transaction.type === 'credit') {
+                totalRevenues += transaction.amount;
+            } else if (transaction.type === 'debit') {
+                totalExpenses += transaction.amount;
+            }
+        });
+
+        const netProfitLoss = totalRevenues - totalExpenses;
+
+        res.status(200).json({
+            totalRevenues,
+            totalExpenses,
+            netProfitLoss,
+            transactions
+        });
+    } catch (error) {
+        console.error('Error generating reports:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+
+
 module.exports = {
     recordDaybookEntry,
     getTransactions,
     getTransactionById,
     deleteTransaction,
-    updateTransaction
+    updateTransaction,
+    generateReports,
 };

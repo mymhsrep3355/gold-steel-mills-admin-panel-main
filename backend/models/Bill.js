@@ -1,12 +1,6 @@
 const { Schema, model } = require('mongoose');
 
 const BillSchema = new Schema({
-    billNo: {
-        type: String,
-        required: true,
-        unique: true,
-    },
-
     weight : {
         type: Number,
         required: true
