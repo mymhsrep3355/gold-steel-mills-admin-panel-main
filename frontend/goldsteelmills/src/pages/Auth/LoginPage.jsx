@@ -45,8 +45,11 @@ export const LoginPage = () => {
         email,
         password,
       });
+      console.log(res);
       const { user, token } = res.data;
       setUser(user);
+      console.log(user);
+      
       setToken(token);
       navigate("/");
       toast({

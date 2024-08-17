@@ -3,7 +3,20 @@ import { useAuthProvider } from "../../hooks/useAuthProvider";
 import { useState, useEffect } from "react";
 import { BASE_URL } from "../../utils";
 
-export const ProductionModal = ({ isOpen, onClose, selectedProduct, setSelectedProduct, products, quantity, setQuantity, waste, setWaste, subtotal, onSave, calculateSubtotal }) => {
+export const ProductionModal = ({
+  isOpen,
+  onClose,
+  selectedProduct,
+  setSelectedProduct,
+  products,
+  quantity,
+  setQuantity,
+  waste,
+  setWaste,
+  subtotal,
+  onSave,
+  calculateSubtotal
+}) => {
   const { token } = useAuthProvider();
   const [loading, setLoading] = useState(false);
 
@@ -37,6 +50,18 @@ export const ProductionModal = ({ isOpen, onClose, selectedProduct, setSelectedP
     }
   };
 
+  const handleQuantityChange = (e) => {
+    const newQuantity = e.target.value;
+    setQuantity(newQuantity);
+    calculateSubtotal(newQuantity, waste);
+  };
+
+  const handleWasteChange = (e) => {
+    const newWaste = e.target.value;
+    setWaste(newWaste);
+    calculateSubtotal(quantity, newWaste);
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -60,20 +85,14 @@ export const ProductionModal = ({ isOpen, onClose, selectedProduct, setSelectedP
             placeholder="Quantity"
             type="number"
             value={quantity}
-            onChange={(e) => {
-              setQuantity(e.target.value);
-              calculateSubtotal();
-            }}
+            onChange={handleQuantityChange}
             mb={3}
           />
           <Input
             placeholder="Waste"
             type="number"
             value={waste}
-            onChange={(e) => {
-              setWaste(e.target.value);
-              calculateSubtotal();
-            }}
+            onChange={handleWasteChange}
           />
           <p>Subtotal: {subtotal}</p>
         </ModalBody>

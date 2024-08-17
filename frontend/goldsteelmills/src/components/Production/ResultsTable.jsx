@@ -14,11 +14,11 @@ export const ResultsTable = ({ results }) => {
       </Thead>
       <Tbody>
         {results.map((result) => (
-          <Tr key={result._id}>
-            <Td>{result._id}</Td>
-            <Td>{result.product.name}</Td>
-            <Td>{result.quantity}</Td>
-            <Td>{result.waste}</Td>
+          <Tr key={result?._id}>
+            <Td>{result?._id}</Td>
+            <Td>{result?.product?.name}</Td>
+            <Td>{result?.quantity}</Td>
+            <Td>{result?.waste}</Td>
             <Td>{new Date(result.date).toLocaleString()}</Td>
           </Tr>
         ))}

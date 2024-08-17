@@ -66,7 +66,6 @@ export const Purchases = () => {
         goOnPrevPage={goOnPrevPage}
       />
 
-      {/*Footer*/}
       <div className="flex space-x-4">
         <Button title="Refresh" onClickHandler={refresh}>
           <svg
