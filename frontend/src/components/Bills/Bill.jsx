@@ -32,6 +32,8 @@ import { useAuthProvider } from "../../hooks/useAuthProvider";
 
 const Bill = () => {
   const [rows, setRows] = useState([{ id: 1 }]);
+  const [suppliers, setSuppliers] = useState([]);
+  const [selectedSupplier, setSelectedSupplier] = useState("");
   const [advancePayment, setAdvancePayment] = useState(0);
   const [previousBalance, setPreviousBalance] = useState(0);
   const [items, setItems] = useState([]);
@@ -41,8 +43,34 @@ const Bill = () => {
   const { token } = useAuthProvider();
 
   useEffect(() => {
-    fetchItems();
+    const fetchSuppliers = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}suppliers`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setSuppliers(response.data);
+      } catch (error) {
+        console.error("Error fetching suppliers:", error);
+      }
+    }
+
+    fetchSuppliers();
   }, []);
+
+  const handleSupplier = (event) => {
+    const supplier_id = event.target.value;
+    setSelectedSupplier(supplier_id);
+    suppliers.find((supplier) => {
+      if (supplier._id === supplier_id) {
+        setAdvancePayment(supplier.advance || 0);
+        setPreviousBalance(supplier.balance || 0);
+        return true;
+      }
+    })
+    
+  };
 
   const fetchItems = async () => {
     try {
@@ -87,42 +115,50 @@ const Bill = () => {
     content: () => componentRef.current,
   });
 
+  
   const handleSubmit = async () => {
-    const billData = {
-      weight: rows.reduce((acc, row) => acc + parseFloat(row.quantity || 0), 0),
-      itemType: selectedItem,
-      quantity: rows.reduce((acc, row) => acc + parseFloat(row.quantity || 0), 0),
-      vehicle_no: rows[0]?.vehicleNumber || "",
-      rate: rows.reduce((acc, row) => acc + parseFloat(row.price || 0), 0) / rows.length,
-      total: parseFloat(total),
-      gatePassNo: rows[0]?.gatePassNumber || "",
-      bill_no: rows[0]?.billNumber || "",
-      date: new Date().toISOString().split("T")[0],
+    const billDataArray = rows.map(row => ({
+        weight: parseFloat(row.quantity || 0),
+        itemType: selectedItem,
+        quantity: parseFloat(row.quantity || 0),
+        vehicle_no: row.vehicleNumber || "",
+        rate: parseFloat(row.price || 0),
+        total: parseFloat((row.quantity || 0) * (row.price || 0)).toFixed(2),
+        gatePassNo: row.gatePassNumber || "",
+        bill_no: row.billNumber || "",
+        date: new Date().toISOString().split("T")[0],
+    }));
+
+    const salesData = {
+        supplier: supplierId, // Make sure this is properly set from a form field
+        bills: billDataArray,
+        totalAmount: billDataArray.reduce((acc, bill) => acc + parseFloat(bill.total || 0), 0),
     };
 
     try {
-      await axios.post(`${BASE_URL}bills/register`, billData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      toast({
-        title: "Bill registered successfully.",
-        status: "success",
-        duration: 2000,
-        isClosable: true,
-      });
+        await axios.post(`${BASE_URL}sales/register`, salesData, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        toast({
+            title: "Sales registered successfully.",
+            status: "success",
+            duration: 2000,
+            isClosable: true,
+        });
     } catch (error) {
-      console.error("Error registering bill:", error);
-      toast({
-        title: "Failed to register bill.",
-        description: error.response?.data?.message || "Something went wrong.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+        console.error("Error registering sales:", error);
+        toast({
+            title: "Failed to register sales.",
+            description: error.response?.data?.message || "Something went wrong.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+        });
     }
-  };
+};
+
 
   return (
     <Box
@@ -153,14 +189,23 @@ const Bill = () => {
         </HStack>
         <SimpleGrid columns={[1, 2]} spacing={5} mb={8}>
           <FormControl>
-            <FormLabel>Name</FormLabel>
-            <Input type="text" placeholder="Enter Name" />
+            <FormLabel>Suppliers</FormLabel>
+            <Select
+              placeholder="Select supplier"
+              onChange={(e) => handleSupplier(e)}
+            >
+              {suppliers.map((supplier) => (
+                <option key={supplier._id} value={supplier._id}>
+                  {supplier.firstName + " " + supplier.lastName}
+                </option>
+              ))}
+            </Select>
           </FormControl>
-          <FormControl>
+          {/* <FormControl>
             <FormLabel>Date</FormLabel>
             <Input type="date" />
-          </FormControl>
-          <FormControl>
+          </FormControl> */}
+          {/* <FormControl>
             <FormLabel>Item Type</FormLabel>
             <Select
               placeholder="Select item"
@@ -172,7 +217,7 @@ const Bill = () => {
                 </option>
               ))}
             </Select>
-          </FormControl>
+          </FormControl> */}
         </SimpleGrid>
         <Table variant="simple" colorScheme="teal" mb={8}>
           <Thead bg="teal.600">

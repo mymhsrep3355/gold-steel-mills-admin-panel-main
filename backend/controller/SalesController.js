@@ -53,7 +53,8 @@ async function getSalesById(req, res) {
 async function createSales(req, res) {
     try {
         const { supplier, bills, totalAmount } = req.body;
-
+        
+        console.log(supplier);
         // Validate required fields
         if (!supplier || !bills || bills.length === 0 || !totalAmount) {
             return res.status(400).json({ message: 'Supplier, bills, and total amount are required.' });

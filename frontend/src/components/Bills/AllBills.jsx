@@ -54,7 +54,7 @@ const AllBills = ({ bills, handleEditBill, handleDeleteBill }) => {
               </Box>
               <Box ml={4}>
                 <Heading size="md" color="teal.700" mb={1}>
-                  {bill.itemType.name}
+                  {bill?.itemType?.name}
                 </Heading>
                 <Text color="gray.600" fontSize="sm">
                   Bill No: {bill.bill_no}
