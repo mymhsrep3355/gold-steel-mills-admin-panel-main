@@ -1,12 +1,31 @@
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useFetchSource} from "../hooks/useFetchSource.js";
 import {Forms} from "../Forms.js";
 import axios from "axios";
-
+import {BASE_URL} from "../utils.js";
+import { useAuthProvider } from "../hooks/useAuthProvider.js";
 export const PurchaseCreate=()=>{
     const [error,setError]=useState('')
-    const {data}=useFetchSource('suppliers');
+    const [suppliers, setSuppliers] = useState([]);
+    const { token } = useAuthProvider();
+
+    useEffect(() => {
+        const fetchSuppliers = async () => {
+            try {
+                const response = await axios.get(`${BASE_URL}suppliers`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                console.log(response)
+                setSuppliers(response.data);
+            } catch (e) {
+                console.log(e);
+            }
+        };
+        fetchSuppliers();
+    }, [token]);
     const handlePurchaseCreate=async (e)=>{
         try {
             e.preventDefault()
@@ -40,7 +59,7 @@ export const PurchaseCreate=()=>{
                        Supplier Name
                     </label>
                     <select className={'w-full block mt-2 w-full placeholder-gray-400/70 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-gray-700 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40'} name="supplierInfo" id="supplierInfo">
-                        {data?.suppliers?.map((supplier,index)=>{
+                        {suppliers?.map((supplier,index)=>{
                                 return <option key={index} value={JSON.stringify({firstName:supplier.firstName,id:supplier.id})}>{supplier.firstName}</option>
                         })}
                     </select>
@@ -71,7 +90,7 @@ export const PurchaseCreate=()=>{
                     <div className={'h-10'}>
 
                         {
-                            error.length?<h1 className={'p-2 text-sm text-red-500'}>{error}</h1>:''
+                            error ? <h1 className={'p-2 text-sm text-red-500'}>{error}</h1>:''
                         }
                     </div>
                 </div>

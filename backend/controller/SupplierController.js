@@ -3,7 +3,9 @@ const Supplier = require('../models/Supplier');
 
 const { applyThirdPayment, applyThirdPaymentToAdvancedFirst } = require('../utils/PaymentUtils');
 
-async function getAllSuppliers(req, res) {
+
+
+async function getAllSuppliersPaginated(req, res) {
     try {
         console.log('Getting all suppliers...');
 
@@ -46,6 +48,18 @@ async function getAllSuppliers(req, res) {
     }
 }
 
+
+async function getAllSuppliers(req, res) {
+    try {
+        console.log('Getting all suppliers...');
+        const suppliers = await Supplier.find();
+        console.log('Suppliers retrieved successfully.');
+        res.send(suppliers);
+    } catch (err) {
+        console.error('Error getting suppliers:', err.message);
+        return res.status(500).json({ message: 'Internal server error: ' + err.message });
+    }
+}
 
 
 async function getSupplierById(req, res) {
@@ -229,6 +243,7 @@ async function paymentSent(req, res) {
 }
 
 module.exports = {
+    getAllSuppliersPaginated,
     getAllSuppliers,
     getSupplierById,
     createSupplier,

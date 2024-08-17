@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../utils.js";
 import { Spinner, Box, Text, InputGroup, InputRightElement } from "@chakra-ui/react";
 import { useAuthProvider } from "../../hooks/useAuthProvider.js";
-
 export const Suppliers = () => {
   const [suppliers, setSuppliers] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
@@ -29,7 +28,7 @@ export const Suppliers = () => {
       setIsFetching(true);
       setError(null);
       try {
-        const response = await axios.get(`${BASE_URL}suppliers`, {
+        const response = await axios.get(`${BASE_URL}suppliers/paginated`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
