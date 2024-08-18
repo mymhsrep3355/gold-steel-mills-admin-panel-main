@@ -24,13 +24,15 @@ import { useAuthProvider } from "../../hooks/useAuthProvider";
 import Bill from "../../components/Bills/Bill";
 import AddItemModal from "../../components/Bills/AddItemModal";
 import AllBills from "../../components/Bills/AllBills";
-import EditBillModal from "../../components/Bills/EditBillModal"; // Import the new component
+import EditBillModal from "../../components/Bills/EditBillModal";
+import EditItemModal from "../../components/Bills/EditItemModal";
 
 const BillComponent = () => {
   const [items, setItems] = useState([]);
   const [bills, setBills] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [selectedBill, setSelectedBill] = useState(null);
   const toast = useToast();
   const { token } = useAuthProvider();
@@ -84,6 +86,37 @@ const BillComponent = () => {
       console.error("Error adding item:", error);
       toast({
         title: "Failed to add item.",
+        description: error.response?.data?.message || "Something went wrong.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const handleEditItem = (item) => {
+    setSelectedItem(item);
+    setEditModalOpen(true);
+  };
+
+  const handleDeleteItem = async (itemId) => {
+    try {
+      await axios.delete(`${BASE_URL}items/delete/${itemId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setItems(items.filter((item) => item._id !== itemId));
+      toast({
+        title: "Item deleted successfully.",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error("Error deleting item:", error);
+      toast({
+        title: "Failed to delete item.",
         description: error.response?.data?.message || "Something went wrong.",
         status: "error",
         duration: 3000,
@@ -180,6 +213,7 @@ const BillComponent = () => {
                     <Th>#</Th>
                     <Th>Item Name</Th>
                     <Th>Stock</Th>
+                    <Th>Actions</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
@@ -188,6 +222,23 @@ const BillComponent = () => {
                       <Td>{index + 1}</Td>
                       <Td>{item.name}</Td>
                       <Td>{item.stock}</Td>
+                      <Td>
+                        <Button
+                          size="sm"
+                          colorScheme="blue"
+                          mr={2}
+                          onClick={() => handleEditItem(item)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          size="sm"
+                          colorScheme="red"
+                          onClick={() => handleDeleteItem(item._id)}
+                        >
+                          Delete
+                        </Button>
+                      </Td>
                     </Tr>
                   ))}
                 </Tbody>
@@ -203,6 +254,15 @@ const BillComponent = () => {
           </TabPanel>
         </TabPanels>
       </Tabs>
+
+      {selectedItem && (
+        <EditItemModal
+          isOpen={editModalOpen}
+          onClose={() => setEditModalOpen(false)}
+          item={selectedItem}
+          fetchItems={fetchItems}
+        />
+      )}
 
       {selectedBill && (
         <EditBillModal
