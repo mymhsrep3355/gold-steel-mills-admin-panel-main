@@ -37,7 +37,6 @@ const ExpenseResults = () => {
   const { token } = useAuthProvider();
   const toast = useToast();
 
-  // Fetch categories for the dropdown in the modal
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -108,20 +107,21 @@ const ExpenseResults = () => {
   };
 
   const handleEdit = (expense) => {
-    setEditingExpense({
-      ...expense,
-      category: expense.category._id, // Set category to ID for editing
-    });
-    setIsEditing(true);
+    if (expense) {
+      setEditingExpense({
+        ...expense,
+        category: expense.category ? expense.category._id : "",
+      });
+      setIsEditing(true);
+    }
   };
-
   const handleUpdateExpense = async () => {
     try {
       const response = await axios.put(
         `${BASE_URL}expenses/update/${editingExpense._id}`,
         {
           ...editingExpense,
-          category: editingExpense.category, // Send only the category ID
+          category: editingExpense.category,
         },
         {
           headers: {
@@ -191,7 +191,9 @@ const ExpenseResults = () => {
             <Tr key={expense._id}>
               <Td>{new Date(expense.date).toLocaleDateString()}</Td>
               <Td>{expense.description}</Td>
-              <Td>{expense.category.name}</Td>
+              <Td>
+                {expense.category ? expense.category.name : "No Category"}
+              </Td>
               <Td>{expense.amount}</Td>
               <Td>
                 <IconButton
@@ -213,72 +215,77 @@ const ExpenseResults = () => {
 
       {isEditing && (
         <Modal isOpen={isEditing} onClose={() => setIsEditing(false)}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Edit Expense</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <Input
-                type="date"
-                value={new Date(editingExpense.date).toISOString().split("T")[0]}
-                onChange={(e) =>
-                  setEditingExpense({
-                    ...editingExpense,
-                    date: e.target.value,
-                  })
-                }
-                mb={4}
-              />
-              <Input
-                placeholder="Description"
-                value={editingExpense.description}
-                onChange={(e) =>
-                  setEditingExpense({
-                    ...editingExpense,
-                    description: e.target.value,
-                  })
-                }
-                mb={4}
-              />
-              <Input
-                placeholder="Amount"
-                type="number"
-                value={editingExpense.amount}
-                onChange={(e) =>
-                  setEditingExpense({
-                    ...editingExpense,
-                    amount: e.target.value,
-                  })
-                }
-                mb={4}
-              />
-              <Select
-                placeholder="Select category"
-                value={editingExpense.category}
-                onChange={(e) =>
-                  setEditingExpense({
-                    ...editingExpense,
-                    category: e.target.value,
-                  })
-                }
-              >
-                {categories.map((category) => (
-                  <option key={category._id} value={category._id}>
-                    {category.name}
-                  </option>
-                ))}
-              </Select>
-            </ModalBody>
-            <ModalFooter>
-              <Button colorScheme="blue" onClick={handleUpdateExpense}>
-                Save
-              </Button>
-              <Button variant="ghost" onClick={() => setIsEditing(false)}>
-                Cancel
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Edit Expense</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Input
+              type="date"
+              value={
+                editingExpense?.date
+                  ? new Date(editingExpense.date).toISOString().split("T")[0]
+                  : ""
+              }
+              onChange={(e) =>
+                setEditingExpense({
+                  ...editingExpense,
+                  date: e.target.value,
+                })
+              }
+              mb={4}
+            />
+            <Input
+              placeholder="Description"
+              value={editingExpense?.description || ""}
+              onChange={(e) =>
+                setEditingExpense({
+                  ...editingExpense,
+                  description: e.target.value,
+                })
+              }
+              mb={4}
+            />
+            <Input
+              placeholder="Amount"
+              type="number"
+              value={editingExpense?.amount || ""}
+              onChange={(e) =>
+                setEditingExpense({
+                  ...editingExpense,
+                  amount: e.target.value,
+                })
+              }
+              mb={4}
+            />
+            <Select
+              placeholder="Select category"
+              value={editingExpense?.category || ""}
+              onChange={(e) =>
+                setEditingExpense({
+                  ...editingExpense,
+                  category: e.target.value,
+                })
+              }
+            >
+              {categories.map((category) => (
+                <option key={category._id} value={category._id}>
+                  {category.name}
+                </option>
+              ))}
+            </Select>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" onClick={handleUpdateExpense}>
+              Save
+            </Button>
+            <Button variant="ghost" onClick={() => setIsEditing(false)}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      
       )}
     </Box>
   );

@@ -38,7 +38,7 @@ const PurchaseCard = ({ purchase, fetchPurchases }) => {
   const [updatedPurchase, setUpdatedPurchase] = useState({
     totalAmount: purchase.totalAmount,
     date: new Date(purchase.date).toISOString().split("T")[0],
-    bills: purchase.bills.map(bill => ({
+    bills: purchase.bills.map((bill) => ({
       _id: bill._id,
       vehicle_no: bill.vehicle_no,
       quantity: bill.quantity,
@@ -82,8 +82,8 @@ const PurchaseCard = ({ purchase, fetchPurchases }) => {
     try {
       const { totalAmount, date, bills } = updatedPurchase;
 
-      const formattedBills = bills.map(bill => ({
-        _id: bill._id, 
+      const formattedBills = bills.map((bill) => ({
+        _id: bill._id,
         vehicle_no: bill.vehicle_no,
         quantity: bill.quantity,
         rate: bill.rate,
@@ -92,8 +92,6 @@ const PurchaseCard = ({ purchase, fetchPurchases }) => {
       }));
 
       console.log(bills);
-      
-      
 
       const payload = {
         totalAmount: formattedBills.reduce((sum, bill) => sum + bill.total, 0),
@@ -140,10 +138,21 @@ const PurchaseCard = ({ purchase, fetchPurchases }) => {
         <VStack align="stretch" spacing={4}>
           <HStack justifyContent="space-between">
             <Flex alignItems="center">
-              <Avatar name={`${purchase.supplier.firstName} ${purchase.supplier.lastName}`} size="sm" />
-              <Text fontWeight="bold" fontSize="lg" ml={3}>
-                {purchase.supplier.firstName} {purchase.supplier.lastName}
-              </Text>
+              {purchase.supplier ? (
+                <>
+                  <Avatar
+                    name={`${purchase.supplier.firstName} ${purchase.supplier.lastName}`}
+                    size="sm"
+                  />
+                  <Text fontWeight="bold" fontSize="lg" ml={3}>
+                    {purchase.supplier.firstName} {purchase.supplier.lastName}
+                  </Text>
+                </>
+              ) : (
+                <Text fontWeight="bold" fontSize="lg" ml={3}>
+                  Unknown Supplier
+                </Text>
+              )}
             </Flex>
             <HStack spacing={3}>
               <IconButton
@@ -212,7 +221,6 @@ const PurchaseCard = ({ purchase, fetchPurchases }) => {
         </VStack>
       </Box>
 
-      {/* Edit Purchase Modal */}
       <Modal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)}>
         <ModalOverlay />
         <ModalContent>
@@ -224,7 +232,12 @@ const PurchaseCard = ({ purchase, fetchPurchases }) => {
               <Input
                 type="date"
                 value={updatedPurchase.date}
-                onChange={(e) => setUpdatedPurchase({ ...updatedPurchase, date: e.target.value })}
+                onChange={(e) =>
+                  setUpdatedPurchase({
+                    ...updatedPurchase,
+                    date: e.target.value,
+                  })
+                }
               />
             </FormControl>
             {updatedPurchase.bills.map((bill, index) => (
@@ -236,7 +249,10 @@ const PurchaseCard = ({ purchase, fetchPurchases }) => {
                     onChange={(e) => {
                       const newBills = [...updatedPurchase.bills];
                       newBills[index].vehicle_no = e.target.value;
-                      setUpdatedPurchase({ ...updatedPurchase, bills: newBills });
+                      setUpdatedPurchase({
+                        ...updatedPurchase,
+                        bills: newBills,
+                      });
                     }}
                   />
                 </FormControl>
@@ -248,8 +264,12 @@ const PurchaseCard = ({ purchase, fetchPurchases }) => {
                     onChange={(e) => {
                       const newBills = [...updatedPurchase.bills];
                       newBills[index].quantity = e.target.value;
-                      newBills[index].total = e.target.value * newBills[index].rate;
-                      setUpdatedPurchase({ ...updatedPurchase, bills: newBills });
+                      newBills[index].total =
+                        e.target.value * newBills[index].rate;
+                      setUpdatedPurchase({
+                        ...updatedPurchase,
+                        bills: newBills,
+                      });
                     }}
                   />
                 </FormControl>
@@ -261,8 +281,12 @@ const PurchaseCard = ({ purchase, fetchPurchases }) => {
                     onChange={(e) => {
                       const newBills = [...updatedPurchase.bills];
                       newBills[index].rate = e.target.value;
-                      newBills[index].total = e.target.value * newBills[index].quantity;
-                      setUpdatedPurchase({ ...updatedPurchase, bills: newBills });
+                      newBills[index].total =
+                        e.target.value * newBills[index].quantity;
+                      setUpdatedPurchase({
+                        ...updatedPurchase,
+                        bills: newBills,
+                      });
                     }}
                   />
                 </FormControl>
@@ -281,7 +305,9 @@ const PurchaseCard = ({ purchase, fetchPurchases }) => {
             <Button colorScheme="blue" mr={3} onClick={handleUpdate}>
               Save Changes
             </Button>
-            <Button variant="ghost" onClick={() => setIsEditOpen(false)}>Cancel</Button>
+            <Button variant="ghost" onClick={() => setIsEditOpen(false)}>
+              Cancel
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

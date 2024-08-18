@@ -16,7 +16,7 @@ export const Suppliers = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchInput, setSearchInput] = useState(""); // To store input field value
+  const [searchInput, setSearchInput] = useState(""); 
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState(null);
   const { token } = useAuthProvider();
@@ -35,7 +35,7 @@ export const Suppliers = () => {
           params: {
             page: pageNumber,
             limit: ITEMS_PER_PAGE,
-            search: searchQuery, // Pass search query to backend
+            search: searchQuery,
           },
         });
 
@@ -56,15 +56,14 @@ export const Suppliers = () => {
     };
 
     fetchSuppliers();
-  }, [token, pageNumber, searchQuery]); // Only searchQuery triggers data fetching
-
+  }, [token, pageNumber, searchQuery]); 
   const handleNavigation = (data) => {
     navigate("/supplier/edit", { state: data });
   };
 
   const handleSearch = () => {
-    setPageNumber(1); // Reset to the first page on new search
-    setSearchQuery(searchInput); // Update searchQuery with the input value
+    setPageNumber(1); 
+    setSearchQuery(searchInput); 
   };
 
   const goOnPrevPage = () => {
@@ -78,7 +77,7 @@ export const Suppliers = () => {
   const handleRefresh = () => {
     setPageNumber(1);
     setSearchQuery("");
-    setSearchInput(""); // Clear search input
+    setSearchInput(""); 
     setSuppliers([]);
   };
 
