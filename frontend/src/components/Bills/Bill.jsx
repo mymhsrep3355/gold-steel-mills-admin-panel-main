@@ -50,7 +50,10 @@ const Bill = () => {
             Authorization: `Bearer ${token}`,
           },
         });
+        console.log(response.data);
         setSuppliers(response.data);
+        console.log(suppliers);
+        
       } catch (error) {
         console.error("Error fetching suppliers:", error);
       }
@@ -62,6 +65,7 @@ const Bill = () => {
   const handleSupplier = (event) => {
     const supplier_id = event.target.value;
     setSelectedSupplier(supplier_id);
+    console.log(supplier_id);
     suppliers.find((supplier) => {
       if (supplier._id === supplier_id) {
         setAdvancePayment(supplier.advance || 0);
@@ -119,7 +123,7 @@ const Bill = () => {
   const handleSubmit = async () => {
     const billDataArray = rows.map(row => ({
         weight: parseFloat(row.quantity || 0),
-        itemType: selectedItem,
+        // itemType: selectedItem, //removed as not accepted by api
         quantity: parseFloat(row.quantity || 0),
         vehicle_no: row.vehicleNumber || "",
         rate: parseFloat(row.price || 0),
