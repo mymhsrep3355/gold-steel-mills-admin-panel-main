@@ -1,7 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { RootLayout } from "./pages/RootLayout.jsx";
 import { Suppliers } from "./pages/supplier/Suppliers.jsx";
-import { Purchases } from "./pages/purchase/Purchases.jsx";
 import { Dashboard } from "./pages/Dashboard/Dashboard.jsx";
 import { SupplierEdit } from "./pages/supplier/Edit.jsx";
 import { AuthLayout } from "./pages/AuthLayout.jsx";
@@ -15,6 +14,7 @@ import LandingPageLayout from "./pages/LandingPageLayout.jsx";
 import { Production } from "./pages/Production/Production.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 import DashboardTabs from "./pages/Dashboard/DashboardTabs.jsx";
+import Purchases from "./pages/purchase/Purchases.jsx";
 
 
 const router = createBrowserRouter([
@@ -76,14 +76,14 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-      {
-        path: "/supplies",
-        element: (
-          <PrivateRoute>
-            <SuppliesLoadingForm />
-          </PrivateRoute>
-        ),
-      },
+      // {
+      //   path: "/supplies",
+      //   element: (
+      //     <PrivateRoute>
+      //       <SuppliesLoadingForm />
+      //     </PrivateRoute>
+      //   ),
+      // },
       {
         path: "/purchases",
         element: (

@@ -20,7 +20,7 @@ export const routes = [
   },
   {
     name: "Purchases",
-    icon: FaShoppingCart,
+    icon: FaMoneyCheckAlt,
     routeURL: "/purchases",
   },
   {
@@ -38,11 +38,11 @@ export const routes = [
     icon: FaMoneyCheckAlt,
     routeURL: "/expenses",
   },
-  {
-    name: "Supplies Tracker",
-    icon: FaMoneyCheckAlt,
-    routeURL: "/supplies",
-  },
+  // {
+  //   name: "Supplies Tracker",
+  //   icon: FaMoneyCheckAlt,
+  //   routeURL: "/supplies",
+  // },
   {
     name: "Logout",
     icon: FaSignInAlt,
