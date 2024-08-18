@@ -72,6 +72,7 @@ async function createSales(req, res) {
 
         for (let billData of bills) {
             billQtyTotal += billData.quantity
+            billData.itemType = null;
         }
 
 

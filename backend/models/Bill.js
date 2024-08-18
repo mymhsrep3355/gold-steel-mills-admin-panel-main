@@ -37,7 +37,8 @@ const BillSchema = new Schema({
 
     bill_no: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     
     date : {

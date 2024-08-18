@@ -130,7 +130,7 @@ const Bill = () => {
     }));
 
     const salesData = {
-        supplier: supplierId, // Make sure this is properly set from a form field
+        supplier: selectedSupplier, // Make sure this is properly set from a form field
         bills: billDataArray,
         totalAmount: billDataArray.reduce((acc, bill) => acc + parseFloat(bill.total || 0), 0),
     };
