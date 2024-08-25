@@ -23,7 +23,7 @@ const DashboardTabs = () => {
   const textColor = useColorModeValue("gray.700", "gray.200");
 
   return (
-    <Container maxW="1000px" p={8} mt={4} bg={bgColor} rounded="lg" shadow="lg">
+    <Container maxW={"auto"} p={8} mt={4} bg={bgColor} rounded="lg" shadow="lg">
       <PageHeader title="Dashboard" />
 
       <Divider my={6} borderColor="gray.300" />
