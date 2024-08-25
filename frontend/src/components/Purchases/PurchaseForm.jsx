@@ -131,6 +131,31 @@ const PurchaseForm = () => {
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
+    pageStyle: `
+      @page {
+        size: A4 landscape;
+        margin: 10mm;
+      }
+      @media print {
+        body {
+          font-size: 12pt;
+          color: black;
+        }
+        .print-full-width {
+          min-width: fit-content;
+          width: auto;
+        }
+        .print-table th, .print-table td {
+          padding: 8px;
+          font-size: 10pt;
+          border: 1px solid black;
+        }
+        .print-table th {
+          background-color: #4A5568; /* Adjust for visibility */
+          color: white;
+        }
+      }
+    `
   });
 
   const handleSubmit = async () => {
@@ -216,11 +241,9 @@ const PurchaseForm = () => {
   return (
     <Box
       bg="#f4f4f4"
-      minH="100vh"
-      p={4}
+      w={"100%"}
       display="flex"
       justifyContent="center"
-      alignItems="center"
     >
       <Box
         ref={componentRef}
@@ -229,7 +252,7 @@ const PurchaseForm = () => {
         rounded="lg"
         shadow="lg"
         width="100%"
-        maxW="1000px"
+        className="print-full-width"
       >
         <HStack justifyContent="space-between" mb={8}>
           <Image src={logo} alt="Factory Logo" boxSize="80px" />
@@ -240,7 +263,7 @@ const PurchaseForm = () => {
             <Text color="gray.500">Glotian Mor, Daska</Text>
           </VStack>
         </HStack>
-        <SimpleGrid columns={[1, 2]} spacing={5} mb={8}>
+        <SimpleGrid columns={[1, 2]} spacing={5} mb={8} className="print-full-width">
           <FormControl>
             <FormLabel>Suppliers</FormLabel>
             <Select
@@ -255,7 +278,7 @@ const PurchaseForm = () => {
             </Select>
           </FormControl>
         </SimpleGrid>
-        <Table variant="simple" colorScheme="teal" mb={8}>
+        <Table variant="simple" colorScheme="teal" mb={8} className="print-table">
           <Thead bg="teal.600">
             <Tr>
               <Th color="white">#</Th>
@@ -283,6 +306,7 @@ const PurchaseForm = () => {
                           onChange={(e) =>
                             updateRow(rowIndex, itemIndex, "billNumber", e.target.value)
                           }
+                          className="print-full-width"
                         />
                       </Tooltip>
                     </Td>
@@ -295,6 +319,7 @@ const PurchaseForm = () => {
                           onChange={(e) =>
                             updateRow(rowIndex, itemIndex, "gatePassNumber", e.target.value)
                           }
+                          className="print-full-width"
                         />
                       </Tooltip>
                     </Td>
@@ -307,16 +332,18 @@ const PurchaseForm = () => {
                           onChange={(e) =>
                             updateRow(rowIndex, itemIndex, "vehicleNumber", e.target.value)
                           }
+                          className="print-full-width"
                         />
                       </Tooltip>
                     </Td>
                     <Td>
                       <Tooltip label="Item Type">
-                        <Select
+                        <Select style={{ minWidth: 'fit-content', width : 'auto'}}
                           placeholder="Select item"
                           onChange={(e) =>
                             updateRow(rowIndex, itemIndex, "itemType", e.target.value)
                           }
+                          className="print-full-width"
                         >
                           {items.map((itemOption) => (
                             <option key={itemOption._id} value={itemOption._id}>
@@ -335,6 +362,7 @@ const PurchaseForm = () => {
                           onChange={(e) =>
                             updateRow(rowIndex, itemIndex, "quantity", e.target.value)
                           }
+                          className="print-full-width"
                         />
                       </Tooltip>
                     </Td>
@@ -347,22 +375,11 @@ const PurchaseForm = () => {
                           onChange={(e) =>
                             updateRow(rowIndex, itemIndex, "price", e.target.value)
                           }
+                          className="print-full-width"
                         />
                       </Tooltip>
                     </Td>
                     <Td>{((item.quantity || 0) * (item.price || 0)).toFixed(2)}</Td>
-                    {/* <Td>
-                      {itemIndex === row.items.length - 1 && (
-                        <Button
-                          leftIcon={<AddIcon />}
-                          colorScheme="teal"
-                          size="sm"
-                          onClick={() => addItemToRow(rowIndex)}
-                        >
-                          Add Item
-                        </Button>
-                      )}
-                    </Td> */}
                   </Tr>
                 ))}
               </React.Fragment>
@@ -372,7 +389,7 @@ const PurchaseForm = () => {
         <Button leftIcon={<AddIcon />} colorScheme="teal" onClick={addRow}>
           Add Bill
         </Button>
-        <SimpleGrid columns={[1, 2]} spacing={5} mt={8} mb={8}>
+        <SimpleGrid columns={[1, 2]} spacing={5} mt={8} mb={8} className="print-full-width">
           <FormControl>
             <FormLabel>Advance Payment</FormLabel>
             <Input
@@ -381,6 +398,7 @@ const PurchaseForm = () => {
               onChange={(e) =>
                 setAdvancePayment(parseFloat(e.target.value) || 0)
               }
+              className="print-full-width"
             />
           </FormControl>
           <FormControl>
@@ -391,6 +409,7 @@ const PurchaseForm = () => {
               onChange={(e) =>
                 setPreviousBalance(parseFloat(e.target.value) || 0)
               }
+              className="print-full-width"
             />
           </FormControl>
         </SimpleGrid>

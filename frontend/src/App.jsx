@@ -114,8 +114,8 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <div className={"flex justify-center"}>
-      <div className={"max-w-[1400px] w-[1400px]  "}>
+    <div className={"flex justify-center w-full"}>
+      <div className={"w-full"}>
         <AuthProvider>
           <RouterProvider router={router} />
         </AuthProvider>
@@ -125,3 +125,4 @@ function App() {
 }
 
 export default App;
+
