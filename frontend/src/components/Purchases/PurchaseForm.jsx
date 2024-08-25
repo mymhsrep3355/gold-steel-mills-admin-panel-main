@@ -171,6 +171,36 @@ const PurchaseForm = () => {
         duration: 2000,
         isClosable: true,
       });
+
+      const daybookPayload = {
+        supplierId: selectedSupplier,
+        description: "Purchase",
+        amount: purchaseData.totalAmount,
+        type: "credit",
+        cash_or_bank: "cash",
+      };
+      try {
+        await axios.post(`${BASE_URL}daybook/register`, daybookPayload, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        toast({
+          title: "Daybook updated successfully.",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+      } catch (error) {
+        console.error("Error updating daybook:", error);
+        toast({
+          title: "Failed to update daybook.",
+          description: error.response?.data?.message || "Something went wrong.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
     } catch (error) {
       console.error("Error registering purchase:", error);
       toast({

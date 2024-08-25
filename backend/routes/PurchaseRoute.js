@@ -11,6 +11,7 @@ router.use(middleware.verifyAccountStatus);
 router.get('/', PurchaseController.getAllPurchases);
 
 router.get('/:id', PurchaseController.getPurchaseById);
+router.get('/supplier/:id', PurchaseController.getPurchaseBySupplier);
 
 router.post('/register', PurchaseController.createPurchase);
 
