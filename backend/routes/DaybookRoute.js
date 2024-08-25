@@ -6,7 +6,7 @@ const router = require('express').Router();
 router.use(middleware.verifyToken);
 router.use(middleware.verifyAccountStatus);
 
-
+router.get('/reports/supplier/:id', daybookController.getSupplierTransactions);
 router.get('/reports', daybookController.generateReports); // Report generation route
 router.get('/', daybookController.getTransactions);
 router.get('/:id', daybookController.getTransactionById);

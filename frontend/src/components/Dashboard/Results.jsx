@@ -24,6 +24,7 @@ const Results = () => {
   const [daybooks, setDaybooks] = useState([]);
   const [selectedDaybook, setSelectedDaybook] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [initialBalance, setInitialBalance] = useState(0); // State for initial balance
 
   const fetchRecords = async () => {
     try {
@@ -37,6 +38,7 @@ const Results = () => {
       );
       if (response.status === 200) {
         setDaybooks(response.data);
+        calculateInitialBalance(response.data);
       }
     } catch (error) {
       toast({
@@ -46,6 +48,17 @@ const Results = () => {
         duration: 3000,
         isClosable: true,
       });
+    }
+  };
+
+  const calculateInitialBalance = (data) => {
+    // Calculate the initial balance based on the first record in the fetched data
+    if (data.length > 0) {
+      const firstRecord = data[0];
+      const balanceBeforeFirstRecord = firstRecord.balance - firstRecord.amount;
+      setInitialBalance(balanceBeforeFirstRecord);
+    } else {
+      setInitialBalance(0);
     }
   };
 
@@ -110,6 +123,7 @@ const Results = () => {
             daybooks={daybooks}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            initialBalance={initialBalance} // Pass the initial balance to the table
           />
           {selectedDaybook && (
             <EditDaybookModal
