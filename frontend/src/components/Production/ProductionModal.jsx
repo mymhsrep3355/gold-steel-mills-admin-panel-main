@@ -36,7 +36,7 @@ export const ProductionModal = ({
           waste: Number(waste),
         }),
       });
-
+      console.log(response);
       if (response.ok) {
         onSave(); 
       } else {

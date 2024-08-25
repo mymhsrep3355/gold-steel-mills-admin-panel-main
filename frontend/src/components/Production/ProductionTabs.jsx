@@ -73,7 +73,8 @@ export const ProductionTabs = () => {
   const handleCreateProduct = () => {
     setProducts([
       ...products,
-      { name: productName, stock: Number(stock), _id: Date.now().toString() },
+      // { name: productName, stock: Number(stock), _id: Date.now().toString() },
+      { name: productName, stock: Number(0), _id: Date.now().toString() },
     ]);
     setProductName("");
     setStock("");
