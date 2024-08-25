@@ -218,22 +218,41 @@ const generateReports = async (req, res) => {
         // Fetch transactions with the date filter if provided
         const transactions = await Daybook.find(dateFilter).sort({ date: 1 });
 
-        // Calculate total revenues, expenses, and net profit/loss
-        let totalRevenues = 0;
-        let totalExpenses = 0;
+        // Initialize aggregates
+        let totalRevenuesBank = 0;
+        let totalExpensesBank = 0;
+        let totalRevenuesCash = 0;
+        let totalExpensesCash = 0;
+
+        // Calculate totals based on type and payment method
         transactions.forEach(transaction => {
             if (transaction.type === 'credit') {
-                totalRevenues += transaction.amount;
+                if (transaction.cash_or_bank === 'bank') {
+                    totalRevenuesBank += transaction.amount;
+                } else if (transaction.cash_or_bank === 'cash') {
+                    totalRevenuesCash += transaction.amount;
+                }
             } else if (transaction.type === 'debit') {
-                totalExpenses += transaction.amount;
+                if (transaction.cash_or_bank === 'bank') {
+                    totalExpensesBank += transaction.amount;
+                } else if (transaction.cash_or_bank === 'cash') {
+                    totalExpensesCash += transaction.amount;
+                }
             }
         });
 
-        const netProfitLoss = totalRevenues - totalExpenses;
+        // Calculate net profit/loss for both bank and cash
+        const netProfitLossBank = totalRevenuesBank - totalExpensesBank;
+        const netProfitLossCash = totalRevenuesCash - totalExpensesCash;
+        const netProfitLoss = netProfitLossBank + netProfitLossCash;
 
         res.status(200).json({
-            totalRevenues,
-            totalExpenses,
+            totalRevenuesBank,
+            totalExpensesBank,
+            netProfitLossBank,
+            totalRevenuesCash,
+            totalExpensesCash,
+            netProfitLossCash,
             netProfitLoss,
             transactions
         });
@@ -242,6 +261,7 @@ const generateReports = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
 
 
 

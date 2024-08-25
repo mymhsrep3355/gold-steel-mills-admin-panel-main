@@ -60,7 +60,7 @@ const FinancialBook = () => {
   return (
     <Container maxW="800px" mt={8} p={5} bg="white" boxShadow="lg" borderRadius="md">
       <Text fontSize="2xl" mb={6} fontWeight="bold">
-        Financial Management
+        Daybook
       </Text>
 
       <DaybookForm onEntryAdded={fetchDaybooks} />

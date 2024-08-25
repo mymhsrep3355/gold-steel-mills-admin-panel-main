@@ -18,7 +18,7 @@ const DaybookTable = ({ daybooks, onEdit, onDelete }) => {
   return (
     <Box mt={8}>
       <Table variant="striped" colorScheme="teal">
-        <TableCaption>Daybook entries for financial management</TableCaption>
+        <TableCaption>Daybook entries for Daybook</TableCaption>
         <Thead>
           <Tr>
             <Th>Date</Th>
