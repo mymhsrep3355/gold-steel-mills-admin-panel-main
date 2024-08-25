@@ -45,7 +45,7 @@ const Navbar = () => {
                   <EmailIcon color="red" />
                 </Box>
                 <Link fontSize="sm" fontWeight="500">
-                  whitegoldsteels@xyz.com
+                  whitegoldsteel1@gmail.com
                 </Link>
               </Flex>
               <Flex align="center" gap={2}>
