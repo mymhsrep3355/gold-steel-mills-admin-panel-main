@@ -61,7 +61,7 @@ export const Dashboard = () => {
       //   }),
       // ]);
 
-      const reportData = await axios.get(`${BASE_URL}daybook/reports`, {
+      const reportData = await axios.get(`${BASE_URL}daybook/reports?startDate=${startDate}&endDate=${endDate}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

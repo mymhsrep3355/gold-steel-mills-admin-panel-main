@@ -283,7 +283,7 @@ const getSupplierTransactions = async (req, res) => {
 
 const getPurchasesSalesAverageRate = async (req, res) => {
     try {
-        console.log('Getting purchases and sales average rate...');
+        
         // Fetch purchases and sales with populated bills
         const purchases = await Purchase.find().populate('bills');
         const sales = await Sales.find().populate('bills');
