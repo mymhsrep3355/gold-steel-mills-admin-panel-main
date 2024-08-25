@@ -58,7 +58,7 @@ const FinancialBook = () => {
   }, [token]);
 
   return (
-    <Container maxW="800px" mt={8} p={5} bg="white" boxShadow="lg" borderRadius="md">
+    <Container maxW="auto" mt={8} p={5} bg="white" boxShadow="lg" borderRadius="md">
       <Text fontSize="2xl" mb={6} fontWeight="bold">
         Daybook
       </Text>
