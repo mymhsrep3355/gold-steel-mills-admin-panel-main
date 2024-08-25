@@ -52,12 +52,12 @@ async function getSalesById(req, res) {
 // Create a new sale
 async function createSales(req, res) {
     try {
-        const { supplier, bills, totalAmount } = req.body;
+        const { supplier, customerName, bills, totalAmount } = req.body;
         
         console.log(supplier);
         // Validate required fields
-        if (!supplier || !bills || bills.length === 0 || !totalAmount) {
-            return res.status(400).json({ message: 'Supplier, bills, and total amount are required.' });
+        if (!bills || bills.length === 0 || !totalAmount) {
+            return res.status(400).json({ message: 'bills, and total amount are required.' });
         }
 
         // Validate supplier
@@ -106,14 +106,12 @@ async function createSales(req, res) {
         }
         
 
-        
-        
-
         // Create the sales record
         const sales = new Sales({
-            supplier,
+            supplier: supplier || null,
+            customer_name: customerName || null,
             bills: billIds,
-            totalAmount
+            totalAmount: totalAmount
         });
 
         const result = await sales.save();
@@ -124,6 +122,18 @@ async function createSales(req, res) {
     }
 }
 
+const getSalesByCustomer = async (req, res) => {
+    try {
+        const { customerName } = req.params;
+
+        const sales = await Sales.find({ customer_name: customerName }).populate('bills');
+
+        res.status(200).json(sales);
+    } catch (error) {
+        console.error('Error retrieving sales:', error.message);
+        res.status(500).json({ message: 'Internal server error: ' + error.message });
+    }
+}
 // Update a sale by ID
 async function updateSales(req, res) {
     try {
@@ -191,5 +201,6 @@ module.exports = {
     getSalesById,
     createSales,
     updateSales,
-    deleteSales
+    deleteSales,
+    getSalesByCustomer,
 };

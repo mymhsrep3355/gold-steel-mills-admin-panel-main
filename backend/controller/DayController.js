@@ -7,12 +7,13 @@ const { applyThirdPayment, applyThirdPaymentToAdvancedFirst } = require('../util
 // Function to record a new daybook entry with optional supplier updates
 async function recordDaybookEntry(req, res) {
     console.log('Recording new daybook entry...');
-    const { supplierId, date, description, amount, type, cash_or_bank } = req.body;
+    const { supplierId, customerName, date, description, amount, type, cash_or_bank } = req.body;
 
     try {
         // Create a new daybook entry
         const daybookEntry = new Daybook({
             supplier: supplierId || null,
+            customer_name: customerName || null,
             date: date || Date.now(),
             description,
             amount,

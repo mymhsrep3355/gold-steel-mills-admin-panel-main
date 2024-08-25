@@ -238,10 +238,22 @@ async function deletePurchase(req, res) {
     }
 }
 
+const getPurchaseBySupplier = async (req, res) => {
+    try {
+        const { supplierId } = req.params;
+
+        const purchases = await Purchase.find({ supplier: supplierId }).populate('supplier').populate('bills');
+        res.status(200).json(purchases);
+    } catch (error) {
+        console.error('Error retrieving purchases:', error.message);
+        res.status(500).json({ message: 'Internal server error: ' + error.message });
+    }
+}
 module.exports = {
     getAllPurchases,
     getPurchaseById,
     createPurchase,
     updatePurchase,
-    deletePurchase
+    deletePurchase,
+    getPurchaseBySupplier
 };
