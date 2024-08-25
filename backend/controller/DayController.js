@@ -13,7 +13,7 @@ async function recordDaybookEntry(req, res) {
         // Create a new daybook entry
         const daybookEntry = new Daybook({
             supplier: supplierId || null,
-            customer_name: customerName || null,
+            customerName: customerName || null,
             date: date || Date.now(),
             description,
             amount,

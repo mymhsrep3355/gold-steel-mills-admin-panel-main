@@ -8,7 +8,7 @@ const SalesSchema = new Schema({
         required: false,
     },
 
-    customer_name :{
+    customerName :{
         type: String, 
         required: false,
     },

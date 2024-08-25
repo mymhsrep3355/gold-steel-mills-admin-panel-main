@@ -61,7 +61,7 @@ async function createSales(req, res) {
         }
 
         // Validate supplier
-        if (!mongoose.Types.ObjectId.isValid(supplier)) {
+        if (supplier && !mongoose.Types.ObjectId.isValid(supplier)) {
             return res.status(400).json({ message: 'Invalid supplier ID.' });
         }
 
@@ -109,7 +109,7 @@ async function createSales(req, res) {
         // Create the sales record
         const sales = new Sales({
             supplier: supplier || null,
-            customer_name: customerName || null,
+            customerName: customerName || null,
             bills: billIds,
             totalAmount: totalAmount
         });
@@ -126,7 +126,7 @@ const getSalesByCustomer = async (req, res) => {
     try {
         const { customerName } = req.params;
 
-        const sales = await Sales.find({ customer_name: customerName }).populate('bills');
+        const sales = await Sales.find({ customerName: customerName }).populate('bills');
 
         res.status(200).json(sales);
     } catch (error) {

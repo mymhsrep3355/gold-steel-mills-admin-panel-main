@@ -38,6 +38,7 @@ const Bill = () => {
   const [previousBalance, setPreviousBalance] = useState(0);
   const [items, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState("");
+  const [customerName, setCustomerName] = useState("");
   const componentRef = useRef();
   const toast = useToast();
   const { token } = useAuthProvider();
@@ -59,7 +60,7 @@ const Bill = () => {
       }
     }
 
-    fetchSuppliers();
+    // fetchSuppliers();
   }, []);
 
   const handleSupplier = (event) => {
@@ -117,11 +118,14 @@ const Bill = () => {
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
+    pageStyle: () => `@media print { @page { size: A4 landscape; margin: 1mm } }`,
+
   });
 
   
   const handleSubmit = async () => {
     const billDataArray = rows.map(row => ({
+        customerName: customerName || "",
         weight: parseFloat(row.quantity || 0),
         // itemType: selectedItem, //removed as not accepted by api
         quantity: parseFloat(row.quantity || 0),
@@ -174,7 +178,7 @@ const Bill = () => {
 
         handlePrint();
 
-        
+
 
     } catch (error) {
         console.error("Error registering sales:", error);
@@ -193,10 +197,10 @@ const Bill = () => {
     <Box
       bg="#f4f4f4"
       minH="100vh"
-      p={4}
+      width={'100%'}
       display="flex"
       justifyContent="center"
-      alignItems="center"
+      
     >
       <Box
         ref={componentRef}
@@ -205,7 +209,7 @@ const Bill = () => {
         rounded="lg"
         shadow="lg"
         width="100%"
-        maxW="1000px"
+        
       >
         <HStack justifyContent="space-between" mb={8}>
           <Image src={logo} alt="Factory Logo" boxSize="80px" />
@@ -218,17 +222,13 @@ const Bill = () => {
         </HStack>
         <SimpleGrid columns={[1, 2]} spacing={5} mb={8}>
           <FormControl>
-            <FormLabel>Suppliers</FormLabel>
-            <Select
-              placeholder="Select supplier"
-              onChange={(e) => handleSupplier(e)}
-            >
-              {suppliers.map((supplier) => (
-                <option key={supplier._id} value={supplier._id}>
-                  {supplier.firstName + " " + supplier.lastName}
-                </option>
-              ))}
-            </Select>
+            <FormLabel>Customer Name</FormLabel>
+            <Input
+              type="text"
+              value={customerName}
+              onChange={(e) => setCustomerName(e.target.value)}
+            />
+
           </FormControl>
           {/* <FormControl>
             <FormLabel>Date</FormLabel>
@@ -334,7 +334,9 @@ const Bill = () => {
         <Button leftIcon={<AddIcon />} colorScheme="teal" onClick={addRow}>
           Add Vehicle
         </Button>
-        <SimpleGrid columns={[1, 2]} spacing={5} mt={8} mb={8}>
+                  {/* ###TODO-OPTIONAL#### */}
+        {/* // advance payment and previous balance */}
+        {/* <SimpleGrid columns={[1, 2]} spacing={5} mt={8} mb={8}>
           <FormControl>
             <FormLabel>Advance Payment</FormLabel>
             <Input
@@ -355,7 +357,7 @@ const Bill = () => {
               }
             />
           </FormControl>
-        </SimpleGrid>
+        </SimpleGrid> */}
         <Box fontSize="xl" fontWeight="bold" color="teal.700" mb={8}>
           <Flex justifyContent="space-between">
             <Text>Total: {total}</Text>
