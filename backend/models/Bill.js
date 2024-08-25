@@ -6,6 +6,11 @@ const BillSchema = new Schema({
         required: true
     },
 
+    kaat: {
+        type: Number,
+        required: false
+    },
+
     itemType: {
         type: Schema.Types.ObjectId,
         ref: 'Item',

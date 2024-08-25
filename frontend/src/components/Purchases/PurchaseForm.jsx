@@ -134,7 +134,7 @@ const PurchaseForm = () => {
     pageStyle: `
       @page {
         size: A4 landscape;
-        margin: 10mm;
+        margin: 1mm;
       }
       @media print {
         body {
@@ -167,6 +167,7 @@ const PurchaseForm = () => {
         vehicle_no: item.vehicleNumber || "",
         rate: parseFloat(item.price || 0),
         total: parseFloat((item.quantity || 0) * (item.price || 0)).toFixed(2),
+        kaat: parseFloat(item.kaat || 0),
         gatePassNo: item.gatePassNumber || "",
         bill_no: item.billNumber || "",
       }));
@@ -287,6 +288,7 @@ const PurchaseForm = () => {
               <Th color="white">Vehicle Number</Th>
               <Th color="white">Item Type</Th>
               <Th color="white">Weight/Quantity</Th>
+              <Th color="white">Kaat</Th>
               <Th color="white">Rate/Price</Th>
               <Th color="white">Total</Th>
             </Tr>
@@ -353,6 +355,7 @@ const PurchaseForm = () => {
                         </Select>
                       </Tooltip>
                     </Td>
+                    
                     <Td>
                       <Tooltip label="Quantity">
                         <Input
@@ -366,6 +369,22 @@ const PurchaseForm = () => {
                         />
                       </Tooltip>
                     </Td>
+
+                    <Td>
+                      <Tooltip label="Kaat">
+                        <Input
+                          type="number"
+                          placeholder="Kaat"
+                          value={item.kaat || ""}
+                          onChange={(e) =>
+                            updateRow(rowIndex, itemIndex, "kaat", e.target.value)
+                          }
+                          className="print-full-width"
+                        />
+                      </Tooltip>
+                    </Td>
+
+                    
                     <Td>
                       <Tooltip label="Price">
                         <Input
@@ -379,7 +398,7 @@ const PurchaseForm = () => {
                         />
                       </Tooltip>
                     </Td>
-                    <Td>{((item.quantity || 0) * (item.price || 0)).toFixed(2)}</Td>
+                    <Td>{((item.quantity - item.kaat) * (item.price || 0)).toFixed(2)}</Td>
                   </Tr>
                 ))}
               </React.Fragment>
