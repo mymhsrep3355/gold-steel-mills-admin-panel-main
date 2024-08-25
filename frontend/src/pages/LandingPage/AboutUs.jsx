@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { FaUserTie, FaIndustry, FaProjectDiagram } from 'react-icons/fa';
 import MillWork from "../../../public/c3.jpeg";
+import IMG_7511 from "../../../public/IMG_7511.jpg";
 
 const AboutUs = () => {
   const [engineers, setEngineers] = useState(0);
@@ -32,7 +33,7 @@ const AboutUs = () => {
       <SimpleGrid columns={[1, 2]} spacing={10} alignItems="center">
         <Box>
           <Image
-            src={MillWork}
+            src={IMG_7511}
             alt="Steel Mill"
             borderRadius="md"
           />
@@ -43,9 +44,9 @@ const AboutUs = () => {
                <Text color={'black'}>WELCOME TO </Text>WHITE GOLD STEEL MILLS
             </Heading>
             <Text fontSize="md" mb={4} color="gray.600" lineHeight="tall">
-              Gold Steel Steel Mills is currently one of the largest and fastest-growing
+              Gold Steel Mills is currently one of the largest and fastest-growing
               metal scrap buyers & Recyclers in Pakistan in terms of production capacity
-              and rolling speed. The company has since its inception in 1985 excelled
+              and rolling speed. The company has since its inception in 1995 excelled
               exceptionally in manufacturing different metal products. We take pride
               not only in our technical superiority over other re-rolling mills but also
               in our corporate setup

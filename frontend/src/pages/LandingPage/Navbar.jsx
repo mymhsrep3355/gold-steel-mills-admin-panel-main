@@ -53,7 +53,7 @@ const Navbar = () => {
                   <PhoneIcon color="red" />
                 </Box>
                 <Text fontSize="sm" fontWeight="500">
-                  +92012345678
+                +92-305-6148001
                 </Text>
               </Flex>
             </Flex>

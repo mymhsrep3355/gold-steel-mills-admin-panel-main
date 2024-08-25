@@ -9,6 +9,8 @@ import FootNote from "./LandingPage/FootNote";
 import OurProducts from "./LandingPage/Products";
 import ContactUs from "./LandingPage/ContactUs";
 import ScrollToTopButton from "./LandingPage/ScrollToTopButton";
+
+import Gallery from "./LandingPage/Gallery";
 NavbarLinks;
 const LandingPageLayout = () => {
   return (
@@ -16,13 +18,26 @@ const LandingPageLayout = () => {
       <Navbar />
       <Box position="relative">
         <NavbarLinks />
-        <Carousel />
-        <AboutUs />
-        <OurProducts/>
-        <ContactUs/>
-        <Footer />
+        <Box id="home">
+          <Carousel />
+        </Box>
+        <Box id="about-us">
+          <AboutUs />
+        </Box>
+        <Box id="gallery">
+          <Gallery />
+        </Box>
+        <Box id="products">
+          <OurProducts />
+        </Box>
+        <Box id="contact-us">
+          <ContactUs />
+        </Box>
+        <Box id="management">
+          <Footer />
+        </Box>
         <FootNote />
-        <ScrollToTopButton/>
+        <ScrollToTopButton />
       </Box>
     </>
   );

@@ -13,10 +13,27 @@ import {
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { FaAngleRight, FaChevronLeft } from "react-icons/fa6";
 
-
 const images = [
-  { id: 1, src: "../../../public/c1.jpg", alt: "Image 1" },
-  { id: 2, src: "../../../public/c2.jpg", alt: "Image 2" },
+  {
+    id: 1,
+    src: "https://images.unsplash.com/photo-1496247749665-49cf5b1022e9?q=80&w=1473&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    alt: "Image 1",
+  },
+  {
+    id: 2,
+    src: "https://images.unsplash.com/photo-1474674556023-efef886fa147?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    alt: "Image 2",
+  },
+  {
+    id: 3,
+    src: "https://images.unsplash.com/photo-1706874807336-c4742377b41d?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    alt: "Image 2",
+  },
+  {
+    id: 4,
+    src: "https://images.unsplash.com/photo-1697281679213-fcab27e10ad4?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    alt: "Image 2",
+  },
 ];
 
 const Carousel = () => {
@@ -61,6 +78,18 @@ const Carousel = () => {
           heading: "Provide solutions to plan Industries.",
           description:
             "They'll have to make the best of things its an uphill climb. The weather started getting was tossed.",
+        };
+      case 2:
+        return {
+          heading: "Building the Future with Strength",
+          description:
+            "From skyscrapers to bridges, our steel forms the backbone of tomorrow's world. Quality you can trust, strength you can build on.",
+        };
+      case 3:
+        return {
+          heading: "Innovating Steel for a Stronger Tomorrow",
+          description:
+            "Leading the way in steel innovation, we deliver materials that exceed standards, ensuring durability and reliability in every project.",
         };
       default:
         return { heading: "", description: "" };

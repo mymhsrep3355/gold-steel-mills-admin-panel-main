@@ -3,29 +3,37 @@ import { Box, Flex, Link } from "@chakra-ui/react";
 
 const NavbarLinks = () => {
   const links = [
-    { href: "#", label: "HOME" },
-    { href: "#", label: "ABOUT US" },
-    { href: "#", label: "CERTIFICATES" },
-    { href: "#", label: "PRODUCTS" },
-    { href: "#", label: "GALLERY" },
-    { href: "#", label: "MANAGEMENT" },
-    { href: "#", label: "CONTACT US", isButton: true },
+    { href: "#home", label: "HOME" },
+    { href: "#about-us", label: "ABOUT US" },
+    // { href: "#certificates", label: "CERTIFICATES" },
+    { href: "#gallery", label: "GALLERY" },
+    { href: "#products", label: "PRODUCTS" },
+    { href: "#management", label: "MANAGEMENT" },
+    { href: "#contact-us", label: "CONTACT US", isButton: true },
   ];
+
+  const handleScroll = (event, href) => {
+    event.preventDefault();
+    const targetSection = document.querySelector(href);
+    if (targetSection) {
+      targetSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <Box
-      position="sticky" 
-      top="0px"       
+      position="sticky"
+      top="0px"
       zIndex="1000"
       bg="gray.900"
       py={2}
       shadow="md"
-      width="100%"      
-      mx="0"            
+      width="100%"
+      mx="0"
       left="0"
       right="0"
-      transform="translateY(0)" 
-      transition="transform 0.3s ease"  
+      transform="translateY(0)"
+      transition="transform 0.3s ease"
     >
       <Flex
         justify="center"
@@ -39,6 +47,7 @@ const NavbarLinks = () => {
           <Link
             key={index}
             href={link.href}
+            onClick={(event) => handleScroll(event, link.href)}
             color="white"
             fontWeight="bold"
             px={3}

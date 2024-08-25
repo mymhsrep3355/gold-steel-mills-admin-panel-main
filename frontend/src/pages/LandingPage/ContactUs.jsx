@@ -18,7 +18,7 @@ const ContactUs = () => {
   return (
     <Box
       position="relative"
-      backgroundImage="url('../../../public/fbg.jpg')"
+      backgroundImage="url('https://images.unsplash.com/photo-1496247749665-49cf5b1022e9?q=80&w=1473&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')"
       backgroundSize="cover"
       backgroundRepeat="no-repeat"
       backgroundAttachment="fixed"
@@ -38,7 +38,7 @@ const ContactUs = () => {
             w="450px"
             h="2px"
             bg={underlineColor}
-            // mx="auto"
+            
             mt={1}
             mb={6}
             right={0}
@@ -58,10 +58,9 @@ const ContactUs = () => {
             </Text>{" "}
             and you can also contact with directly by call us in this number{" "}
             <Text fontSize={'sm'} color={'#9d9d9d'} as="span" fontWeight="300">
-              +92-300-7410822
+            +92-305-6148001
             </Text>
           </Text>
-          {/* </Text> */}
         </GridItem>
 
         <GridItem>
