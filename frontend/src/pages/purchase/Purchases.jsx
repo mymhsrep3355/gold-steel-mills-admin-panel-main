@@ -10,6 +10,7 @@ import {
   Input,
   SimpleGrid,
   useToast,
+  Select,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { AddIcon } from "@chakra-ui/icons";
@@ -23,20 +24,44 @@ const Purchases = () => {
   const [purchases, setPurchases] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [suppliers, setSuppliers] = useState([]);
+  const [selectedSupplier, setSelectedSupplier] = useState("");
   const toast = useToast();
   const { token } = useAuthProvider();
 
+  const fetchSuppliers = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}suppliers`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setSuppliers(response.data);
+    } catch (error) {
+      console.error("Error fetching suppliers:", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchSuppliers();
+  },[])
   const fetchPurchases = async () => {
+    
+    const appendUrl = selectedSupplier ? `&supplierId=${selectedSupplier}` : ''
+    console.log(appendUrl)
+
     if (startDate && endDate) {
       try {
         const response = await axios.get(
-          `${BASE_URL}purchases?startDate=${startDate}&endDate=${endDate}`,
+          `${BASE_URL}purchases?startDate=${startDate}&endDate=${endDate}` +  appendUrl,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
+        console.log(response.data)
+        
         setPurchases(response.data);
       } catch (error) {
         console.error("Error fetching purchases:", error);
@@ -59,6 +84,8 @@ const Purchases = () => {
     }
   };
 
+  
+
   return (
     <>
       <PageHeader title="Purchases" />
@@ -72,7 +99,21 @@ const Purchases = () => {
             <PurchaseForm />
           </TabPanel>
           <TabPanel>
-            <SimpleGrid columns={[1, 2]} spacing={5} mb={8}>
+            <SimpleGrid columns={[1, 3]} spacing={5} mb={8}>
+              <Box w="100%">
+                <Select
+                  placeholder="Select supplier"
+                  value={selectedSupplier}
+                  onChange={(e) => setSelectedSupplier(e.target.value)}
+                >
+                  {suppliers.map((supplier) => (
+                    <option key={supplier._id} value={supplier._id}>
+                      {supplier.firstName + " " + supplier.lastName}
+                    </option>
+                  ))}
+                </Select>
+              </Box>
+              
               <Input
                 type="date"
                 value={startDate}
@@ -88,7 +129,7 @@ const Purchases = () => {
               </Button>
             </SimpleGrid>
             <SimpleGrid columns={[1, 2, 3]} spacing={5}>
-              {purchases.map((purchase) => (
+              {purchases?.map((purchase) => (
                 <PurchaseCard key={purchase._id} purchase={purchase} />
               ))}
             </SimpleGrid>

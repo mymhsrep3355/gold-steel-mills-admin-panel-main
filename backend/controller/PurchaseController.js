@@ -7,7 +7,8 @@ const mongoose = require('mongoose');
 // Get all purchases with optional date filtering
 async function getAllPurchases(req, res) {
     try {
-        const { startDate, endDate } = req.query;
+        const { startDate, endDate, supplierId } = req.query;
+
 
         // Build the query object
         let query = {};
@@ -21,6 +22,11 @@ async function getAllPurchases(req, res) {
                 query.date.$lte = new Date(new Date(endDate).setHours(23, 59, 59, 999));
             }
         }
+
+        if (supplierId) {
+            query.supplier = supplierId;
+        }
+        console.log(query)
 
         const purchases = await Purchase.find(query).populate('supplier').populate('bills');
         res.status(200).json(purchases);
