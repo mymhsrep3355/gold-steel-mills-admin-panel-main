@@ -8,6 +8,7 @@ const supplierController = require('../controller/SupplierController');
 
 
 router.get('/', supplierController.getAllSuppliers);
+router.get('/paginated', supplierController.getAllSuppliersPaginated);
 router.get('/:id', supplierController.getSupplierById);
 
 router.post('/register', supplierController.createSupplier);

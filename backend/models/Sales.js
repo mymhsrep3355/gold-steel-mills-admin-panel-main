@@ -5,7 +5,12 @@ const SalesSchema = new Schema({
     supplier: {
         type: Schema.Types.ObjectId,
         ref: 'Supplier',
-        required: true
+        required: false,
+    },
+
+    customer_name :{
+        type: String, 
+        required: false,
     },
 
     bills:

@@ -3,6 +3,52 @@ const Supplier = require('../models/Supplier');
 
 const { applyThirdPayment, applyThirdPaymentToAdvancedFirst } = require('../utils/PaymentUtils');
 
+
+
+async function getAllSuppliersPaginated(req, res) {
+    try {
+        console.log('Getting all suppliers...');
+
+        // Get pagination parameters from the query string
+        const page = parseInt(req.query.page) || 1; // Default to page 1
+        const limit = parseInt(req.query.limit) || 10; // Default to 10 items per page
+        const skip = (page - 1) * limit;
+
+        // Optionally filter suppliers based on a search query
+        const searchQuery = req.query.search || '';
+        const query = {
+            $or: [
+                { firstName: new RegExp(searchQuery, 'i') },
+                { lastName: new RegExp(searchQuery, 'i') },
+                { contactNumber: new RegExp(searchQuery, 'i') },
+                { email: new RegExp(searchQuery, 'i') }
+            ]
+        };
+
+        // Find suppliers with pagination and search filter
+        const suppliers = await Supplier.find(query)
+            .skip(skip)
+            .limit(limit);
+
+        // Get the total count of documents matching the query
+        const totalSuppliers = await Supplier.countDocuments(query);
+
+        console.log('Suppliers retrieved successfully.');
+
+        // Return the suppliers, total count, and total pages
+        res.send({
+            suppliers,
+            totalPages: Math.ceil(totalSuppliers / limit),
+            currentPage: page,
+            totalSuppliers
+        });
+    } catch (err) {
+        console.error('Error getting suppliers:', err.message);
+        return res.status(500).json({ message: 'Internal server error: ' + err.message });
+    }
+}
+
+
 async function getAllSuppliers(req, res) {
     try {
         console.log('Getting all suppliers...');
@@ -14,6 +60,7 @@ async function getAllSuppliers(req, res) {
         return res.status(500).json({ message: 'Internal server error: ' + err.message });
     }
 }
+
 
 async function getSupplierById(req, res) {
     try {
@@ -196,6 +243,7 @@ async function paymentSent(req, res) {
 }
 
 module.exports = {
+    getAllSuppliersPaginated,
     getAllSuppliers,
     getSupplierById,
     createSupplier,

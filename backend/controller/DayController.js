@@ -1,16 +1,19 @@
 const Daybook = require('../models/Daybook'); 
 const Supplier = require('../models/Supplier');
+const Purchase = require('../models/Purchase');
+const Sales = require('../models/Sales');
 const { applyThirdPayment, applyThirdPaymentToAdvancedFirst } = require('../utils/PaymentUtils');
 
 // Function to record a new daybook entry with optional supplier updates
 async function recordDaybookEntry(req, res) {
     console.log('Recording new daybook entry...');
-    const { supplierId, date, description, amount, type, cash_or_bank } = req.body;
+    const { supplierId, customerName, date, description, amount, type, cash_or_bank } = req.body;
 
     try {
         // Create a new daybook entry
         const daybookEntry = new Daybook({
             supplier: supplierId || null,
+            customer_name: customerName || null,
             date: date || Date.now(),
             description,
             amount,
@@ -31,6 +34,7 @@ async function recordDaybookEntry(req, res) {
         daybookEntry.balance = newBalance;
 
         // Save the daybook entry
+        console.log(daybookEntry);
         const savedDaybookEntry = await daybookEntry.save();
         console.log('Daybook entry recorded successfully.');
 
@@ -106,7 +110,7 @@ const getTransactions = async (req, res) => {
         }
 
         // Fetch transactions with the date filter if provided
-        const transactions = await Daybook.find(dateFilter).sort({ date: 1 });
+        const transactions = await Daybook.find(dateFilter).populate('supplier').sort({ date: 1 });
         res.status(200).json(transactions);
     } catch (error) {
         console.error('Error fetching transactions:', error);
@@ -189,10 +193,140 @@ const updateTransaction = async (req, res) => {
     }
 };
 
+
+// Function to generate financial reports (Revenues, Expenses, Profit & Loss)
+const generateReports = async (req, res) => {
+    try {
+        const { startDate, endDate } = req.query;
+
+        // Build the date filter query
+        let dateFilter = {};
+
+        if (startDate && endDate) {
+            dateFilter.date = {
+                $gte: new Date(new Date(startDate).setHours(0, 0, 0, 0)),
+                $lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
+            };
+        } else if (startDate) {
+            dateFilter.date = {
+                $gte: new Date(new Date(startDate).setHours(0, 0, 0, 0)),
+                $lte: new Date(new Date(startDate).setHours(23, 59, 59, 999))
+            };
+        } else if (endDate) {
+            dateFilter.date = {
+                $gte: new Date(new Date(endDate).setHours(0, 0, 0, 0)),
+                $lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
+            };
+        }
+
+        // Fetch transactions with the date filter if provided
+        const transactions = await Daybook.find(dateFilter).sort({ date: 1 });
+
+        // Initialize aggregates
+        let totalRevenuesBank = 0;
+        let totalExpensesBank = 0;
+        let totalRevenuesCash = 0;
+        let totalExpensesCash = 0;
+
+        // Calculate totals based on type and payment method
+        transactions.forEach(transaction => {
+            if (transaction.type === 'credit') {
+                if (transaction.cash_or_bank === 'bank') {
+                    totalRevenuesBank += transaction.amount;
+                } else if (transaction.cash_or_bank === 'cash') {
+                    totalRevenuesCash += transaction.amount;
+                }
+            } else if (transaction.type === 'debit') {
+                if (transaction.cash_or_bank === 'bank') {
+                    totalExpensesBank += transaction.amount;
+                } else if (transaction.cash_or_bank === 'cash') {
+                    totalExpensesCash += transaction.amount;
+                }
+            }
+        });
+
+        // Calculate net profit/loss for both bank and cash
+        const netProfitLossBank = totalRevenuesBank - totalExpensesBank;
+        const netProfitLossCash = totalRevenuesCash - totalExpensesCash;
+        const netProfitLoss = netProfitLossBank + netProfitLossCash;
+
+        res.status(200).json({
+            totalRevenuesBank,
+            totalExpensesBank,
+            netProfitLossBank,
+            totalRevenuesCash,
+            totalExpensesCash,
+            netProfitLossCash,
+            netProfitLoss,
+            transactions
+        });
+    } catch (error) {
+        console.error('Error generating reports:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+
+const getSupplierTransactions = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const transactions = await Daybook.find({ supplier: id }).sort({ date: 1 });
+        if (!transactions) {
+            return res.status(404).json({ message: 'Transactions not found' });
+        }
+        res.status(200).json(transactions);
+    } catch (error) {
+        console.error('Error fetching supplier transactions:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+const getPurchasesSalesAverageRate = async (req, res) => {
+    try {
+        
+        // Fetch purchases and sales with populated bills
+        const purchases = await Purchase.find().populate('bills');
+        const sales = await Sales.find().populate('bills');
+        
+        let avgPurchaseRate = 0;
+        // Calculate average purchase rate
+        for (let purchase of purchases) {
+            let billRateSum = purchase.bills.reduce((billTotal, bill) => billTotal + bill.rate, 0);
+            avgPurchaseRate += billRateSum / purchase.bills.length; // Average rate per purchase
+        }
+        
+        let avgSalesRate = 0;
+        // Calculate average sales rate
+        for (let sale of sales) {
+            let billRateSum = sale.bills.reduce((billTotal, bill) => billTotal + bill.rate, 0);
+            avgSalesRate += billRateSum / sale.bills.length; // Average rate per sale
+        }
+        
+        // Calculate the difference between average purchase rate and average sales rate
+        let rateDifference = avgPurchaseRate - avgSalesRate;
+
+        // Return the results
+        res.status(200).json({
+            averagePurchaseRate: avgPurchaseRate.toFixed(2),
+            averageSalesRate: avgSalesRate.toFixed(2),
+            rateDifference: rateDifference.toFixed(2),
+        });
+    } catch (error) {
+        console.error('Error calculating rates:', error.message);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+
+
+
 module.exports = {
     recordDaybookEntry,
     getTransactions,
     getTransactionById,
     deleteTransaction,
-    updateTransaction
+    updateTransaction,
+    generateReports,
+    getSupplierTransactions,
+    getPurchasesSalesAverageRate,
 };
