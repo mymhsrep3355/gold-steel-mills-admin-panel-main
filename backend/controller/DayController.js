@@ -8,7 +8,7 @@ const { applyThirdPayment, applyThirdPaymentToAdvancedFirst } = require('../util
 async function recordDaybookEntry(req, res) {
     console.log('Recording new daybook entry...');
     const { supplierId, customerName, date, description, amount, type, cash_or_bank } = req.body;
-
+    console.log(req.body)
     try {
         // Create a new daybook entry
         const daybookEntry = new Daybook({

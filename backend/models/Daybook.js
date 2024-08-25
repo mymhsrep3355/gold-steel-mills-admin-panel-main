@@ -8,6 +8,11 @@ const DaybookSchema = new Schema({
         required: false
     },
 
+    customerName: {
+        type: String,
+        required: false
+    },
+
     date: {
         type: Date,
         required: true,

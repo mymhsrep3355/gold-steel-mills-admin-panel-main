@@ -158,6 +158,7 @@ const Bill = () => {
 
         const daybookPayload = {
           supplierId : selectedSupplier,
+          customerName : customerName,
           description : "Sales",
           amount : salesData.totalAmount,
           type : "debit",
