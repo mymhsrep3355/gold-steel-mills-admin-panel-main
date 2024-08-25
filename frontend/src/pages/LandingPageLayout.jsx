@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "./LandingPage/Navbar";
 import NavbarLinks from "./LandingPage/Links";
 import { Box } from "@chakra-ui/react";
@@ -11,8 +11,22 @@ import ContactUs from "./LandingPage/ContactUs";
 import ScrollToTopButton from "./LandingPage/ScrollToTopButton";
 
 import Gallery from "./LandingPage/Gallery";
-NavbarLinks;
+import Loader from "./LandingPage/Loader/Loader";
+
 const LandingPageLayout = () => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 2000);
+  }, []);
+
+  if (loading) {
+    return (
+      <Box m={"auto"} mt={"600px"}>
+        <Loader />
+      </Box>
+    );
+  }
   return (
     <>
       <Navbar />
