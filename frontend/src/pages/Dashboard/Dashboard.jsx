@@ -6,7 +6,6 @@ import {
   Heading,
   Flex,
   Select,
-  Button,
 } from "@chakra-ui/react";
 import InfoCard from "../../components/Dashboard/InfoCards";
 import axios from "axios";
@@ -24,6 +23,12 @@ export const Dashboard = () => {
     netProfitLoss: 0,
   });
 
+  const [rateData, setRateData] = useState({
+    averagePurchaseRate: 0,
+    averageSalesRate: 0,
+    rateDifference: 0,
+  });
+
   const { token } = useAuthProvider();
   const [selectedMonth, setSelectedMonth] = useState(() => {
     const today = new Date();
@@ -32,7 +37,7 @@ export const Dashboard = () => {
 
   useEffect(() => {
     fetchReportData();
-  }, [selectedMonth]); // Re-fetch data whenever the selected month changes
+  }, [selectedMonth]);
 
   const fetchReportData = async () => {
     try {
@@ -40,17 +45,42 @@ export const Dashboard = () => {
       const startDate = new Date(year, month - 1, 1).toISOString().split("T")[0];
       const endDate = new Date(year, month, 0).toISOString().split("T")[0];
 
-      const response = await axios.get(
-        `${BASE_URL}daybook/reports?startDate=${startDate}&endDate=${endDate}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      // const [reportResponse, rateResponse] = await Promise.all([
+      //   axios.get(
+      //     `${BASE_URL}daybook/reports?startDate=${startDate}&endDate=${endDate}`,
+      //     {
+      //       headers: {
+      //         Authorization: `Bearer ${token}`,
+      //       },
+      //     }
+      //   ),
+      //   axios.get(`${BASE_URL}daybook/rates`, {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   }),
+      // ]);
 
-      console.log(response.data);
-      setReportData(response.data);
+      const reportData = await axios.get(`${BASE_URL}daybook/reports`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const reportResponse = reportData.data
+      console.log(reportResponse);
+      setReportData(reportResponse);
+
+      const rateData = await axios.get(`${BASE_URL}daybook/reports/rates`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      
+      const rateResponse = rateData.data;
+      console.log(rateResponse);
+      setRateData(rateResponse);
     } catch (error) {
       console.error("Error fetching report data:", error);
     }
@@ -120,6 +150,24 @@ export const Dashboard = () => {
           title="Overall Net Profit/Loss"
           totalNumber={`PKR ${reportData.netProfitLoss.toLocaleString()}`}
           bgColor={reportData.netProfitLoss >= 0 ? "#4CAF50" : "#FF6F61"}
+        />
+      </SimpleGrid>
+
+      <SimpleGrid columns={[1, null, 3]} spacing={10} mt={5}>
+        <InfoCard
+          title="Average Purchase Rate"
+          totalNumber={`PKR ${rateData?.averagePurchaseRate}`}
+          bgColor="#FF6F61"
+        />
+        <InfoCard
+          title="Average Sales Rate"
+          totalNumber={`PKR ${rateData?.averageSalesRate}`}
+          bgColor="#FF6F61"
+        />
+        <InfoCard
+          title="Rate Difference"
+          totalNumber={`PKR ${rateData?.rateDifference}`}
+          bgColor={rateData.rateDifference >= 0 ? "#4CAF50" : "#FF6F61"}
         />
       </SimpleGrid>
     </Box>

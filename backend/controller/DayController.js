@@ -1,5 +1,7 @@
 const Daybook = require('../models/Daybook'); 
 const Supplier = require('../models/Supplier');
+const Purchase = require('../models/Purchase');
+const Sales = require('../models/Sales');
 const { applyThirdPayment, applyThirdPaymentToAdvancedFirst } = require('../utils/PaymentUtils');
 
 // Function to record a new daybook entry with optional supplier updates
@@ -106,7 +108,7 @@ const getTransactions = async (req, res) => {
         }
 
         // Fetch transactions with the date filter if provided
-        const transactions = await Daybook.find(dateFilter).sort({ date: 1 });
+        const transactions = await Daybook.find(dateFilter).populate('supplier').sort({ date: 1 });
         res.status(200).json(transactions);
     } catch (error) {
         console.error('Error fetching transactions:', error);
@@ -277,6 +279,45 @@ const getSupplierTransactions = async (req, res) => {
     }
 }
 
+const getPurchasesSalesAverageRate = async (req, res) => {
+    try {
+        console.log('Getting purchases and sales average rate...');
+        // Fetch purchases and sales with populated bills
+        const purchases = await Purchase.find().populate('bills');
+        const sales = await Sales.find().populate('bills');
+        
+        let avgPurchaseRate = 0;
+        // Calculate average purchase rate
+        for (let purchase of purchases) {
+            let billRateSum = purchase.bills.reduce((billTotal, bill) => billTotal + bill.rate, 0);
+            avgPurchaseRate += billRateSum / purchase.bills.length; // Average rate per purchase
+        }
+        
+        let avgSalesRate = 0;
+        // Calculate average sales rate
+        for (let sale of sales) {
+            let billRateSum = sale.bills.reduce((billTotal, bill) => billTotal + bill.rate, 0);
+            avgSalesRate += billRateSum / sale.bills.length; // Average rate per sale
+        }
+        
+        // Calculate the difference between average purchase rate and average sales rate
+        let rateDifference = avgPurchaseRate - avgSalesRate;
+
+        // Return the results
+        res.status(200).json({
+            averagePurchaseRate: avgPurchaseRate.toFixed(2),
+            averageSalesRate: avgSalesRate.toFixed(2),
+            rateDifference: rateDifference.toFixed(2),
+        });
+    } catch (error) {
+        console.error('Error calculating rates:', error.message);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+
+
+
 module.exports = {
     recordDaybookEntry,
     getTransactions,
@@ -285,4 +326,5 @@ module.exports = {
     updateTransaction,
     generateReports,
     getSupplierTransactions,
+    getPurchasesSalesAverageRate,
 };
