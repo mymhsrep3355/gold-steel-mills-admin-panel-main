@@ -57,6 +57,19 @@ const ExpenseTable = ({
             Authorization: `Bearer ${token}`, 
           },
         });
+
+        //Update the Daybook as well
+        const daybookData = {
+          amount: parseFloat(expense.amount),
+          date: expense.date,
+          description: expense.description,
+        };
+        
+        await axios.put(`${BASE_URL}daybook/register`, daybookData, {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        });
       }
 
       toast({
@@ -65,6 +78,8 @@ const ExpenseTable = ({
         duration: 3000,
         isClosable: true,
       });
+
+
 
       
       window.location.reload();
