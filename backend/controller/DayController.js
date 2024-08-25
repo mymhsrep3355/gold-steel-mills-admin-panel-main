@@ -33,6 +33,7 @@ async function recordDaybookEntry(req, res) {
         daybookEntry.balance = newBalance;
 
         // Save the daybook entry
+        console.log(daybookEntry);
         const savedDaybookEntry = await daybookEntry.save();
         console.log('Daybook entry recorded successfully.');
 
