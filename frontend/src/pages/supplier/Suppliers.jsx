@@ -23,6 +23,17 @@ export const Suppliers = () => {
   const navigate = useNavigate();
   const ITEMS_PER_PAGE = 10;
 
+  
+
+
+  
+  
+  const handleViewLedger = (supplierId) => {
+    navigate("/suppliers/ledger", { state: { supplierId } });
+  };
+
+
+
   useEffect(() => {
     const fetchSuppliers = async () => {
       setIsFetching(true);
@@ -109,6 +120,7 @@ export const Suppliers = () => {
         <Text>No Data Found...</Text>
       ) : (
         <Table
+          handleViewLedger={handleViewLedger}
           handleNavigation={handleNavigation}
           deleteURL={`${BASE_URL}/suppliers`}
           columns={["firstName", "lastName", "contactNumber"]}

@@ -19,7 +19,7 @@ import { BASE_URL } from "../utils";
 import { useAuthProvider } from "../hooks/useAuthProvider";
 
 // eslint-disable-next-line react/prop-types
-export const Table = ({ columns, data, deleteURL, handleNavigation, refreshData }) => {
+export const Table = ({ columns, data, deleteURL, handleNavigation, refreshData, handleViewLedger }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const toast = useToast();
   const { token } = useAuthProvider();
@@ -134,6 +134,16 @@ export const Table = ({ columns, data, deleteURL, handleNavigation, refreshData 
                 >
                   Edit
                 </Button>
+
+                <Button
+                  onClick={() => handleViewLedger(item._id)}
+                  colorScheme="teal"
+                  size="sm"
+                  variant="outline"
+                >
+                  Ledger
+                </Button>
+
               </Td>
             </Tr>
           ))}

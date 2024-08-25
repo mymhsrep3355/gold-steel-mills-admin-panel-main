@@ -15,6 +15,7 @@ import { Production } from "./pages/Production/Production.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 import DashboardTabs from "./pages/Dashboard/DashboardTabs.jsx";
 import Purchases from "./pages/purchase/Purchases.jsx";
+import SupplierLedger from "./pages/supplier/SupplierLedger.jsx";
 
 
 const router = createBrowserRouter([
@@ -52,6 +53,16 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
+
+      {
+        path: "/suppliers/ledger",
+        element: (
+          <PrivateRoute>
+            <SupplierLedger />
+          </PrivateRoute>
+        ),
+      },
+
       {
         path: "/production",
         element: (
