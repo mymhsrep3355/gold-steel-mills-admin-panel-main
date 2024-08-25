@@ -37,6 +37,8 @@ const PurchaseForm = () => {
   const [advancePayment, setAdvancePayment] = useState(0);
   const [previousBalance, setPreviousBalance] = useState(0);
   const [items, setItems] = useState([]);
+  const [unloading, setUnloading] = useState(0);
+
   const componentRef = useRef();
   const toast = useToast();
   const { token } = useAuthProvider();
@@ -122,6 +124,7 @@ const PurchaseForm = () => {
       });
     });
     total -= advancePayment;
+    total -= unloading;
     const subtotal = total + previousBalance;
 
     return { total: total.toFixed(2), subtotal: subtotal.toFixed(2) };
@@ -408,7 +411,7 @@ const PurchaseForm = () => {
         <Button leftIcon={<AddIcon />} colorScheme="teal" onClick={addRow}>
           Add Bill
         </Button>
-        <SimpleGrid columns={[1, 2]} spacing={5} mt={8} mb={8} className="print-full-width">
+        <SimpleGrid columns={[1, 3]} spacing={5} mt={8} mb={8} className="print-full-width">
           <FormControl>
             <FormLabel>Advance Payment</FormLabel>
             <Input
@@ -427,6 +430,18 @@ const PurchaseForm = () => {
               value={previousBalance}
               onChange={(e) =>
                 setPreviousBalance(parseFloat(e.target.value) || 0)
+              }
+              className="print-full-width"
+            />
+          </FormControl>
+
+          <FormControl>
+            <FormLabel>Unloading</FormLabel>
+            <Input
+              type="number"
+              value={unloading}
+              onChange={(e) =>
+                setUnloading(parseFloat(e.target.value) || 0)
               }
               className="print-full-width"
             />
