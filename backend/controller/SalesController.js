@@ -124,8 +124,31 @@ async function createSales(req, res) {
 
 async function getSalesBySupplier(req, res) {
     try {
-        const { supplier } = req.params;
-        const sales = await Sales.find({ supplier: supplier }).populate('bills');
+        const { supplier, startDate, endDate } = req.params;
+
+        // Build the query object
+        let query = {};
+
+        if (startDate || endDate) {
+            query.date = {};
+
+            if (startDate) {
+                query.date.$gte = new Date(new Date(startDate).setHours(0, 0, 0, 0));
+            }
+
+            if (endDate) {
+                query.date.$lte = new Date(new Date(endDate).setHours(23, 59, 59, 999));
+            }
+        }
+
+        if (supplier) {
+            query.supplier = supplier;
+        }
+
+        console.log(query);
+
+        const sales = await Sales.find(query).populate('supplier').populate('bills');
+        // const sales = await Sales.find({ supplier: supplier }).populate('bills');
 
         res.status(200).json(sales);
     } catch (error) {
