@@ -166,17 +166,17 @@ const Bill = () => {
           cash_or_bank : "cash",
         }
 
-        await axios.post(`${BASE_URL}daybook/register`, daybookPayload, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        toast({
-          title: "Daybook registered successfully.",
-          status: "success",
-          duration: 2000,
-          isClosable: true,
-        }); 
+        // await axios.post(`${BASE_URL}daybook/register`, daybookPayload, {
+        //   headers: {
+        //     Authorization: `Bearer ${token}`,
+        //   },
+        // });
+        // toast({
+        //   title: "Daybook registered successfully.",
+        //   status: "success",
+        //   duration: 2000,
+        //   isClosable: true,
+        // }); 
 
         handlePrint();
 

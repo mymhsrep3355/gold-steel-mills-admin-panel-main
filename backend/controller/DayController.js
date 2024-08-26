@@ -271,15 +271,71 @@ const getSupplierTransactions = async (req, res) => {
     try {
         const { id } = req.params;
         const transactions = await Daybook.find({ supplier: id }).sort({ date: 1 });
-        if (!transactions) {
-            return res.status(404).json({ message: 'Transactions not found' });
+        const purchases = await Purchase.find({ supplier: id }).populate('bills');
+        const sales = await Sales.find({ supplier: id }).populate('bills');
+
+        let debit = 0;
+        let credit = 0;
+        
+        let combinedTransactions = [];
+        for (let transaction of transactions) {
+            if (transaction.type === 'debit') {
+                combinedTransactions.push({
+                    date: transaction.date,
+                    description: transaction.description,
+                    debit: transaction.amount, 
+                    credit: 0
+                });
+                debit += transaction.amount;
+            } else if (transaction.type === 'credit') {
+                combinedTransactions.push({
+                    date: transaction.date,
+                    description: transaction.description,
+                    debit: 0, 
+                    credit: transaction.amount
+                });
+                credit += transaction.amount;
+            }
         }
-        res.status(200).json(transactions);
+
+        for (let purchase of purchases) {
+            for (let bill of purchase.bills) {
+                combinedTransactions.push({
+                    date: bill.date,
+                    description: `Purchase Bill: ${bill._id}`,
+                    debit: 0, 
+                    credit: bill.rate
+                });
+                credit += bill.rate;
+            }
+        }
+
+        for (let sale of sales) {
+            for (let bill of sale.bills) {
+                combinedTransactions.push({
+                    date: bill.date,
+                    description: `Sales Bill: ${bill._id}`,
+                    debit: bill.rate, 
+                    credit: 0
+                });
+                debit += bill.rate;
+            }
+        }
+
+        // Sort the combined transactions by date
+        combinedTransactions.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        res.status(200).json({
+            combinedTransactions,
+            totalDebit: debit,
+            totalCredit: credit
+        });
     } catch (error) {
         console.error('Error fetching supplier transactions:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
 
 const getPurchasesSalesAverageRate = async (req, res) => {
     try {

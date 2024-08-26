@@ -209,17 +209,17 @@ const PurchaseForm = () => {
         cash_or_bank: "cash",
       };
       try {
-        await axios.post(`${BASE_URL}daybook/register`, daybookPayload, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        toast({
-          title: "Daybook updated successfully.",
-          status: "success",
-          duration: 2000,
-          isClosable: true,
-        });
+        // await axios.post(`${BASE_URL}daybook/register`, daybookPayload, {
+        //   headers: {
+        //     Authorization: `Bearer ${token}`,
+        //   },
+        // });
+        // toast({
+        //   title: "Daybook updated successfully.",
+        //   status: "success",
+        //   duration: 2000,
+        //   isClosable: true,
+        // });
       } catch (error) {
         console.error("Error updating daybook:", error);
         toast({
