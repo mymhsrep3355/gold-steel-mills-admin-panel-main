@@ -213,7 +213,7 @@ const PurchaseCard = ({ purchase, fetchPurchases }) => {
                   <strong>Item:</strong> {bill.itemType}
                 </Text>
                 <Text>
-                  <FaDollarSign /> ${bill.rate}/unit
+                   PKR {bill.rate}/unit
                 </Text>
               </Flex>
             </Box>

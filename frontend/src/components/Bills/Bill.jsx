@@ -60,7 +60,7 @@ const Bill = () => {
       }
     }
 
-    // fetchSuppliers();
+    fetchSuppliers();
   }, []);
 
   const handleSupplier = (event) => {
@@ -125,6 +125,7 @@ const Bill = () => {
   
   const handleSubmit = async () => {
     const billDataArray = rows.map(row => ({
+        supplier: selectedSupplier || "",
         customerName: customerName || "",
         weight: parseFloat(row.quantity || 0),
         // itemType: selectedItem, //removed as not accepted by api
@@ -235,19 +236,19 @@ const Bill = () => {
             <FormLabel>Date</FormLabel>
             <Input type="date" />
           </FormControl> */}
-          {/* <FormControl>
-            <FormLabel>Item Type</FormLabel>
+          <FormControl>
+            <FormLabel>Supplier</FormLabel>
             <Select
-              placeholder="Select item"
-              onChange={(e) => setSelectedItem(e.target.value)}
+              placeholder="Select Supplier"
+              onChange={(e) => handleSupplier(e)}
             >
-              {items.map((item) => (
-                <option key={item._id} value={item._id}>
-                  {item.name}
+              {suppliers.map((supplier) => (
+                <option key={supplier._id} value={supplier._id}>
+                  {supplier.firstName}
                 </option>
               ))}
             </Select>
-          </FormControl> */}
+          </FormControl>
         </SimpleGrid>
         <Table variant="simple" colorScheme="teal" mb={8}>
           <Thead bg="teal.600">
@@ -337,7 +338,7 @@ const Bill = () => {
         </Button>
                   {/* ###TODO-OPTIONAL#### */}
         {/* // advance payment and previous balance */}
-        {/* <SimpleGrid columns={[1, 2]} spacing={5} mt={8} mb={8}>
+        <SimpleGrid columns={[1, 2]} spacing={5} mt={8} mb={8}>
           <FormControl>
             <FormLabel>Advance Payment</FormLabel>
             <Input
@@ -358,7 +359,7 @@ const Bill = () => {
               }
             />
           </FormControl>
-        </SimpleGrid> */}
+        </SimpleGrid>
         <Box fontSize="xl" fontWeight="bold" color="teal.700" mb={8}>
           <Flex justifyContent="space-between">
             <Text>Total: {total}</Text>

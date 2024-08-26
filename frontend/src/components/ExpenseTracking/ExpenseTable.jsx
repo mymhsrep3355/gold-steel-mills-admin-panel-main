@@ -58,14 +58,24 @@ const ExpenseTable = ({
           },
         });
 
+        toast({
+          title: "Expenses saved successfully.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        })
+
         //Update the Daybook as well
         const daybookData = {
           amount: parseFloat(expense.amount),
           date: expense.date,
           description: expense.description,
+          type: "debit",
+          cash_or_bank: "cash",
+          category: selectedCategoryId,
         };
         
-        await axios.put(`${BASE_URL}daybook/register`, daybookData, {
+        await axios.post(`${BASE_URL}daybook/register`, daybookData, {
           headers: {
             Authorization: `Bearer ${token}`, 
           },
@@ -73,7 +83,7 @@ const ExpenseTable = ({
       }
 
       toast({
-        title: "Expenses saved successfully.",
+        title: "Daybook updated successfully.",
         status: "success",
         duration: 3000,
         isClosable: true,

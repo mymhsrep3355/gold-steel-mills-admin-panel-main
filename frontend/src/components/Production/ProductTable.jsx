@@ -8,6 +8,7 @@ export const ProductTable = ({ products, onEdit, onDelete }) => {
         <Tr>
           <Th>Product Name</Th>
           <Th>Total Stock</Th>
+          <Th>Kaat</Th>
           <Th>Actions</Th>
         </Tr>
       </Thead>
@@ -16,6 +17,7 @@ export const ProductTable = ({ products, onEdit, onDelete }) => {
           <Tr key={index}>
             <Td>{product.name}</Td>
             <Td>{product.stock}</Td>
+            <Td>{product.waste}</Td>
             <Td>
               <IconButton
                 aria-label="Edit product"

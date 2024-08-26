@@ -98,7 +98,7 @@ const AllBills = ({ bills, handleEditBill, handleDeleteBill }) => {
               <Flex alignItems="center" mb={3}>
                 <Icon as={FaMoneyBillWave} color="teal.500" boxSize={5} mr={2} />
                 <Text fontSize="sm" color="gray.600">
-                  Rate: {bill.rate} per kg
+                  Rate: PKR {bill.rate} per kg
                 </Text>
               </Flex>
             </Box>
@@ -107,7 +107,7 @@ const AllBills = ({ bills, handleEditBill, handleDeleteBill }) => {
 
             <Flex alignItems="center" justifyContent="space-between">
               <Text fontSize="lg" fontWeight="bold" color="teal.700">
-                Total: ${bill.total.toFixed(2)}
+                Total: PKR {bill.total.toFixed(2)}
               </Text>
             </Flex>
           </CardBody>

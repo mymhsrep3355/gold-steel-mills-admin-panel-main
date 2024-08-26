@@ -53,6 +53,7 @@ export const ProductionTabs = () => {
 
         if (response.ok) {
           const data = await response.json();
+          console.log(data);
           setProducts(data);
         } else {
           console.error("Failed to fetch products");

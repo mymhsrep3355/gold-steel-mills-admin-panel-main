@@ -1,11 +1,25 @@
 const Product = require('../models/Product');
+const Production = require('../models/Production');
 const mongoose = require('mongoose');
 
 // Get all products
 async function getAllProducts(req, res) {
     try {
+        
         const products = await Product.find();
-        res.status(200).json(products);
+        const productsWithWaste = [];
+        for (const product of products) {
+            
+            let waste = 0.0;
+            const productions = await Production.find({ product: product }).exec();
+            for (const production of productions) {
+                waste += production.waste;
+            }
+            
+            productsWithWaste.push({ ...product._doc, waste });
+            
+        }
+        res.status(200).json(productsWithWaste);
     } catch (error) {
         console.error('Error retrieving products:', error.message);
         res.status(500).json({ message: 'Internal server error: ' + error.message });
