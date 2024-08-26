@@ -18,13 +18,23 @@ const Navbar = () => {
       <Flex
         justify="space-between"
         align="center"
-        maxW="1200px"
+        width={"100%"}
         mx="auto"
         px={4}
       >
-
         <Flex justify="center">
           <Image src={logo} alt="Gold Steel Mills" boxSize="100px" />
+        </Flex>
+
+        <Flex align={"center"} gap={2}>
+          <Text
+            fontSize="3xl"
+            fontWeight="extrabold"
+            color="red.800"
+            fontFamily="serif"
+          >
+            Malik Ghaffar & Sons
+          </Text>
         </Flex>
 
         <Flex flexWrap={"wrap"} gap={2}>
@@ -53,7 +63,7 @@ const Navbar = () => {
                   <PhoneIcon color="red" />
                 </Box>
                 <Text fontSize="sm" fontWeight="500">
-                +92-305-6148001
+                  +92-305-6148001
                 </Text>
               </Flex>
             </Flex>
