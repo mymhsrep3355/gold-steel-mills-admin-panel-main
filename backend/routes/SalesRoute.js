@@ -12,6 +12,7 @@ router.get('/', sales.getAllSales);
 
 router.get('/:id', sales.getSalesById);
 router.get('/customer/:id', sales.getSalesByCustomer);
+router.get('/supplier/:id', sales.getSalesBySupplier);
 
 router.post('/register', sales.createSales);
 

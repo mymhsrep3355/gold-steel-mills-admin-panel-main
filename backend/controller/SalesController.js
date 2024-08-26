@@ -122,6 +122,19 @@ async function createSales(req, res) {
     }
 }
 
+async function getSalesBySupplier(req, res) {
+    try {
+        const { supplier } = req.params;
+        const sales = await Sales.find({ supplier: supplier }).populate('bills');
+
+        res.status(200).json(sales);
+    } catch (error) {
+        console.error('Error retrieving sales:', error.message);
+        res.status(500).json({ message: 'Internal server error: ' + error.message });
+    }
+
+}
+
 const getSalesByCustomer = async (req, res) => {
     try {
         const { customerName } = req.params;
@@ -203,4 +216,5 @@ module.exports = {
     updateSales,
     deleteSales,
     getSalesByCustomer,
+    getSalesBySupplier,
 };
