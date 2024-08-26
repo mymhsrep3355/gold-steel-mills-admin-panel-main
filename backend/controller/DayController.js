@@ -283,32 +283,45 @@ const getSupplierTransactions = async (req, res) => {
 
 const getPurchasesSalesAverageRate = async (req, res) => {
     try {
-        
         // Fetch purchases and sales with populated bills
         const purchases = await Purchase.find().populate('bills');
         const sales = await Sales.find().populate('bills');
         
-        let avgPurchaseRate = 0;
+        let totalPurchaseRate = 0;
+        let purchaseCount = 0;
+
         // Calculate average purchase rate
         for (let purchase of purchases) {
-            let billRateSum = purchase.bills.reduce((billTotal, bill) => billTotal + bill.rate, 0);
-            avgPurchaseRate += billRateSum / purchase.bills.length; // Average rate per purchase
+            if (purchase.bills.length > 0) {
+                let billRateSum = purchase.bills.reduce((billTotal, bill) => billTotal + bill.rate, 0);
+                totalPurchaseRate += billRateSum / purchase.bills.length; // Average rate per purchase
+                purchaseCount++;
+            }
         }
+
+        let averagePurchaseRate = purchaseCount > 0 ? totalPurchaseRate / purchaseCount : 0;
         
-        let avgSalesRate = 0;
+        let totalSalesRate = 0;
+        let salesCount = 0;
+
         // Calculate average sales rate
         for (let sale of sales) {
-            let billRateSum = sale.bills.reduce((billTotal, bill) => billTotal + bill.rate, 0);
-            avgSalesRate += billRateSum / sale.bills.length; // Average rate per sale
+            if (sale.bills.length > 0) {
+                let billRateSum = sale.bills.reduce((billTotal, bill) => billTotal + bill.rate, 0);
+                totalSalesRate += billRateSum / sale.bills.length; // Average rate per sale
+                salesCount++;
+            }
         }
+
+        let averageSalesRate = salesCount > 0 ? totalSalesRate / salesCount : 0;
         
         // Calculate the difference between average purchase rate and average sales rate
-        let rateDifference = avgPurchaseRate - avgSalesRate;
+        let rateDifference = averageSalesRate - averagePurchaseRate;
 
         // Return the results
         res.status(200).json({
-            averagePurchaseRate: avgPurchaseRate.toFixed(2),
-            averageSalesRate: avgSalesRate.toFixed(2),
+            averagePurchaseRate: averagePurchaseRate.toFixed(2),
+            averageSalesRate: averageSalesRate.toFixed(2),
             rateDifference: rateDifference.toFixed(2),
         });
     } catch (error) {
