@@ -75,6 +75,7 @@ const SupplierLedger = () => {
               <Th>Date</Th>
               <Th isNumeric>Debit (PKR)</Th>
               <Th isNumeric>Credit (PKR)</Th>
+              <Th isNumeric>Balance (PKR)</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -83,6 +84,7 @@ const SupplierLedger = () => {
                 <Td>{new Date(entry.date).toLocaleDateString()}</Td>
                 <Td isNumeric>{entry.debit ? entry.debit.toLocaleString() : "-"}</Td>
                 <Td isNumeric>{entry.credit ? entry.credit.toLocaleString() : "-"}</Td>
+                <Td isNumeric>{entry.credit - entry.debit}</Td>
               </Tr>
             ))}
           </Tbody>
