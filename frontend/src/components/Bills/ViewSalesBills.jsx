@@ -73,10 +73,10 @@ const ViewSalesBills = () => {
       const salesData = response.data;
 
       // Filter the data for the selected supplier
-      const relevantSales = salesData.filter(sale => sale.supplier && sale.supplier._id === supplier_id);
+      const matchingSales = salesData.filter(sale => sale.supplier && sale.supplier._id === supplier_id);
 
-      if (relevantSales.length > 0) {
-        const lastSale = relevantSales[relevantSales.length - 1];
+      if (matchingSales.length > 0) {
+        const lastSale = matchingSales[matchingSales.length - 1];
         setAdvancePayment(lastSale.supplier?.advance || 0);
         setPreviousBalance(lastSale.supplier?.balance || 0);
 
@@ -357,9 +357,9 @@ const ViewSalesBills = () => {
         <Button mt={5} colorScheme="teal" onClick={handlePrint}>
           Print/Save
         </Button>
-        <Button mt={5} ml={3} colorScheme="teal" onClick={handleSubmit}>
+        {/* <Button mt={5} ml={3} colorScheme="teal" onClick={handleSubmit}>
           Register Bill
-        </Button>
+        </Button> */}
       </Box>
     </Box>
   );

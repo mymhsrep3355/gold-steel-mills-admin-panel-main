@@ -167,6 +167,7 @@ const BillComponent = () => {
         <TabList mt={5}>
           <Tab>Sale Bill</Tab>
           <Tab>All Bills</Tab>
+          <Tab>Sales Bill</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
@@ -179,6 +180,10 @@ const BillComponent = () => {
               handleEditBill={handleEditBill}
               handleDeleteBill={handleDeleteBill}
             />
+          </TabPanel>
+
+          <TabPanel>
+            <ViewSalesBills />
           </TabPanel>
         </TabPanels>
       </Tabs>

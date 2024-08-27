@@ -7,11 +7,12 @@ router.use(middleware.verifyToken);
 router.use(middleware.verifyAccountStatus);
 
 
-
+router.get('/getBilletScrape', PurchaseController.getScrapeOfBillet);
 router.get('/', PurchaseController.getAllPurchases);
 
+router.get('/supplier/:supplierId', PurchaseController.getPurchaseBySupplier);
 router.get('/:id', PurchaseController.getPurchaseById);
-router.get('/supplier/:id', PurchaseController.getPurchaseBySupplier);
+
 
 router.post('/register', PurchaseController.createPurchase);
 
