@@ -209,7 +209,7 @@ export const ProductionTabs = () => {
         <TabPanels>
           <TabPanel>
             <Stack spacing={4} align="center">
-              <Stack spacing={4} align="center">
+              <Stack spacing={4} align="center" w={"100%"} p={2}>
                 <Button
                   leftIcon={<FaPlus />}
                   colorScheme="teal"

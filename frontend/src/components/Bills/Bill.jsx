@@ -237,7 +237,7 @@ const Bill = () => {
             <Input type="date" />
           </FormControl> */}
           <FormControl>
-            <FormLabel>Supplier</FormLabel>
+            <FormLabel>Supplier / Customer</FormLabel>
             <Select
               placeholder="Select Supplier"
               onChange={(e) => handleSupplier(e)}

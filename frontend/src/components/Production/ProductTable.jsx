@@ -3,7 +3,7 @@ import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 
 export const ProductTable = ({ products, onEdit, onDelete }) => {
   return (
-    <Table variant="striped" colorScheme="teal" mt={5}>
+    <Table variant="striped" colorScheme="teal" mt={5} width="100%">
       <Thead>
         <Tr>
           <Th>Product Name</Th>

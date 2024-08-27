@@ -1,15 +1,19 @@
 export const SidebarTab = ({ title, children, active, setActive }) => {
+  const isActive = active.toLowerCase() === title.toLowerCase();
+
   return (
     <div
       onClick={() => setActive(title)}
       className={`flex items-center ${
-        active.toLowerCase() === title.toLowerCase()
-          ? "bg-gray-200"
-          : "bg-white"
-      }  cursor-pointer rounded hover:bg-gray-200 p-2 w-full  space-x-4 justify-start`}
+        isActive ? "bg-gray-300 text-black" : "bg-white text-gray-600"
+      } cursor-pointer rounded hover:bg-gray-200 p-2 w-full space-x-4 justify-start`}
     >
       {children}
-      <h1 className={"text-gray-600 hover:text-gray-700 text-sm font-bold "}>
+      <h1
+        className={`${
+          isActive ? "text-gray-800 font-bold" : "text-gray-600"
+        } text-sm`}
+      >
         {title}
       </h1>
     </div>
