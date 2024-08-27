@@ -181,14 +181,14 @@ const Purchases = () => {
                       <Td>{item.name}</Td>
                       <Td>{item.stock}</Td>
                       <Td>
-                        <Button
+                        {/* <Button
                           size="sm"
                           colorScheme="blue"
                           mr={2}
                           onClick={() => handleEditItem(item)}
                         >
                           Edit
-                        </Button>
+                        </Button> */}
                         <Button
                           size="sm"
                           colorScheme="red"

@@ -87,10 +87,15 @@ const ViewPurchaseBill = () => {
       });
 
       const supplierData = response.data;
-      setAdvancePayment(supplierData.advance || 0);
-      setPreviousBalance(supplierData.balance || 0);
 
-      const purchaseRows = supplierData.map((bill, index) => ({
+      const selectedSupplierData = suppliers.find((supplier) => supplier._id === supplier_id);
+      if (!selectedSupplierData) {
+        return;
+      }
+      setAdvancePayment(selectedSupplierData.advance || 0);
+      setPreviousBalance(selectedSupplierData.balance || 0);
+
+      const purchaseRows = supplierData?.map((bill, index) => ({
         id: index + 1,
         items: bill.bills.map((item, itemIndex) => ({
           id: itemIndex + 1,
@@ -124,7 +129,7 @@ const ViewPurchaseBill = () => {
       row.items.forEach((item) => {
         const quantity = parseFloat(item.quantity) || 0;
         const price = parseFloat(item.price) || 0;
-        total += (quantity - item.kaat) * price;
+        total += (quantity - (item.kaat || 0)) * price;
       });
     });
     total -= advancePayment;
