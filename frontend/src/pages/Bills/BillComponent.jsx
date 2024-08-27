@@ -15,7 +15,7 @@ import {
   Td,
   useToast,
 } from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, ViewIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import { PageHeader } from "../../components/PageHeader";
 import { BASE_URL } from "../../utils";
@@ -26,6 +26,7 @@ import AddItemModal from "../../components/Bills/AddItemModal";
 import AllBills from "../../components/Bills/AllBills";
 import EditBillModal from "../../components/Bills/EditBillModal";
 import EditItemModal from "../../components/Bills/EditItemModal";
+import ViewSalesBills from "../../components/Bills/ViewSalesBills";
 
 const BillComponent = () => {
   const [items, setItems] = useState([]);
@@ -165,8 +166,8 @@ const BillComponent = () => {
       <Tabs variant="solid-rounded" colorScheme="teal">
         <TabList mt={5}>
           <Tab>Sale Bill</Tab>
-          {/* <Tab>Add Item</Tab> */}
           <Tab>All Bills</Tab>
+          <Tab>View Sales </Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
@@ -179,6 +180,10 @@ const BillComponent = () => {
               handleEditBill={handleEditBill}
               handleDeleteBill={handleDeleteBill}
             />
+          </TabPanel>
+
+          <TabPanel>
+            <ViewSalesBills/>
           </TabPanel>
         </TabPanels>
       </Tabs>
