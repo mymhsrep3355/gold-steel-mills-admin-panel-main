@@ -37,6 +37,8 @@ const ExpenseTracking = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [selectedCategoryName, setSelectedCategoryName] = useState("");
+
+  const [subtotal, setSubtotal] = useState(0);
   const { token } = useAuthProvider();
   const toast = useToast();
   const componentRef = useRef();
@@ -98,13 +100,53 @@ const ExpenseTracking = () => {
     setExpenses(updatedExpenses);
   };
 
-  const calculateSubtotal = () => {
-    let subtotal = 0;
-    expenses.forEach((expense) => {
-      subtotal += parseFloat(expense.amount) || 0;
-    });
-    return subtotal.toFixed(2);
+  const calculateSubtotal = async () => {
+    const fetchExpenses = async () => {
+      try {
+        const response = await axios.get(
+          `${BASE_URL}expenses`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setExpenses(response.data);
+      } catch (error) {
+        console.error("Error fetching expenses:", error);
+        toast({
+          title: "Failed to fetch expenses.",
+          description: error.response?.data?.message || "Something went wrong.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+    };
+    await fetchExpenses();
+
+    let calcSubtotal = () => {
+      return new Promise((resolve, reject) => {  // Return the Promise directly
+        let total = 0;
+        expenses.forEach((expense) => {
+          total += parseFloat(expense.amount) || 0;
+        });
+        resolve(total.toFixed(2));
+      });
+    };
+    const total = parseFloat(await calcSubtotal());
+    
+    return total;
   };
+
+  useEffect(() => {
+    const fetchSubtotal = async () => {
+      const total = await calculateSubtotal();
+
+      setSubtotal(total);
+    };
+    fetchSubtotal();
+  }, []);
 
   const filterExpensesByCategory = () => {
     return expenses.filter((expense) => expense.category === selectedCategory);
@@ -185,7 +227,7 @@ const ExpenseTracking = () => {
                 color="teal.600"
                 textAlign="right"
               >
-                Subtotal: {calculateSubtotal()}
+                Subtotal: {subtotal}
               </Box>
 
               <Button mt={5} bg="teal.600" onClick={handlePrint} size="lg">
