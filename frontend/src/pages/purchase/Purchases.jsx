@@ -26,6 +26,7 @@ import { PageHeader } from "../../components/PageHeader";
 import PurchaseForm from "../../components/Purchases/PurchaseForm";
 import PurchaseCard from "../../components/Purchases/PurchaseCard";
 import AddItemModal from "../../components/Bills/AddItemModal";
+import ViewPurchaseBill from "../../components/Purchases/ViewPurchaseBill";
 
 const Purchases = () => {
   const [purchases, setPurchases] = useState([]);
@@ -145,6 +146,9 @@ const Purchases = () => {
           <Tab>Add Purchase</Tab>
           <Tab>Add Items </Tab>
           <Tab>View Purchases</Tab>
+          <Tab>
+            View Purchase Bill
+          </Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
@@ -235,6 +239,9 @@ const Purchases = () => {
                 <PurchaseCard key={purchase._id} purchase={purchase} />
               ))}
             </SimpleGrid>
+          </TabPanel>
+          <TabPanel>
+            <ViewPurchaseBill/>
           </TabPanel>
         </TabPanels>
       </Tabs>
