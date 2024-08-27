@@ -229,7 +229,7 @@ const ViewSalesBills = () => {
             />
           </FormControl>
           <FormControl>
-            <FormLabel>Supplier</FormLabel>
+            <FormLabel>Supplier / Customer</FormLabel>
             <Select placeholder="Select Supplier" onChange={handleSupplier}>
               {suppliers.map((supplier) => (
                 <option key={supplier._id} value={supplier._id}>

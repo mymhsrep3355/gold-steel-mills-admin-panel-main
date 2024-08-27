@@ -94,7 +94,7 @@ export const Suppliers = () => {
 
   return (
     <div className="flex flex-col gap-3">
-      <PageHeader title="Suppliers" />
+      <PageHeader title="Suppliers / Customers" />
       <InputGroup size="md">
         <InputField
           value={searchInput}
