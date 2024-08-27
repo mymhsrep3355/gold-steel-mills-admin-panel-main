@@ -129,6 +129,11 @@ const Footer = () => {
             Address: 78W6+4HW, Daska Rd, سیالکوٹ, Sialkot, Punjab 52250
           </Text>
           <Text fontSize="sm" color="#9d9d9d">
+              CEO Hamza Ghaffar <br />
+              CEO Sufyan Ghaffar <br />
+              Managing Director:Usama Ghaffar
+           </Text>
+          <Text fontSize="sm" color="#9d9d9d">
             <strong>White Gold Steel Mills:-</strong>
             <br />
             Call: 052-1565625-3
@@ -142,6 +147,9 @@ const Footer = () => {
             <strong>WGS- Enterprises:-</strong>
             <br />
             Call: +92-305-6148001
+          </Text>
+          <Text fontSize="sm" color="#9d9d9d">
+            <strong>Sufyan Ghaffar :- +92-335-3471000</strong>
           </Text>
         </VStack>
 

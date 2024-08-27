@@ -182,7 +182,7 @@ const PurchaseCard = ({ purchase, fetchPurchases }) => {
               <Text ml={2}>{new Date(purchase.date).toLocaleDateString()}</Text>
             </Flex>
             <Badge colorScheme="green" fontSize="md">
-              Total: ${purchase.totalAmount}
+              Total: PKR {purchase.totalAmount}
             </Badge>
           </HStack>
 
@@ -205,7 +205,7 @@ const PurchaseCard = ({ purchase, fetchPurchases }) => {
                   </Text>
                 </Stack>
                 <Badge colorScheme="yellow" fontSize="sm">
-                  ${bill.total}
+                  PKR {bill.total}
                 </Badge>
               </Flex>
               <Flex justifyContent="space-between" mt={2}>

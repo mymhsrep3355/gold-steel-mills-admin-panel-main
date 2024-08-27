@@ -269,7 +269,7 @@ const PurchaseForm = () => {
         </HStack>
         <SimpleGrid columns={[1, 2]} spacing={5} mb={8} className="print-full-width">
           <FormControl>
-            <FormLabel>Suppliers</FormLabel>
+            <FormLabel>Suppliers / Customers</FormLabel>
             <Select
               placeholder="Select supplier"
               onChange={handleSupplierChange}

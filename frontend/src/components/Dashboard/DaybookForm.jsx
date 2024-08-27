@@ -127,7 +127,7 @@ const DaybookForm = ({ onEntryAdded }) => {
           </Select>
         </FormControl>
         <FormControl id="supplierId">
-          <FormLabel>Supplier</FormLabel>
+          <FormLabel>Supplier / Customer</FormLabel>
           <Select
             name="supplierId"
             value={daybookData.supplierId}
