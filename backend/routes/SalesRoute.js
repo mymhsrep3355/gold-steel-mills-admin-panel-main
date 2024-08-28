@@ -10,8 +10,9 @@ router.use(middleware.verifyAccountStatus);
 router.get('/ironbarscrape', sales.getIronBarScrape);
 
 router.get('/', sales.getAllSales);
+router.get('/supplier/', sales.getSalesBySupplier);
 router.get('/customer/:id', sales.getSalesByCustomer);
-router.get('/supplier/:id', sales.getSalesBySupplier);
+
 
 // Dynamic routes should come after static routes
 router.get('/:id', sales.getSalesById);

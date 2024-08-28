@@ -8,9 +8,10 @@ router.use(middleware.verifyAccountStatus);
 
 
 router.get('/getBilletScrape', PurchaseController.getScrapeOfBillet);
+router.get('/supplier', PurchaseController.getPurchaseBySupplier);
 router.get('/', PurchaseController.getAllPurchases);
 
-router.get('/supplier/:supplierId', PurchaseController.getPurchaseBySupplier);
+
 router.get('/:id', PurchaseController.getPurchaseById);
 
 

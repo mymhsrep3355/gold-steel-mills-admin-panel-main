@@ -124,7 +124,7 @@ async function createSales(req, res) {
 
 async function getSalesBySupplier(req, res) {
     try {
-        const { supplier, startDate, endDate } = req.params;
+        const { supplier, startDate, endDate } = req.query;
 
         // Build the query object
         let query = {};

@@ -38,8 +38,9 @@ const ViewPurchaseBill = () => {
   const [previousBalance, setPreviousBalance] = useState(0);
   const [items, setItems] = useState([]);
   const [unloading, setUnloading] = useState(0);
+  const [startDate, setStartDate] = useState("");  // State for start date
+  const [endDate, setEndDate] = useState("");      // State for end date
 
-  const [incrementalId, setIncrementalId] = useState(1);
   const componentRef = useRef();
   const toast = useToast();
   const { token } = useAuthProvider();
@@ -79,10 +80,28 @@ const ViewPurchaseBill = () => {
     const supplier_id = event.target.value;
     setSelectedSupplier(supplier_id);
     
+    // Check if both dates are provided
+    if (!startDate || !endDate) {
+      toast({
+        title: "Date Range Required",
+        description: "Please select both start and end dates.",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     try {
-      const response = await axios.get(`${BASE_URL}purchases/supplier/${supplier_id}`, {
+      console.log(supplier_id, startDate, endDate);
+      const response = await axios.get(`${BASE_URL}purchases/supplier`, {
         headers: {
           Authorization: `Bearer ${token}`,
+        },
+        params: {
+          supplierId: supplier_id,
+          startDate,
+          endDate,
         },
       });
 
@@ -195,7 +214,7 @@ const ViewPurchaseBill = () => {
             <Text color="gray.500">Glotian Mor, Daska</Text>
           </VStack>
         </HStack>
-        <SimpleGrid columns={[1, 2]} spacing={5} mb={8} className="print-full-width">
+        <SimpleGrid columns={[1, 3]} spacing={5} mb={8} className="print-full-width">
           <FormControl>
             <FormLabel>Suppliers / Customers</FormLabel>
             <Select
@@ -208,6 +227,22 @@ const ViewPurchaseBill = () => {
                 </option>
               ))}
             </Select>
+          </FormControl>
+          <FormControl>
+            <FormLabel>Start Date</FormLabel>
+            <Input
+              type="date"
+              value={startDate}
+              onChange={(e) => {setStartDate(e.target.value)}}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>End Date</FormLabel>
+            <Input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
           </FormControl>
         </SimpleGrid>
         <Table variant="simple" colorScheme="teal" mb={8} className="print-table">

@@ -272,9 +272,34 @@ async function deletePurchase(req, res) {
 
 const getPurchaseBySupplier = async (req, res) => {
     try {
-        const { supplierId } = req.params;
+        const { supplierId, startDate, endDate } = req.query;
+
+        console.log(supplierId)
+
+        // Build the query object
+        let query = {};
+        if (startDate || endDate) {
+            query.date = {};
+
+            if (startDate) {
+                query.date.$gte = new Date(new Date(startDate).setHours(0, 0, 0, 0));
+            }
+
+            if (endDate) {
+                query.date.$lte = new Date(new Date(endDate).setHours(23, 59, 59, 999));
+            }
+        }
+
+        if (supplierId) {
+            query.supplier = supplierId;
+        }
+
+        // console.log(query);
+
+        const purchases = await Purchase.find(query).populate('supplier').populate('bills');
+
         // console.log(supplierId);
-        const purchases = await Purchase.find({ supplier: supplierId }).populate('supplier').populate('bills');
+        // const purchases = await Purchase.find({ supplier: supplierId }).populate('supplier').populate('bills');
         // console.log(purchases);
         res.status(200).json(purchases);
     } catch (error) {

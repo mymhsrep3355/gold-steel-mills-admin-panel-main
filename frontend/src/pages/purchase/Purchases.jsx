@@ -134,6 +134,10 @@ const Purchases = () => {
     }
   };
 
+  useEffect(() => {
+    fetchItems();
+  }, []);
+
 
 
   
