@@ -48,6 +48,11 @@ const ExpenseTracking = () => {
   const subTextColor = useColorModeValue("gray.500", "gray.400");
 
   useEffect(() => {
+    console.log(expenses)
+    setSubtotal(expenses.reduce((total, expense) => total + expense.amount, 0));
+  },[expenses]);
+  
+  useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(`${BASE_URL}categories`, {
@@ -139,14 +144,14 @@ const ExpenseTracking = () => {
     return total;
   };
 
-  useEffect(() => {
-    const fetchSubtotal = async () => {
-      const total = await calculateSubtotal();
+  // useEffect(() => {
+  //   const fetchSubtotal = async () => {
+  //     const total = await calculateSubtotal();
 
-      setSubtotal(total);
-    };
-    fetchSubtotal();
-  }, []);
+  //     setSubtotal(total);
+  //   };
+  //   fetchSubtotal();
+  // }, []);
 
   const filterExpensesByCategory = () => {
     return expenses.filter((expense) => expense.category === selectedCategory);
