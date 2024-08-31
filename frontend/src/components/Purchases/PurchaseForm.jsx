@@ -120,7 +120,8 @@ const PurchaseForm = () => {
       row.items.forEach((item) => {
         const quantity = parseFloat(item.quantity) || 0;
         const price = parseFloat(item.price) || 0;
-        total += quantity * price;
+        const kaat = parseFloat(item.kaat) || 0;
+        total +=  (quantity - kaat) * price;
       });
     });
     total -= advancePayment;
