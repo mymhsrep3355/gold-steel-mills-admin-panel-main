@@ -82,7 +82,7 @@ async function createSupplier(req, res) {
     console.log('Creating new supplier...');
     const { firstName, lastName, contactNumber, email } = req.body;
 
-    if (!firstName || !lastName || !contactNumber) {
+    if (!firstName || !lastName) {
         console.log('Missing required fields.');
         return res.status(400).json({ message: 'First name, last name, and contact number are required.' });
     }

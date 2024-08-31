@@ -70,7 +70,7 @@ export const SupplierCreate = () => {
       <form onSubmit={handleSupplierCreate}>
         <VStack spacing={5}>
           {Forms.SUPPLIER_CREATE.map((field, index) => (
-            <FormControl key={index} isRequired>
+            <FormControl key={index}>
               <FormLabel htmlFor={field.name}>{field.label}</FormLabel>
               <Input
                 id={field.name}
@@ -79,6 +79,7 @@ export const SupplierCreate = () => {
                 placeholder={field.placeholder}
                 focusBorderColor="blue.400"
                 errorBorderColor="red.300"
+                isRequired={field.name === 'firstName' || field.name === 'lastName'}
               />
             </FormControl>
           ))}
