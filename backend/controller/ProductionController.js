@@ -74,11 +74,16 @@ async function createProduction(req, res) {
 
         const items = await Item.find()
         // Update the item stock
-        for (const item of items) {
+        for (let item of items) {
             item.stock -= (quantity + waste);
+
             if (item.stock < 0) {
-                return res.status(400).json({ message: 'Insufficient stock', item: item.name, stock: item.stock });
+                item.stock = 0
             }
+
+            // if (item.stock < 0) {
+            //     return res.status(400).json({ message: 'Insufficient stock', item: item.name, stock: item.stock });
+            // }
         }
 
         

@@ -65,7 +65,7 @@ const DaybookTable = ({ daybooks, onEdit, onDelete, initialBalance = 0 }) => {
             <Th isNumeric>Debit (PKR)</Th>
             <Th isNumeric>Credit (PKR)</Th>
             <Th isNumeric>Balance (PKR)</Th>
-            <Th Date isNumeric> Date  </Th>
+            {/* <Th Date isNumeric> Date  </Th> */}
             <Th>Actions</Th>
           </Tr>
         </Thead>
@@ -81,7 +81,7 @@ const DaybookTable = ({ daybooks, onEdit, onDelete, initialBalance = 0 }) => {
                 {entry.credit ? entry.credit.toLocaleString() : "-"}
               </Td>
               <Td isNumeric>{entry.balance.toLocaleString()}</Td>
-              <Td isNumeric> {new Date(entry.date).toLocaleDateString()} </Td>
+              {/* <Td isNumeric> {new Date(entry.date).toLocaleDateString()} </Td> */}
               <Td>
                 <IconButton
                   aria-label="Edit entry"

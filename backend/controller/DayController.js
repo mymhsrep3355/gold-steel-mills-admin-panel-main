@@ -347,7 +347,7 @@ const getSupplierTransactions = async (req, res) => {
                 // console.log(itemType)
                 combinedTransactions.push({
                     date: bill.date,
-                    description: `${"Type: " + itemType?.name  + " ||  Weight: " + bill.weight + "|| Kaat: " + bill.kaat + "" }`,
+                    description: `${"Type: " + itemType?.name  + " ||  Weight: " + bill.weight + "" }`,
                     debit: bill.rate * bill.quantity, 
                     credit: 0
                 });
