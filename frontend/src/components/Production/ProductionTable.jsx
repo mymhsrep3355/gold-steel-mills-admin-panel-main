@@ -16,10 +16,10 @@ export const ProductionTable = ({ productions, onEdit, onDelete }) => {
       <Tbody>
         {productions.map((production, index) => (
           <Tr key={index}>
-            <Td>{production.product}</Td>
+            <Td>{production?.product?.name}</Td>
             <Td>{production.quantity}</Td>
             <Td>{production.waste}</Td>
-            <Td>{production.subtotal}</Td>
+            <Td>{production.quantity - production.waste}</Td>
             <Td>
               <IconButton
                 aria-label="Edit production"

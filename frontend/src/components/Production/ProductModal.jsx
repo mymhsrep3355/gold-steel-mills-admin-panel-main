@@ -24,8 +24,8 @@ export const ProductModal = ({ isOpen, onClose, productName, setProductName, sto
         },
         body: JSON.stringify({
           name: productName,
-          // stock: Number(stock),
-          stock: Number(0),
+          stock: Number(stock),
+          // stock: Number(0),
         }),
       });
       console.log(response);
@@ -58,12 +58,12 @@ export const ProductModal = ({ isOpen, onClose, productName, setProductName, sto
             onChange={(e) => setProductName(e.target.value)}
             mb={3}
           />
-          {/* <Input
+          <Input
             placeholder="Stock"
             type="number"
             value={stock}
             onChange={(e) => setStock(e.target.value)}
-          /> */}
+          />
         </ModalBody>
 
         <ModalFooter>

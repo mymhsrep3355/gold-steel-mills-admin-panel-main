@@ -8,7 +8,7 @@ export const ProductTable = ({ products, onEdit, onDelete }) => {
         <Tr>
           <Th>Product Name</Th>
           <Th>Total Stock</Th>
-          <Th>Kaat</Th>
+          <Th>Waste</Th>
           <Th>Actions</Th>
         </Tr>
       </Thead>
@@ -23,7 +23,7 @@ export const ProductTable = ({ products, onEdit, onDelete }) => {
                 aria-label="Edit product"
                 icon={<EditIcon />}
                 mr={2}
-                onClick={() => onEdit(product._id, product.name, product.stock)}
+                onClick={() => onEdit(product._id, product.name, product.stock, product.waste)}
               />
               <IconButton
                 aria-label="Delete product"

@@ -26,6 +26,7 @@ import { BASE_URL } from "../../utils";
 export const ProductionTabs = () => {
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [isProductionModalOpen, setIsProductionModalOpen] = useState(false);
+  const [productId, setProductId] = useState("");
   const [productName, setProductName] = useState("");
   const [stock, setStock] = useState("");
   const [products, setProducts] = useState([]);
@@ -62,6 +63,29 @@ export const ProductionTabs = () => {
         console.error("Error fetching products:", error);
       }
     };
+
+    const fetchProductions = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}productions`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log(response)
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data);
+          setProductions(data);
+        } else {
+          console.error("Failed to fetch productions");
+        }
+      } catch (error) {
+        console.error("Error fetching productions:", error);
+      }
+    }
+
+    fetchProductions();
 
     fetchProducts();
   }, [token]);
@@ -240,6 +264,7 @@ export const ProductionTabs = () => {
               isEditing={isEditing}
               productId={editingProductId}
               onSave={handleSaveProduct}
+              
             />
           </TabPanel>
 
