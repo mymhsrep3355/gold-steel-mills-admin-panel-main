@@ -79,8 +79,10 @@ const PurchaseForm = () => {
     setSelectedSupplier(supplier_id);
     const supplier = suppliers.find((s) => s._id === supplier_id);
     if (supplier) {
-      setAdvancePayment(supplier.advance || 0);
-      setPreviousBalance(supplier.balance || 0);
+      // setAdvancePayment(supplier.advance || 0);
+      // setPreviousBalance(supplier.balance || 0);
+      setAdvancePayment(0);
+      setPreviousBalance(0);
     }
   };
 
