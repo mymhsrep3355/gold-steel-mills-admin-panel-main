@@ -2,6 +2,7 @@ const Daybook = require('../models/Daybook');
 const Supplier = require('../models/Supplier');
 const Purchase = require('../models/Purchase');
 const Sales = require('../models/Sales');
+const ItemType = require('../models/Item');
 const { applyThirdPayment, applyThirdPaymentToAdvancedFirst } = require('../utils/PaymentUtils');
 
 // Function to record a new daybook entry with optional supplier updates
@@ -297,16 +298,19 @@ const getSupplierTransactions = async (req, res) => {
                 credit += transaction.amount;
             }
         }
+        // console.log(purchases[0].bills)
 
         for (let purchase of purchases) {
             for (let bill of purchase.bills) {
+                const itemType = await ItemType.findOne({ _id: bill.itemType });
+                // console.log(itemType)
                 combinedTransactions.push({
                     date: bill.date,
-                    description: `Purchase Bill: ${bill._id}`,
+                    description: `${"Type: " + itemType.name  + " ||  Weight: " + bill.weight }`,
                     debit: 0, 
-                    credit: bill.rate
+                    credit: bill.total
                 });
-                credit += bill.rate;
+                credit += bill.total;
             }
         }
 
@@ -315,10 +319,10 @@ const getSupplierTransactions = async (req, res) => {
                 combinedTransactions.push({
                     date: bill.date,
                     description: `Sales Bill: ${bill._id}`,
-                    debit: bill.rate, 
+                    debit: bill.total, 
                     credit: 0
                 });
-                debit += bill.rate;
+                debit += bill.total;
             }
         }
 
