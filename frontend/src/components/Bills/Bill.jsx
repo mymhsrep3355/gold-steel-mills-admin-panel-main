@@ -61,6 +61,7 @@ const Bill = () => {
     }
 
     fetchSuppliers();
+    fetchItems();
   }, []);
 
   const handleSupplier = (event) => {
@@ -130,7 +131,7 @@ const Bill = () => {
         supplier: selectedSupplier || "",
         customerName: customerName || "",
         weight: parseFloat(row.quantity || 0),
-        // itemType: selectedItem, //removed as not accepted by api
+        itemType: selectedItem, //removed as not accepted by api
         quantity: parseFloat(row.quantity || 0),
         vehicle_no: row.vehicleNumber || "",
         rate: parseFloat(row.price || 0),
@@ -259,6 +260,7 @@ const Bill = () => {
               <Th color="white">Bill Number</Th>
               <Th color="white">Gate Pass Number</Th>
               <Th color="white">Vehicle Number</Th>
+              <Th color="white">Item Type</Th>
               <Th color="white">Weight/Quantity</Th>
               <Th color="white">Rate/Price</Th>
               <Th color="white">Total</Th>
@@ -302,6 +304,17 @@ const Bill = () => {
                         updateRow(index, "vehicleNumber", e.target.value)
                       }
                     />
+                  </Tooltip>
+                </Td>
+                <Td minW={"100px"}>
+                  <Tooltip label="Item Type">
+                    <Select>
+                      {items.map((itemType) => (
+                        <option key={itemType._id} value={itemType._id}>
+                          {itemType.name}
+                        </option>
+                      ))}
+                    </Select>
                   </Tooltip>
                 </Td>
                 <Td>
