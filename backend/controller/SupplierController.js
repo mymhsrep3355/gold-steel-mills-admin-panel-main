@@ -88,11 +88,11 @@ async function createSupplier(req, res) {
     }
 
     try {
-        const existingSupplier = await Supplier.findOne({ contactNumber });
-        if (existingSupplier) {
-            console.log('Supplier with this contact number already exists.');
-            return res.status(409).json({ message: 'A supplier with this contact number already exists.' });
-        }
+        // const existingSupplier = await Supplier.findOne({ contactNumber });
+        // if (existingSupplier) {
+        //     console.log('Supplier with this contact number already exists.');
+        //     return res.status(409).json({ message: 'A supplier with this contact number already exists.' });
+        // }
 
         const supplier = new Supplier({
             firstName,
