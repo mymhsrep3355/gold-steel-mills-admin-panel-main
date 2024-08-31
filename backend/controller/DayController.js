@@ -283,7 +283,7 @@ const getSupplierTransactions = async (req, res) => {
             if (transaction.type === 'debit') {
                 combinedTransactions.push({
                     date: transaction.date,
-                    description: transaction.description,
+                    description: transaction.description ? transaction.description : 'N/A',
                     debit: transaction.amount, 
                     credit: 0
                 });
@@ -291,7 +291,7 @@ const getSupplierTransactions = async (req, res) => {
             } else if (transaction.type === 'credit') {
                 combinedTransactions.push({
                     date: transaction.date,
-                    description: transaction.description,
+                    description: transaction.description ? transaction.description : 'N/A',
                     debit: 0, 
                     credit: transaction.amount
                 });
@@ -303,10 +303,24 @@ const getSupplierTransactions = async (req, res) => {
         for (let purchase of purchases) {
             for (let bill of purchase.bills) {
                 const itemType = await ItemType.findOne({ _id: bill.itemType });
+                if (!itemType) {
+                    itemType = {}
+                    itemType['name']=''
+                }
+                
+                if (bill.kaat == undefined) {
+                    bill['kaat'] = 0
+                }
+
+                if (bill.weight == undefined) {
+                    bill['weight'] = 0
+                }
+
+
                 // console.log(itemType)
                 combinedTransactions.push({
                     date: bill.date,
-                    description: `${"Type: " + itemType.name  + " ||  Weight: " + bill.weight }`,
+                    description: `${"Type: " + itemType.name  + " ||  Weight: " + bill.weight + " Kaat: " + bill.kaat + "" }`,
                     debit: 0, 
                     credit: bill.rate * bill.quantity
                 });
@@ -321,10 +335,19 @@ const getSupplierTransactions = async (req, res) => {
                     itemType = {}
                     itemType['name']=''
                 }
+
+                
+                
+                if (bill.kaat == undefined) {
+                    bill['kaat'] = 0
+                }
+                if (bill.weight == undefined) {
+                    bill['weight'] = 0
+                }
                 // console.log(itemType)
                 combinedTransactions.push({
                     date: bill.date,
-                    description: `${"Type: " + itemType?.name  + " ||  Weight: " + bill.weight }`,
+                    description: `${"Type: " + itemType?.name  + " ||  Weight: " + bill.weight + "|| Kaat: " + bill.kaat + "" }`,
                     debit: bill.rate * bill.quantity, 
                     credit: 0
                 });
