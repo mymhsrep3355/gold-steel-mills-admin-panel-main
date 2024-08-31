@@ -272,7 +272,7 @@ const PurchaseForm = () => {
         </HStack>
         <SimpleGrid columns={[1, 2]} spacing={5} mb={8} className="print-full-width">
           <FormControl>
-            <FormLabel>Suppliers / Customers</FormLabel>
+            <FormLabel>Suppliers</FormLabel>
             <Select
               placeholder="Select supplier"
               onChange={handleSupplierChange}
@@ -422,6 +422,7 @@ const PurchaseForm = () => {
               type="number"
               value={advancePayment}
               onChange={(e) =>
+                // setAdvancePayment(parseFloat(e.target.value) || 0)
                 setAdvancePayment(parseFloat(e.target.value) || 0)
               }
               className="print-full-width"

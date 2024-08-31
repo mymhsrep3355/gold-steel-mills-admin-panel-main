@@ -111,8 +111,12 @@ const ViewPurchaseBill = () => {
       if (!selectedSupplierData) {
         return;
       }
-      setAdvancePayment(selectedSupplierData.advance || 0);
-      setPreviousBalance(selectedSupplierData.balance || 0);
+      // setAdvancePayment(selectedSupplierData.advance || 0);
+      // setPreviousBalance(selectedSupplierData.balance || 0);
+
+      setAdvancePayment(0);
+      setPreviousBalance(0);
+
 
       const purchaseRows = supplierData?.map((bill, index) => ({
         id: index + 1,
@@ -151,9 +155,9 @@ const ViewPurchaseBill = () => {
         total += (quantity - (item.kaat || 0)) * price;
       });
     });
-    total -= advancePayment;
-    total -= unloading;
-    const subtotal = total + previousBalance;
+    total -= parseFloat(advancePayment);
+    total -= parseFloat(unloading);
+    const subtotal = total + parseFloat(previousBalance);
 
     return { total: total.toFixed(2), subtotal: subtotal.toFixed(2) };
   };
@@ -216,7 +220,7 @@ const ViewPurchaseBill = () => {
         </HStack>
         <SimpleGrid columns={[1, 3]} spacing={5} mb={8} className="print-full-width">
           <FormControl>
-            <FormLabel>Suppliers / Customers</FormLabel>
+            <FormLabel>Suppliers</FormLabel>
             <Select
               placeholder="Select supplier"
               onChange={handleSupplierChange}
@@ -359,7 +363,7 @@ const ViewPurchaseBill = () => {
             <Input
               type="number"
               value={advancePayment}
-              readOnly
+              onChange={(e) => setAdvancePayment(e.target.value)}
               className="print-full-width"
             />
           </FormControl>
@@ -368,7 +372,7 @@ const ViewPurchaseBill = () => {
             <Input
               type="number"
               value={previousBalance}
-              readOnly
+              onChange={(e) => setPreviousBalance(e.target.value)}
               className="print-full-width"
             />
           </FormControl>
@@ -377,7 +381,7 @@ const ViewPurchaseBill = () => {
             <Input
               type="number"
               value={unloading}
-              readOnly
+              onChange={(e) => setUnloading(e.target.value)}              
               className="print-full-width"
             />
           </FormControl>

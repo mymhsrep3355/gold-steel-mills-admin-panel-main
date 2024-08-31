@@ -69,8 +69,10 @@ const Bill = () => {
     console.log(supplier_id);
     suppliers.find((supplier) => {
       if (supplier._id === supplier_id) {
-        setAdvancePayment(supplier.advance || 0);
-        setPreviousBalance(supplier.balance || 0);
+        // setAdvancePayment(supplier.advance || 0);
+        // setPreviousBalance(supplier.balance || 0);
+        setAdvancePayment(0);
+        setPreviousBalance(0);
         return true;
       }
     })
@@ -222,8 +224,8 @@ const Bill = () => {
             <Text color="gray.500">Glotian Mor, Daska</Text>
           </VStack>
         </HStack>
-        <SimpleGrid columns={[1, 2]} spacing={5} mb={8}>
-          <FormControl>
+        <SimpleGrid columns={[1, 3]} spacing={5} mb={8}>
+          {/* <FormControl>
             <FormLabel>Customer Name</FormLabel>
             <Input
               type="text"
@@ -231,15 +233,15 @@ const Bill = () => {
               onChange={(e) => setCustomerName(e.target.value)}
             />
 
-          </FormControl>
+          </FormControl> */}
           {/* <FormControl>
             <FormLabel>Date</FormLabel>
             <Input type="date" />
           </FormControl> */}
           <FormControl>
-            <FormLabel>Supplier / Customer</FormLabel>
+            <FormLabel>Customer</FormLabel>
             <Select
-              placeholder="Select Supplier"
+              placeholder="Select Customer"
               onChange={(e) => handleSupplier(e)}
             >
               {suppliers.map((supplier) => (

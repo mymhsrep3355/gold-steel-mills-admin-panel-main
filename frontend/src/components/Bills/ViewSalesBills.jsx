@@ -113,8 +113,12 @@ const ViewSalesBills = () => {
 
       if (matchingSales.length > 0) {
         const lastSale = matchingSales[matchingSales.length - 1];
-        setAdvancePayment(lastSale.supplier?.advance || 0);
-        setPreviousBalance(lastSale.supplier?.balance || 0);
+        // setAdvancePayment(lastSale.supplier?.advance || 0);
+        // setPreviousBalance(lastSale.supplier?.balance || 0);
+
+        setAdvancePayment(0);
+        setPreviousBalance(0);
+        
 
         const filledRows = lastSale.bills.map((bill, index) => ({
           id: index + 1,
@@ -201,18 +205,18 @@ const ViewSalesBills = () => {
             <Text color="gray.500">Glotian Mor, Daska</Text>
           </VStack>
         </HStack>
-        <SimpleGrid columns={[1, 2]} spacing={5} mb={8}>
-          <FormControl>
+        <SimpleGrid columns={[1, 3]} spacing={5} mb={8}>
+          {/* <FormControl>
             <FormLabel>Customer Name</FormLabel>
             <Input
               type="text"
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
             />
-          </FormControl>
+          </FormControl> */}
           <FormControl>
-            <FormLabel>Supplier / Customer</FormLabel>
-            <Select placeholder="Select Supplier" onChange={handleSupplier}>
+            <FormLabel>Customer</FormLabel>
+            <Select placeholder="Select Customer" onChange={handleSupplier}>
               {suppliers.map((supplier) => (
                 <option key={supplier._id} value={supplier._id}>
                   {supplier.firstName}
