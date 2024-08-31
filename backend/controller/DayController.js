@@ -308,21 +308,23 @@ const getSupplierTransactions = async (req, res) => {
                     date: bill.date,
                     description: `${"Type: " + itemType.name  + " ||  Weight: " + bill.weight }`,
                     debit: 0, 
-                    credit: bill.total
+                    credit: bill.rate * bill.quantity
                 });
-                credit += bill.total;
+                credit += bill.rate * bill.quantity;
             }
         }
 
         for (let sale of sales) {
             for (let bill of sale.bills) {
+                const itemType = await ItemType.findOne({ _id: bill.itemType });
+                // console.log(itemType)
                 combinedTransactions.push({
                     date: bill.date,
-                    description: `Sales Bill: ${bill._id}`,
-                    debit: bill.total, 
+                    description: `${"Type: " + itemType.name  + " ||  Weight: " + bill.weight }`,
+                    debit: bill.rate * bill.quantity, 
                     credit: 0
                 });
-                debit += bill.total;
+                debit += bill.rate * bill.quantity;
             }
         }
 
