@@ -286,13 +286,13 @@ const PurchaseForm = () => {
           <Thead bg="teal.600">
             <Tr>
               <Th color="white">#</Th>
-              <Th color="white">Bill Number</Th>
-              <Th color="white">Gate Pass Number</Th>
-              <Th color="white">Vehicle Number</Th>
+              <Th color="white">Bill No</Th>
+              <Th color="white">Gate Pass No</Th>
+              <Th color="white">Vehicle No</Th>
               <Th color="white">Item Type</Th>
-              <Th color="white">Weight/Quantity</Th>
+              <Th color="white">Weight</Th>
               <Th color="white">Kaat</Th>
-              <Th color="white">Rate/Price</Th>
+              <Th color="white">Rate</Th>
               <Th color="white">Total</Th>
             </Tr>
           </Thead>
@@ -376,6 +376,7 @@ const PurchaseForm = () => {
                     <Td>
                       <Tooltip label="Kaat">
                         <Input
+                          minW={"60px"}
                           type="number"
                           placeholder="Kaat"
                           value={item.kaat || ""}
