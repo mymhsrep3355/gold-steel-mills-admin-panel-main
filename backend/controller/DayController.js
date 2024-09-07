@@ -271,58 +271,88 @@ const generateReports = async (req, res) => {
 const getSupplierTransactions = async (req, res) => {
     try {
         const { id } = req.params;
-        const transactions = await Daybook.find({ supplier: id }).sort({ date: 1 });
-        const purchases = await Purchase.find({ supplier: id }).populate('bills');
-        const sales = await Sales.find({ supplier: id }).populate('bills');
+        const { startDate, endDate } = req.query;
+
+        // Build the date filter only if startDate or endDate is present
+        const dateFilter = {};
+        if (startDate) {
+            dateFilter.$gte = new Date(new Date(startDate).setHours(0, 0, 0, 0));
+        }
+        if (endDate) {
+            dateFilter.$lte = new Date(new Date(endDate).setHours(23, 59, 59, 999));
+        }
+
+        const supplier = await Supplier.findById(id).exec();
+
+        // Apply date filter to the transactions query only if dateFilter is not empty
+        const transactionsQuery = { supplier: id };
+        if (Object.keys(dateFilter).length > 0) {
+            transactionsQuery.date = dateFilter;
+        }
+
+        const transactions = await Daybook.find(transactionsQuery).sort({ date: 1 });
+
+        // Apply date filter to the purchases query
+        const purchasesQuery = { supplier: id };
+        if (Object.keys(dateFilter).length > 0) {
+            purchasesQuery.date = dateFilter;
+        }
+
+        const purchases = await Purchase.find(purchasesQuery).populate('bills');
+
+        // Apply date filter to the sales query
+        const salesQuery = { supplier: id };
+        if (Object.keys(dateFilter).length > 0) {
+            salesQuery.date = dateFilter;
+        }
+
+        const sales = await Sales.find(salesQuery).populate('bills');
 
         let debit = 0;
         let credit = 0;
-        
+
         let combinedTransactions = [];
         for (let transaction of transactions) {
             if (transaction.type === 'debit') {
                 combinedTransactions.push({
                     date: transaction.date,
                     description: transaction.description ? transaction.description : 'N/A',
-                    debit: transaction.amount, 
-                    credit: 0
+                    debit: transaction.amount,
+                    credit: 0,
                 });
                 debit += transaction.amount;
             } else if (transaction.type === 'credit') {
                 combinedTransactions.push({
                     date: transaction.date,
                     description: transaction.description ? transaction.description : 'N/A',
-                    debit: 0, 
-                    credit: transaction.amount
+                    debit: 0,
+                    credit: transaction.amount,
                 });
                 credit += transaction.amount;
             }
         }
-        // console.log(purchases[0].bills)
 
         for (let purchase of purchases) {
             for (let bill of purchase.bills) {
-                const itemType = await ItemType.findOne({ _id: bill.itemType });
+                let itemType = await ItemType.findOne({ _id: bill.itemType });
                 if (!itemType) {
-                    itemType = {}
-                    itemType['name']=''
-                }
-                
-                if (bill.kaat == undefined) {
-                    bill['kaat'] = 0
+                    itemType = {};
+                    itemType['name'] = '';
                 }
 
-                if (bill.weight == undefined) {
-                    bill['weight'] = 0
+                if (bill.kaat === undefined) {
+                    bill['kaat'] = 0;
                 }
 
+                if (bill.weight === undefined) {
+                    bill['weight'] = 0;
+                }
 
-                // console.log(itemType)
                 combinedTransactions.push({
                     date: bill.date,
-                    description: `${"Type: " + itemType.name  + " ||  Weight: " + bill.weight + " Kaat: " + bill.kaat + "" }`,
-                    debit: 0, 
-                    credit: bill.rate * bill.quantity
+                    description: `Type: ${itemType.name} || Weight: ${bill.weight} Kaat: ${bill.kaat}`,
+                    debit: 0,
+                    credit: bill.rate * bill.quantity,
                 });
                 credit += bill.rate * bill.quantity;
             }
@@ -332,24 +362,23 @@ const getSupplierTransactions = async (req, res) => {
             for (let bill of sale.bills) {
                 let itemType = await ItemType.findOne({ _id: bill.itemType });
                 if (!itemType) {
-                    itemType = {}
-                    itemType['name']=''
+                    itemType = {};
+                    itemType['name'] = '';
                 }
 
-                
-                
-                if (bill.kaat == undefined) {
-                    bill['kaat'] = 0
+                if (bill.kaat === undefined) {
+                    bill['kaat'] = 0;
                 }
-                if (bill.weight == undefined) {
-                    bill['weight'] = 0
+
+                if (bill.weight === undefined) {
+                    bill['weight'] = 0;
                 }
-                // console.log(itemType)
+
                 combinedTransactions.push({
                     date: bill.date,
-                    description: `${"Type: " + itemType?.name  + " ||  Weight: " + bill.weight + "" }`,
-                    debit: bill.rate * bill.quantity, 
-                    credit: 0
+                    description: `Type: ${itemType?.name} || Weight: ${bill.weight}`,
+                    debit: bill.rate * bill.quantity,
+                    credit: 0,
                 });
                 debit += bill.rate * bill.quantity;
             }
@@ -361,13 +390,15 @@ const getSupplierTransactions = async (req, res) => {
         res.status(200).json({
             combinedTransactions,
             totalDebit: debit,
-            totalCredit: credit
+            totalCredit: credit,
+            supplier: supplier,
         });
     } catch (error) {
         console.error('Error fetching supplier transactions:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
-}
+};
+
 
 
 const getPurchasesSalesAverageRate = async (req, res) => {
