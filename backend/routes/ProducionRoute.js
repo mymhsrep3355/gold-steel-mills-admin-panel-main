@@ -12,7 +12,10 @@ router.get('/', productionController.getAllProductions);
 router.get('/:id', productionController.getProductionById);
 
 router.post('/register', productionController.createProduction);
+
+router.put('/updateWaste', productionController.updateProductionWaste);
 router.put('/update/:id', productionController.updateProduction);
+
 
 router.delete('/delete/:id', productionController.deleteProduction);
 
