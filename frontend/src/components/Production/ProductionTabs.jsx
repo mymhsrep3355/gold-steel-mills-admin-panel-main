@@ -12,8 +12,9 @@ import {
   Stack,
   IconButton,
   useColorModeValue,
+  Spinner,
 } from "@chakra-ui/react";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaRecycle } from "react-icons/fa";
 import { ProductTable } from "./ProductTable";
 import { ProductionTable } from "./ProductionTable";
 import { ProductModal } from "./ProductModal";
@@ -41,10 +42,12 @@ export const ProductionTabs = () => {
   const { token } = useAuthProvider();
   const [isEditing, setIsEditing] = useState(false);
   const [editingProductId, setEditingProductId] = useState(null);
-
+  const [isLoading , setIsLoading] = useState(false)
+const [refresh , setRefresh] = useState(false)
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        setIsLoading(true)
         const response = await fetch(`${BASE_URL}products`, {
           method: "GET",
           headers: {
@@ -53,6 +56,7 @@ export const ProductionTabs = () => {
         });
 
         if (response.ok) {
+          
           const data = await response.json();
           console.log(data);
           setProducts(data);
@@ -61,11 +65,14 @@ export const ProductionTabs = () => {
         }
       } catch (error) {
         console.error("Error fetching products:", error);
+      } finally{
+        setIsLoading(false)
       }
     };
 
     const fetchProductions = async () => {
       try {
+        setIsLoading(true)
         const response = await fetch(`${BASE_URL}productions`, {
           method: "GET",
           headers: {
@@ -82,51 +89,19 @@ export const ProductionTabs = () => {
         }
       } catch (error) {
         console.error("Error fetching productions:", error);
+      } finally{
+        setIsLoading(false)
       }
     }
 
     fetchProductions();
-
     fetchProducts();
-  }, [token]);
+  }, [token , refresh]);
 
+  
   const calculateSubtotal = (quantity, waste) => {
     const subtotalValue = Number(quantity) - Number(waste);
     setSubtotal(subtotalValue);
-  };
-
-  const handleCreateProduct = () => {
-    setProducts([
-      ...products,
-      // { name: productName, stock: Number(stock), _id: Date.now().toString() },
-      { name: productName, stock: Number(0), _id: Date.now().toString() },
-    ]);
-    setProductName("");
-    setStock("");
-    setIsProductModalOpen(false);
-  };
-
-  const handleEditProduct = (id, name, stock) => {
-    setProductName(name);
-    setStock(stock.toString());
-    setIsEditing(true);
-    setEditingProductId(id);
-    setIsProductModalOpen(true);
-  };
-
-  const handleSaveProduct = () => {
-    if (isEditing) {
-      const updatedProducts = products.map((product) =>
-        product._id === editingProductId
-          ? { ...product, name: productName, stock: Number(stock) }
-          : product
-      );
-      setProducts(updatedProducts);
-      setIsEditing(false);
-      setEditingProductId(null);
-    } else {
-      handleCreateProduct();
-    }
   };
 
   const handleDeleteProduct = async (id) => {
@@ -148,38 +123,80 @@ export const ProductionTabs = () => {
     }
   };
 
-  const handleCreateProduction = () => {
-    const newProduction = {
-      product: selectedProduct,
-      quantity: Number(quantity),
-      waste: Number(waste),
-      _id: Date.now().toString(),
-      subtotal,
-    };
-    setProductions([...productions, newProduction]);
-    setSelectedProduct("");
-    setQuantity("");
-    setWaste("");
-    setIsProductionModalOpen(false);
-    setSubtotal(0);
-  };
+  // const handleCreateProduct = () => {
+  //   setProducts([
+  //     ...products,
+  //     // { name: productName, stock: Number(stock), _id: Date.now().toString() },
+  //     { name: productName, stock: Number(0), _id: Date.now().toString() },
+  //   ]);
+  //   setProductName("");
+  //   setStock("");
+  //   setIsProductModalOpen(false);
+  // };
 
-  const handleDeleteProduction = (id) => {
-    setProductions(productions.filter((production) => production._id !== id));
-  };
+  // const handleEditProduct = (id, name, stock) => {
+  //   setProductName(name);
+  //   setStock(stock.toString());
+  //   setIsEditing(true);
+  //   setEditingProductId(id);
+  //   setIsProductModalOpen(true);
+  // };
 
-  const handleEditProduction = (id) => {
-    const production = productions.find((production) => production._id === id);
-    setSelectedProduct(production.product);
-    setQuantity(production.quantity.toString());
-    setWaste(production.waste.toString());
-    setSubtotal(production.subtotal);
-    setProductions(productions.filter((production) => production._id !== id));
-    setIsProductionModalOpen(true);
-  };
+  // const handleSaveProduct = () => {
+  //   if (isEditing) {
+  //     const updatedProducts = products.map((product) =>
+  //       product._id === editingProductId
+  //         ? { ...product, name: productName, stock: Number(stock) }
+  //         : product
+  //     );
+  //     setProducts(updatedProducts);
+  //     setIsEditing(false);
+  //     setEditingProductId(null);
+  //   } else {
+  //     handleCreateProduct();
+  //   }
+  // };
+
+
+
+
+
+  // const handleCreateProduction = () => {
+  //   const newProduction = {
+  //     product: selectedProduct,
+  //     quantity: Number(quantity),
+  //     waste: Number(waste),
+  //     _id: Date.now().toString(),
+  //     subtotal,
+  //   };
+  //   setProductions([...productions, newProduction]);
+  //   setSelectedProduct("");
+  //   setQuantity("");
+  //   setWaste("");
+  //   setIsProductionModalOpen(false);
+  //   setSubtotal(0);
+  // };
+
+  // const handleDeleteProduction = (id) => {
+  //   setProductions(productions.filter((production) => production._id !== id));
+  // };
+
+  // const handleEditProduction = (id) => {
+  //   setIsProductionModalOpen(true);
+  //   console.log("Production id ",id);
+    
+  //   const production = productions.find((production) => production._id === id);
+  //   setSelectedProduct(production.product);
+  //   setQuantity(production.quantity.toString());
+  //   setWaste(production.waste.toString());
+  //   setSubtotal(production.subtotal);
+  //   setProductions(productions.filter((production) => production._id !== id));
+    
+  // };
 
   const fetchResults = async () => {
     try {
+      
       const response = await fetch(
         `${BASE_URL}productions?startDate=${startDate}&endDate=${endDate}`,
         {
@@ -233,24 +250,44 @@ export const ProductionTabs = () => {
         <TabPanels>
           <TabPanel>
             <Stack spacing={4} align="center">
-              <Stack spacing={4} align="center" w={"100%"} p={2}>
-                <Button
+              <Stack spacing={4}  align="center" w={"100%"} p={2}>
+               
+               <Flex gap={10}>
+               <Button
                   leftIcon={<FaPlus />}
                   colorScheme="teal"
                   size="lg"
-                  onClick={() => setIsProductModalOpen(true)}
+                  // onClick={() => setIsProductModalOpen(true)}
                 >
                   Create Product
                 </Button>
-                <ProductTable
+
+
+                <Button
+                  leftIcon={<FaRecycle />}
+                  colorScheme="teal"
+                  size="lg"
+                   onClick={() => setRefresh(!refresh)}
+                >
+                Refresh
+                </Button>
+               </Flex>
+              {isLoading ? <>
+
+                <Spinner color="teal"/>
+              </>:<>
+
+              <ProductTable
                   products={products}
-                  onEdit={handleEditProduct}
-                  onDelete={handleDeleteProduct}
+                  // onEdit={handleEditProduct}
+                  // onDelete={handleDeleteProduct}
                 />
+              </>}
+               
               </Stack>
             </Stack>
 
-            <ProductModal
+            {/* <ProductModal
               isOpen={isProductModalOpen}
               onClose={() => {
                 setIsProductModalOpen(false);
@@ -265,12 +302,13 @@ export const ProductionTabs = () => {
               productId={editingProductId}
               onSave={handleSaveProduct}
               
-            />
+            /> */}
           </TabPanel>
 
           <TabPanel>
             <Stack spacing={4} align="center">
-              <Button
+            <Flex gap={10}>
+            <Button
                 leftIcon={<FaPlus />}
                 colorScheme="teal"
                 size="lg"
@@ -278,14 +316,29 @@ export const ProductionTabs = () => {
               >
                 Create Production
               </Button>
-              <ProductionTable
+
+              <Button
+                leftIcon={<FaRecycle />}
+                colorScheme="teal"
+                size="lg"
+                onClick={() => setRefresh(!refresh)}
+              >
+               Refresh
+              </Button>
+            </Flex>
+             
+              {isLoading ?<><Spinner color="teal"></Spinner></>:<>
+
+                <ProductionTable
                 productions={productions}
-                onEdit={handleEditProduction}
-                onDelete={handleDeleteProduction}
+                // onEdit={handleEditProduction}
+                // onDelete={handleDeleteProduction}
               />
+              </>}
+            
             </Stack>
 
-            <ProductionModal
+            {/* <ProductionModal
               isOpen={isProductionModalOpen}
               onClose={() => setIsProductionModalOpen(false)}
               selectedProduct={selectedProduct}
@@ -298,7 +351,7 @@ export const ProductionTabs = () => {
               subtotal={subtotal}
               onSave={handleCreateProduction}
               calculateSubtotal={calculateSubtotal}
-            />
+            /> */}
           </TabPanel>
 
           <TabPanel>

@@ -196,14 +196,14 @@ export const Dashboard = () => {
 
       <SimpleGrid columns={[1, null, 3]} spacing={10} mt={5}>
         <InfoCard
-          title="Total Iron Scrap"
+          title="Mill Iron bar Stock"
           totalNumber={`${ironBarScrape}`}
           bgColor="#FF6F61"
 
         />
 
         <InfoCard
-          title="Total Billet Scrap"
+          title="Furnace Scrap Stock"
           totalNumber={`${billetScrape}`}
           bgColor="#FF6F61"
 
