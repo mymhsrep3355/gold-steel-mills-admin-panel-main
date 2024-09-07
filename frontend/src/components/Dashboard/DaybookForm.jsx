@@ -23,6 +23,7 @@ const DaybookForm = ({ onEntryAdded }) => {
     type: "credit",
     supplierId: "",
     cash_or_bank: "cash", 
+    openingBalance:0
   });
   const [suppliers, setSuppliers] = useState([]);
 
@@ -151,6 +152,16 @@ const DaybookForm = ({ onEntryAdded }) => {
             <option value="cash">Cash</option>
             <option value="bank">Bank</option>
           </Select>
+        </FormControl>
+
+        <FormControl id="openingBalance" isRequired>
+          <FormLabel>Opening Balance</FormLabel>
+          <Input
+            type="number"
+            name="openingBalance"
+            value={daybookData.openingBalance}
+            onChange={handleInputChange}
+          />
         </FormControl>
         <Button type="submit" colorScheme="teal" width="full">
           Add Entry

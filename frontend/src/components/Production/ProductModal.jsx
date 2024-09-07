@@ -1,20 +1,43 @@
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input } from "@chakra-ui/react";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  Input,
+  FormControl,
+  FormLabel,
+} from "@chakra-ui/react";
 import { useState } from "react";
 import { useAuthProvider } from "../../hooks/useAuthProvider";
 import { BASE_URL } from "../../utils";
 
-export const ProductModal = ({ isOpen, onClose, productName, setProductName, stock, setStock, isEditing, productId, onSave }) => {
+export const ProductModal = ({
+  isOpen,
+  onClose,
+  productName,
+  setProductName,
+  stock,
+  setStock,
+  isEditing,
+  productId,
+  onSave,
+  waste,
+  setWaste
+}) => {
   const { token } = useAuthProvider();
-
-  console.log(token);
-  
   const [loading, setLoading] = useState(false);
 
   const handleSave = async () => {
     setLoading(true);
-    const url = isEditing ? `${BASE_URL}products/update/${productId}` : `${BASE_URL}products/register`;
+    const url = isEditing
+      ? `${BASE_URL}products/update/${productId}`
+      : `${BASE_URL}products/register`;
     const method = isEditing ? "PUT" : "POST";
-    
+
     try {
       const response = await fetch(url, {
         method: method,
@@ -25,15 +48,12 @@ export const ProductModal = ({ isOpen, onClose, productName, setProductName, sto
         body: JSON.stringify({
           name: productName,
           stock: Number(stock),
-          // stock: Number(0),
+          waste: Number(waste) // Assuming waste should be sent in the request body
         }),
       });
-      console.log(response);
-      
+
       if (response.ok) {
         onSave();
-        console.log(response);
-        
       } else {
         console.error("Failed to save product");
       }
@@ -52,18 +72,32 @@ export const ProductModal = ({ isOpen, onClose, productName, setProductName, sto
         <ModalHeader>{isEditing ? "Edit Product" : "Create New Product"}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Input
-            placeholder="Product Name"
-            value={productName}
-            onChange={(e) => setProductName(e.target.value)}
-            mb={3}
-          />
-          <Input
-            placeholder="Stock"
-            type="number"
-            value={stock}
-            onChange={(e) => setStock(e.target.value)}
-          />
+          <FormControl mb={3}>
+            <FormLabel>Product Name</FormLabel>
+            <Input
+              placeholder="Enter product name"
+              value={productName}
+              onChange={(e) => setProductName(e.target.value)}
+            />
+          </FormControl>
+          <FormControl mb={3}>
+            <FormLabel>Stock</FormLabel>
+            <Input
+              placeholder="Enter stock quantity"
+              type="number"
+              value={stock}
+              onChange={(e) => setStock(e.target.value)}
+            />
+          </FormControl>
+          {/* <FormControl mb={3}>
+            <FormLabel>Waste</FormLabel>
+            <Input
+              placeholder="Enter waste amount"
+              type="number"
+              value={waste}
+              onChange={(e) => setWaste(e.target.value)}
+            />
+          </FormControl> */}
         </ModalBody>
 
         <ModalFooter>

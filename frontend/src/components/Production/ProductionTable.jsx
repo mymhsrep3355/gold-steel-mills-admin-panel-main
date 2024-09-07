@@ -1,7 +1,7 @@
 import { Table, Thead, Tbody, Tr, Th, Td, IconButton } from "@chakra-ui/react";
 import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 
-export const ProductionTable = ({ productions, onEdit, onDelete }) => {
+export const ProductionTable = ({ productions, onEdit, onDelete  }) => {
   console.log("production Data", productions);
   
   return (
@@ -27,7 +27,7 @@ export const ProductionTable = ({ productions, onEdit, onDelete }) => {
                 aria-label="Edit production"
                 icon={<EditIcon />}
                 mr={2}
-                onClick={() => onEdit(production._id)}
+                onClick={() => onEdit(production._id  )}
               />
               <IconButton
                 aria-label="Delete production"
