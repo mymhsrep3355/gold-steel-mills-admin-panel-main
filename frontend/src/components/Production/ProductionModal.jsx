@@ -27,8 +27,8 @@ export const ProductionModal = ({
   subtotal,
   onSave,
   calculateSubtotal,
-  mode, // New prop to handle mode
-  productionId = null // New prop for the ID in edit mode
+  mode, 
+  productionId 
 }) => {
   const { token } = useAuthProvider();
   const [loading, setLoading] = useState(false);
@@ -37,9 +37,18 @@ export const ProductionModal = ({
     setLoading(true);
     const url = mode === "create"
       ? `${BASE_URL}productions/register`
-      : `${BASE_URL}productions/${productionId}`;
+      : `${BASE_URL}productions/updateWaste`;
     const method = mode === "create" ? "POST" : "PUT";
 
+    const EditWastebody ={
+      productionId:productionId,
+      waste: Number(waste)
+    }
+    const createProductionBody ={
+      product: selectedProduct,
+      quantity: Number(quantity),
+      waste: Number(waste),
+    }
     try {
       const response = await fetch(url, {
         method,
@@ -47,15 +56,12 @@ export const ProductionModal = ({
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({
-          product: selectedProduct,
-          quantity: Number(quantity),
-          waste: Number(waste),
-        }),
+        body: JSON.stringify(mode==='create'?createProductionBody:EditWastebody),
       });
 
       if (response.ok) {
         onSave(); 
+        
       } else {
         console.error(`Failed to ${mode} production`);
       }
@@ -101,7 +107,7 @@ export const ProductionModal = ({
 
       fetchData();
     }
-  }, [mode, productionId, token, setSelectedProduct, setQuantity, setWaste, calculateSubtotal]);
+  }, [ token]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -124,9 +130,7 @@ export const ProductionModal = ({
             ))}
           </Select>
 
-
-        </>)}
-      <label>Enter Quantity</label>
+          <label>Enter Quantity</label>
           <Input
             placeholder="Quantity"
             type="number"
@@ -134,7 +138,9 @@ export const ProductionModal = ({
             onChange={handleQuantityChange}
             mb={3}
           />
-            <label>Enter Waste</label>
+        </>)}
+     
+            <label>Update Waste</label>
           <Input
             placeholder="Waste"
             type="number"

@@ -130,6 +130,7 @@ async function updateProduction(req, res) {
         }
 
         const production = await Production.findById(productionId);
+        
         if (!production) {
             return res.status(404).json({ message: 'Production not found' });
         }
