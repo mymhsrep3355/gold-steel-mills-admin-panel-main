@@ -136,7 +136,7 @@ export const Table = ({ columns, data, deleteURL, handleNavigation, refreshData,
                 </Button>
 
                 <Button
-                  onClick={() => handleViewLedger(item._id)}
+                  onClick={() => handleViewLedger(item)}
                   colorScheme="teal"
                   size="sm"
                   variant="outline"
