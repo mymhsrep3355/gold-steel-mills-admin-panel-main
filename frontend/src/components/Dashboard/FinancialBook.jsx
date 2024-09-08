@@ -115,7 +115,9 @@ const [refresh , setRefresh]= useState(false)
 
       <Divider my={8} />
 
-      <DaybookTable refresh={refresh} setRefresh={setRefresh} daybooks={daybooks} onEdit={handleEdit} onDelete={handleDelete} />
+      <DaybookTable
+      initialBalance={openingBalance} setOpeningBalance={setOpeningBalance}
+       refresh={refresh} setRefresh={setRefresh} daybooks={daybooks} onEdit={handleEdit} onDelete={handleDelete} />
 
       {selectedDaybook && (
         <EditDaybookModal

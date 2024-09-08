@@ -14,24 +14,22 @@ import {
   Spinner,
   Input,
   Flex,
+  FormLabel,
+
 } from "@chakra-ui/react";
 import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import { FaRecycle, FaCalendarDay } from "react-icons/fa";
 import { useRecoilValue } from "recoil";
 import DaybookEntryState from "../../atoms/DaybookEntryState";
-import OpeningBalanceState from "../../atoms/OpeningBalanceState";
+
 
 const isValidDate = (date) => {
   const parsedDate = new Date(date);
   return !isNaN(parsedDate.getTime());
 };
 
-const DaybookTable = ({ daybooks, onEdit, onDelete, initialBalance = 0, refresh, setRefresh }) => {
+const DaybookTable = ({ daybooks, onEdit, onDelete, initialBalance, setOpeningBalance, refresh, setRefresh }) => {
   const newDaybookEntry = useRecoilValue(DaybookEntryState);
-
-const openingBalance = useRecoilValue(OpeningBalanceState)
-
-
 
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
@@ -106,6 +104,16 @@ const openingBalance = useRecoilValue(OpeningBalanceState)
 
   return (
     <Box mt={8} overflowX="auto">
+   
+          <FormLabel fontWeight={'bolder'}>Opening Balance</FormLabel>
+          <Input
+            type="number"
+            name="openingBalance"
+            className="my-4"
+            value={initialBalance}
+            onChange={(e)=> setOpeningBalance(e.target.value)}
+          />
+      
       <Flex direction="column" mb={4}>
         <Flex justify="space-between" align="center" mb={4}>
           <Text fontSize="2xl" fontWeight="bold">
@@ -199,8 +207,11 @@ const openingBalance = useRecoilValue(OpeningBalanceState)
               <Th></Th>
             </Tr>
           </Tfoot>
+        
         </Table>
+        
       )}
+      <Text fontWeight={'bolder'} textAlign={'right'}> Opening Balance : {initialBalance} </Text>
     </Box>
   );
 };

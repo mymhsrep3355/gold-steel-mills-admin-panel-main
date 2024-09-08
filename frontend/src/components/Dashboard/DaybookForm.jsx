@@ -19,7 +19,7 @@ import OpeningBalanceState from "../../atoms/OpeningBalanceState";
 const DaybookForm = ({ onEntryAdded  }) => {
   const { token } = useAuthProvider();
   const [formEntry, setFormEntry] = useRecoilState(DaybookEntryState)
-  const [openingBalanceState, setOpeningBalanceState]= useRecoilState(OpeningBalanceState)
+ 
   const toast = useToast();
   const [daybookData, setDaybookData] = useState({
     date: "",
@@ -28,7 +28,7 @@ const DaybookForm = ({ onEntryAdded  }) => {
     type: "credit",
     supplierId: "",
     cash_or_bank: "cash", 
-    openingBalance:0
+  
   });
   const [suppliers, setSuppliers] = useState([]);
 
@@ -74,7 +74,7 @@ const DaybookForm = ({ onEntryAdded  }) => {
       );
       if (response.status === 201) {
         console.log('response entry data' , response.data);
-        setOpeningBalanceState(daybookData.openingBalance)
+      
         setFormEntry(response.data)
         toast({
           title: "Daybook entry added successfully!",
@@ -163,15 +163,7 @@ const DaybookForm = ({ onEntryAdded  }) => {
           </Select>
         </FormControl>
 
-        <FormControl id="openingBalance" isRequired>
-          <FormLabel>Opening Balance</FormLabel>
-          <Input
-            type="number"
-            name="openingBalance"
-            value={daybookData.openingBalance}
-            onChange={handleInputChange}
-          />
-        </FormControl>
+        
         <Button type="submit" colorScheme="teal" width="full">
           Add Entry
         </Button>
