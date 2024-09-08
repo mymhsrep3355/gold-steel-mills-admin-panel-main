@@ -12,18 +12,51 @@ import {
   Text,
   Button,
   Spinner,
+  Input,
+  Flex,
+  FormLabel,
+
 } from "@chakra-ui/react";
 import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
-import { FaRecycle } from "react-icons/fa";
-import { Flex } from "@chakra-ui/react";
+import { FaRecycle, FaCalendarDay } from "react-icons/fa";
+import { useRecoilValue } from "recoil";
+import DaybookEntryState from "../../atoms/DaybookEntryState";
 
-const DaybookTable = ({ daybooks, onEdit, onDelete, initialBalance = 0 }) => {
-  const [refresh, setRefresh] = useState(false);
+
+const isValidDate = (date) => {
+  const parsedDate = new Date(date);
+  return !isNaN(parsedDate.getTime());
+};
+
+const DaybookTable = ({ daybooks, onEdit, onDelete, initialBalance, setOpeningBalance, refresh, setRefresh }) => {
+  const newDaybookEntry = useRecoilValue(DaybookEntryState);
+
   const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+
+  const handleDateChange = (event) => {
+    setSelectedDate(event.target.value);
+  };
+
+  // Include the new daybook entry if it's not null
+  const updatedDaybooks = useMemo(() => {
+    return newDaybookEntry ? [...daybooks, newDaybookEntry] : daybooks;
+  }, [daybooks, newDaybookEntry]);
+
+  // Filter and sort the daybooks based on the selected date
+  const filteredDaybooks = useMemo(() => {
+    return updatedDaybooks.filter((entry) => {
+      if (!entry.date || !isValidDate(entry.date)) {
+        return false;
+      }
+      const entryDate = new Date(entry.date).toISOString().split('T')[0];
+      return entryDate === selectedDate;
+    });
+  }, [updatedDaybooks, selectedDate]);
 
   const sortedDaybooks = useMemo(() => {
-    return [...daybooks].sort((a, b) => new Date(a.date) - new Date(b.date));
-  }, [daybooks, refresh]);
+    return [...filteredDaybooks].sort((a, b) => new Date(a.date) - new Date(b.date));
+  }, [filteredDaybooks]);
 
   const {
     transactionsWithBalance,
@@ -31,8 +64,8 @@ const DaybookTable = ({ daybooks, onEdit, onDelete, initialBalance = 0 }) => {
     totalCredit,
     finalBalance,
   } = useMemo(() => {
-    setLoading(true); // Start loading when calculations are made
-    let balance = initialBalance;
+    setLoading(true);
+    let balance = Number(initialBalance);
     let totalDebit = 0;
     let totalCredit = 0;
 
@@ -54,7 +87,7 @@ const DaybookTable = ({ daybooks, onEdit, onDelete, initialBalance = 0 }) => {
       };
     });
 
-    setLoading(false); // End loading after calculations are done
+    setLoading(false);
 
     return {
       transactionsWithBalance: transactions,
@@ -62,33 +95,61 @@ const DaybookTable = ({ daybooks, onEdit, onDelete, initialBalance = 0 }) => {
       totalCredit,
       finalBalance: balance,
     };
-  }, [sortedDaybooks, initialBalance, refresh]);
+  }, [sortedDaybooks, initialBalance]);
 
   useEffect(() => {
-    // Simulate data fetching delay
     setLoading(true);
-    setTimeout(() => setLoading(false), 500); // Adjust the timeout as needed
+    setTimeout(() => setLoading(false), 500);
   }, [refresh]);
 
   return (
     <Box mt={8} overflowX="auto">
-      <Flex justify="space-between" align="center">
-        <Text fontSize="2xl" mb={4} fontWeight="bold">
-          Daybook Ledger
-        </Text>
-        <Button
-          leftIcon={<FaRecycle />}
-          colorScheme="teal"
-          size="md"
-          onClick={() => setRefresh(!refresh)}
-        >
-          Refresh
-        </Button>
+   
+          <FormLabel fontWeight={'bolder'}>Opening Balance</FormLabel>
+          <Input
+            type="number"
+            name="openingBalance"
+            className="my-4"
+            value={initialBalance}
+            onChange={(e)=> setOpeningBalance(e.target.value)}
+          />
+      
+      <Flex direction="column" mb={4}>
+        <Flex justify="space-between" align="center" mb={4}>
+          <Text fontSize="3xl" fontWeight="bold">
+            Daybook Ledger
+          </Text>
+          <Button
+            leftIcon={<FaRecycle />}
+            colorScheme="teal"
+            size="md"
+            onClick={() => setRefresh(!refresh)}
+          >
+            Refresh
+          </Button>
+        </Flex>
+
+        <Flex mb={4} align="center">
+          <IconButton
+            aria-label="Select Date"
+            icon={<FaCalendarDay />}
+            mr={2}
+            size="sm"
+            variant="outline"
+            colorScheme="blue"
+          />
+          <Input
+            type="date"
+            value={selectedDate}
+            onChange={handleDateChange}
+            size="md"
+          />
+        </Flex>
       </Flex>
 
       {loading ? (
         <Flex justify="center" align="center" height="200px">
-          <Spinner size="xl" color="teal"/>
+          <Spinner size="xl" color="teal" />
         </Flex>
       ) : (
         <Table variant="striped" colorScheme="teal" size="md">
@@ -146,8 +207,11 @@ const DaybookTable = ({ daybooks, onEdit, onDelete, initialBalance = 0 }) => {
               <Th></Th>
             </Tr>
           </Tfoot>
+        
         </Table>
+        
       )}
+      <Text fontWeight={'bolder'} textAlign={'right'}> Opening Balance : {initialBalance} </Text>
     </Box>
   );
 };

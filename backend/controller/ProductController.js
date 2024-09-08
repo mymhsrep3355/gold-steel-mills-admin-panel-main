@@ -74,7 +74,7 @@ async function createProduct(req, res) {
 async function updateProduct(req, res) {
     try {
         const productId = req.params.id;
-        const { name, stock } = req.body;
+        const { name, stock  } = req.body;
 
         // Validate product ID
         if (!mongoose.Types.ObjectId.isValid(productId)) {

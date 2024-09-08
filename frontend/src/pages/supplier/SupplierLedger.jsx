@@ -30,6 +30,7 @@ const SupplierLedger = () => {
   const { supplierId } = location.state || {};
   const { token } = useAuthProvider();
   const [ledgerData, setLedgerData] = useState([]);
+ 
   const [totalDebit, setTotalDebit] = useState(0);
   const [totalCredit, setTotalCredit] = useState(0);
   const [totalBalance, setTotalBalance] = useState(0);

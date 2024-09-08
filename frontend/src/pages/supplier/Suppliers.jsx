@@ -28,8 +28,10 @@ export const Suppliers = () => {
 
   
   
-  const handleViewLedger = (supplierId) => {
-    navigate("/suppliers/ledger", { state: { supplierId } });
+  const handleViewLedger = (supplier) => {
+    console.log("supplier", supplier);
+    
+    navigate("/suppliers/ledger", { state: { supplierId:supplier._id, supplier:supplier } });
   };
 
 

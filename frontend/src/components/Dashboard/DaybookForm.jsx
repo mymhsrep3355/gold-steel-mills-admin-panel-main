@@ -12,9 +12,14 @@ import {
 import axios from "axios";
 import { useAuthProvider } from "../../hooks/useAuthProvider";
 import { BASE_URL } from "../../utils";
+import { useRecoilState } from "recoil";
+import DaybookEntryState from "../../atoms/DaybookEntryState";
+import OpeningBalanceState from "../../atoms/OpeningBalanceState";
 
-const DaybookForm = ({ onEntryAdded }) => {
+const DaybookForm = ({ onEntryAdded  }) => {
   const { token } = useAuthProvider();
+  const [formEntry, setFormEntry] = useRecoilState(DaybookEntryState)
+ 
   const toast = useToast();
   const [daybookData, setDaybookData] = useState({
     date: "",
@@ -23,6 +28,7 @@ const DaybookForm = ({ onEntryAdded }) => {
     type: "credit",
     supplierId: "",
     cash_or_bank: "cash", 
+  
   });
   const [suppliers, setSuppliers] = useState([]);
 
@@ -55,6 +61,7 @@ const DaybookForm = ({ onEntryAdded }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const response = await axios.post(
         `${BASE_URL}daybook/register`,
@@ -65,7 +72,10 @@ const DaybookForm = ({ onEntryAdded }) => {
           },
         }
       );
-      if (response.status === 200) {
+      if (response.status === 201) {
+        console.log('response entry data' , response.data);
+      
+        setFormEntry(response.data)
         toast({
           title: "Daybook entry added successfully!",
           status: "success",
@@ -152,6 +162,8 @@ const DaybookForm = ({ onEntryAdded }) => {
             <option value="bank">Bank</option>
           </Select>
         </FormControl>
+
+        
         <Button type="submit" colorScheme="teal" width="full">
           Add Entry
         </Button>

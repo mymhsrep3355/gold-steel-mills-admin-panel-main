@@ -15,12 +15,15 @@ import { BASE_URL } from "../../utils";
 import DaybookTable from "./DayBookTable";
 import EditDaybookModal from "./EditDaybookModal";
 
+
 const FinancialBook = () => {
   const { token } = useAuthProvider();
   const [daybooks, setDaybooks] = useState([]);
   const [todayEntries, setTodayEntries] = useState([]); // State for today's entries
   const [selectedDaybook, setSelectedDaybook] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
+const [refresh , setRefresh]= useState(false)
+
   const [openingBalance, setOpeningBalance] = useState(0); // State for the opening balance
   const [currentTotal, setCurrentTotal] = useState(0); // State for the current day's total
 
@@ -100,7 +103,7 @@ const FinancialBook = () => {
 
   useEffect(() => {
     fetchDaybooks();
-  }, [token]);
+  }, [token , refresh]);
 
   return (
     <Container maxW="auto" mt={8} p={5} bg="white" boxShadow="lg" borderRadius="md">
@@ -108,36 +111,13 @@ const FinancialBook = () => {
         Daybook
       </Text>
 
-      <DaybookForm onEntryAdded={fetchDaybooks} />
+      <DaybookForm  onEntryAdded={fetchDaybooks} />
 
       <Divider my={8} />
 
-      {/* Input for Opening Balance */}
-      <Flex alignItems="center" mb={4}>
-        <Text fontWeight="bold" mr={4}>
-          Opening Balance:
-        </Text>
-        <Input
-          type="number"
-          value={openingBalance}
-          onChange={(e) => setOpeningBalance(parseFloat(e.target.value) || 0)}
-          placeholder="Enter Opening Balance"
-          width="200px"
-        />
-      </Flex>
-
-      
-
       <DaybookTable
-        daybooks={todayEntries}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
-
-      {/* Display Current Total */}
-      <Text textAlign={"right"} fontSize="lg" fontWeight="bold" mb={6}>
-        Opening Balance: {currentTotal.toLocaleString()}
-      </Text>
+      initialBalance={openingBalance} setOpeningBalance={setOpeningBalance}
+       refresh={refresh} setRefresh={setRefresh} daybooks={daybooks} onEdit={handleEdit} onDelete={handleDelete} />
 
       {selectedDaybook && (
         <EditDaybookModal
