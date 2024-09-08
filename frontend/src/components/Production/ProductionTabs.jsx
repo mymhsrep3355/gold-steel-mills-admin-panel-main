@@ -45,6 +45,7 @@ export const ProductionTabs = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [modalType, setModalType] = useState("create");
+  const [selectedProductionId , setSelectedProductionId] = useState('')
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -179,15 +180,14 @@ export const ProductionTabs = () => {
 
   const handleEditProduction = (id) => {
     setModalType("edit");
+    setSelectedProductionId(id)
     setIsProductionModalOpen(true);
-    console.log("Production id ", id);
-
     const production = productions.find((production) => production._id === id);
     setSelectedProduct(production.product);
     setQuantity(production.quantity.toString());
     setWaste(production.waste.toString());
     setSubtotal(production.subtotal);
-    setProductions(productions.filter((production) => production._id !== id));
+    // setProductions(productions.filter((production) => production._id !== id));
   };
 
   const fetchResults = async () => {
@@ -354,7 +354,7 @@ export const ProductionTabs = () => {
               onSave={handleCreateProduction}
               calculateSubtotal={calculateSubtotal}
               mode={modalType}
-              productionId={editingProductId}
+              productionId={selectedProductionId}
             />
           </TabPanel>
 
