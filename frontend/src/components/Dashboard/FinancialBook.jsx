@@ -7,11 +7,14 @@ import { BASE_URL } from "../../utils";
 import DaybookTable from "./DayBookTable";
 import EditDaybookModal from "./EditDaybookModal";
 
+
 const FinancialBook = () => {
   const { token } = useAuthProvider();
   const [daybooks, setDaybooks] = useState([]);
   const [selectedDaybook, setSelectedDaybook] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
+const [refresh , setRefresh]= useState(false)
+
 
   const fetchDaybooks = async () => {
     try {
@@ -55,7 +58,7 @@ const FinancialBook = () => {
 
   useEffect(() => {
     fetchDaybooks();
-  }, [token]);
+  }, [token , refresh]);
 
   return (
     <Container maxW="auto" mt={8} p={5} bg="white" boxShadow="lg" borderRadius="md">
@@ -63,11 +66,11 @@ const FinancialBook = () => {
         Daybook
       </Text>
 
-      <DaybookForm onEntryAdded={fetchDaybooks} />
+      <DaybookForm  onEntryAdded={fetchDaybooks} />
 
       <Divider my={8} />
 
-      <DaybookTable daybooks={daybooks} onEdit={handleEdit} onDelete={handleDelete} />
+      <DaybookTable refresh={refresh} setRefresh={setRefresh} daybooks={daybooks} onEdit={handleEdit} onDelete={handleDelete} />
 
       {selectedDaybook && (
         <EditDaybookModal
