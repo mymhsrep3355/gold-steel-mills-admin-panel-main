@@ -116,7 +116,7 @@ const DaybookTable = ({ daybooks, onEdit, onDelete, initialBalance, setOpeningBa
       
       <Flex direction="column" mb={4}>
         <Flex justify="space-between" align="center" mb={4}>
-          <Text fontSize="2xl" fontWeight="bold">
+          <Text fontSize="3xl" fontWeight="bold">
             Daybook Ledger
           </Text>
           <Button
