@@ -22,6 +22,7 @@ import {
   Image,
   SimpleGrid,
   Select,
+  TableContainer
 } from "@chakra-ui/react";
 import { AddIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { useReactToPrint } from "react-to-print";
@@ -253,101 +254,101 @@ const Bill = () => {
             </Select>
           </FormControl>
         </SimpleGrid>
-        <Table variant="simple" colorScheme="teal" mb={8}>
-          <Thead bg="teal.600">
-            <Tr>
-              <Th color="white">#</Th>
-              <Th color="white">Bill Number</Th>
-              <Th color="white">Gate Pass Number</Th>
-              <Th color="white">Vehicle Number</Th>
-              <Th color="white">Item Type</Th>
-              <Th color="white">Weight/Quantity</Th>
-              <Th color="white">Rate/Price</Th>
-              <Th color="white">Total</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {rows.map((row, index) => (
-              <Tr key={row.id}>
-                <Td>{row.id}</Td>
-                <Td>
-                  <Tooltip label="Bill Number">
-                    <Input
-                      type="text"
-                      placeholder="Bill Number"
-                      value={row.billNumber || ""}
-                      onChange={(e) =>
-                        updateRow(index, "billNumber", e.target.value)
-                      }
-                    />
-                  </Tooltip>
-                </Td>
-                <Td>
-                  <Tooltip label="Gate Pass Number">
-                    <Input
-                      type="text"
-                      placeholder="Gate Pass Number"
-                      value={row.gatePassNumber || ""}
-                      onChange={(e) =>
-                        updateRow(index, "gatePassNumber", e.target.value)
-                      }
-                    />
-                  </Tooltip>
-                </Td>
-                <Td>
-                  <Tooltip label="Vehicle Number">
-                    <Input
-                      type="text"
-                      placeholder="Vehicle Number"
-                      value={row.vehicleNumber || ""}
-                      onChange={(e) =>
-                        updateRow(index, "vehicleNumber", e.target.value)
-                      }
-                    />
-                  </Tooltip>
-                </Td>
-                <Td minW={"100px"}>
-                  <Tooltip label="Item Type">
-                    <Select>
-                      {items.map((itemType) => (
-                        <option key={itemType._id} value={itemType._id}>
-                          {itemType.name}
-                        </option>
-                      ))}
-                    </Select>
-                  </Tooltip>
-                </Td>
-                <Td>
-                  <Tooltip label="Quantity">
-                    <Input
-                      type="number"
-                      placeholder="Quantity"
-                      value={row.quantity || ""}
-                      onChange={(e) =>
-                        updateRow(index, "quantity", e.target.value)
-                      }
-                    />
-                  </Tooltip>
-                </Td>
-                <Td>
-                  <Tooltip label="Price">
-                    <Input
-                      type="number"
-                      placeholder="Price"
-                      value={row.price || ""}
-                      onChange={(e) =>
-                        updateRow(index, "price", e.target.value)
-                      }
-                    />
-                  </Tooltip>
-                </Td>
-                <Td>
-                  {((row.quantity || 0) * (row.price || 0)).toFixed(2)}
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
+        <TableContainer overflowX="auto">
+  <Table variant="simple" colorScheme="teal" mb={8}>
+    <Thead bg="teal.600">
+      <Tr>
+        <Th color="white">#</Th>
+        <Th color="white">Bill Number</Th>
+        <Th color="white">Gate Pass Number</Th>
+        <Th color="white">Vehicle Number</Th>
+        <Th color="white">Item Type</Th>
+        <Th color="white">Weight/Quantity</Th>
+        <Th color="white">Rate/Price</Th>
+        <Th color="white">Total</Th>
+      </Tr>
+    </Thead>
+    <Tbody>
+      {rows.map((row, index) => (
+        <Tr key={row.id}>
+          <Td>{row.id}</Td>
+          <Td>
+            <Tooltip label="Bill Number">
+              <Input
+                type="text"
+                placeholder="Bill Number"
+                value={row.billNumber || ""}
+                onChange={(e) => updateRow(index, "billNumber", e.target.value)}
+                style={{ minWidth: '150px', width: '150px' }}
+              />
+            </Tooltip>
+          </Td>
+          <Td>
+            <Tooltip label="Gate Pass Number">
+              <Input
+                type="text"
+                placeholder="Gate Pass Number"
+                value={row.gatePassNumber || ""}
+                onChange={(e) => updateRow(index, "gatePassNumber", e.target.value)}
+                style={{ minWidth: '150px', width: '150px' }}
+              />
+            </Tooltip>
+          </Td>
+          <Td>
+            <Tooltip label="Vehicle Number">
+              <Input
+                type="text"
+                placeholder="Vehicle Number"
+                value={row.vehicleNumber || ""}
+                onChange={(e) => updateRow(index, "vehicleNumber", e.target.value)}
+                style={{ minWidth: '150px', width: '150px' }}
+              />
+            </Tooltip>
+          </Td>
+          <Td>
+            <Tooltip label="Item Type">
+              <Select
+                placeholder="Select item"
+                onChange={(e) => updateRow(index, "itemType", e.target.value)}
+                style={{ minWidth: '150px', width: '150px' }}
+              >
+                {items.map((itemType) => (
+                  <option key={itemType._id} value={itemType._id}>
+                    {itemType.name}
+                  </option>
+                ))}
+              </Select>
+            </Tooltip>
+          </Td>
+          <Td>
+            <Tooltip label="Quantity">
+              <Input
+                type="number"
+                placeholder="Quantity"
+                value={row.quantity || ""}
+                onChange={(e) => updateRow(index, "quantity", e.target.value)}
+                style={{ minWidth: '150px', width: '150px' }}
+              />
+            </Tooltip>
+          </Td>
+          <Td>
+            <Tooltip label="Price">
+              <Input
+                type="number"
+                placeholder="Price"
+                value={row.price || ""}
+                onChange={(e) => updateRow(index, "price", e.target.value)}
+                style={{ minWidth: '150px', width: '150px' }}
+              />
+            </Tooltip>
+          </Td>
+          <Td>{((row.quantity || 0) * (row.price || 0)).toFixed(2)}</Td>
+        </Tr>
+      ))}
+    </Tbody>
+  </Table>
+</TableContainer>
+
         <Button leftIcon={<AddIcon />} colorScheme="teal" onClick={addRow}>
           Add Vehicle
         </Button>
