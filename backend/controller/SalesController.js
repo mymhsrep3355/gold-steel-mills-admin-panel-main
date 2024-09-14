@@ -80,7 +80,8 @@ async function createSales(req, res) {
         for (const product of products){
             product.stock = product.stock - billQtyTotal;
             if (product.stock < 0){
-                return res.status(400).json({ message: 'Insufficient stock', item: product.name, stock: product.stock + billQtyTotal });
+                // return res.status(400).json({ message: 'Insufficient stock', item: product.name, stock: product.stock + billQtyTotal });
+                product.stock = 0
             }
            
         }

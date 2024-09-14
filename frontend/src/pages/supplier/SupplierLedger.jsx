@@ -70,7 +70,12 @@ const SupplierLedger = () => {
       setLedgerData(combinedTransactions);
       setTotalDebit(totalDebit);
       setTotalCredit(totalCredit);
-      setTotalBalance(totalDebit - totalCredit);
+      if (totalDebit - totalCredit < 0) {
+        setTotalBalance(0);
+      }
+      else {
+        setTotalBalance(totalDebit - totalCredit);
+      }
       setSupplierName(
         supplier.firstName + " " + supplier.lastName || "Supplier Name"
       );
