@@ -17,6 +17,13 @@ import {
   Th,
   Tbody,
   Td,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { AddIcon } from "@chakra-ui/icons";
@@ -27,6 +34,8 @@ import PurchaseForm from "../../components/Purchases/PurchaseForm";
 import PurchaseCard from "../../components/Purchases/PurchaseCard";
 import AddItemModal from "../../components/Bills/AddItemModal";
 import ViewPurchaseBill from "../../components/Purchases/ViewPurchaseBill";
+import ItemReport from "../../components/Item/ItemReport";
+
 
 const Purchases = () => {
   const [purchases, setPurchases] = useState([]);
@@ -36,6 +45,8 @@ const Purchases = () => {
   const [selectedSupplier, setSelectedSupplier] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [items, setItems] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null); // State for selected item
+  const [isReportOpen, setIsReportOpen] = useState(false); // State to control the report modal
   const toast = useToast();
   const { token } = useAuthProvider();
 
@@ -50,28 +61,25 @@ const Purchases = () => {
     } catch (error) {
       console.error("Error fetching suppliers:", error);
     }
-  }
+  };
 
   useEffect(() => {
     fetchSuppliers();
-  },[])
+  }, []);
+
   const fetchPurchases = async () => {
-    
-    const appendUrl = selectedSupplier ? `&supplierId=${selectedSupplier}` : ''
-    console.log(appendUrl)
+    const appendUrl = selectedSupplier ? `&supplierId=${selectedSupplier}` : "";
 
     if (startDate && endDate) {
       try {
         const response = await axios.get(
-          `${BASE_URL}purchases?startDate=${startDate}&endDate=${endDate}` +  appendUrl,
+          `${BASE_URL}purchases?startDate=${startDate}&endDate=${endDate}` + appendUrl,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        console.log(response.data)
-        
         setPurchases(response.data);
       } catch (error) {
         console.error("Error fetching purchases:", error);
@@ -94,6 +102,22 @@ const Purchases = () => {
     }
   };
 
+  const fetchItems = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}items`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setItems(response.data);
+    } catch (error) {
+      console.error("Error fetching items:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchItems();
+  }, []);
 
   const handleAddItem = async (newItem) => {
     try {
@@ -121,26 +145,10 @@ const Purchases = () => {
     }
   };
 
-  const fetchItems = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL}items`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setItems(response.data);
-    } catch (error) {
-      console.error("Error fetching items:", error);
-    }
+  const handleViewItemReport = (item) => {
+    setSelectedItem(item);
+    setIsReportOpen(true);
   };
-
-  useEffect(() => {
-    fetchItems();
-  }, []);
-
-
-
-  
 
   return (
     <>
@@ -148,11 +156,9 @@ const Purchases = () => {
       <Tabs variant="solid-rounded" colorScheme="teal" mt={5}>
         <TabList>
           <Tab>Add Purchase</Tab>
-          <Tab>Add Items </Tab>
+          <Tab>Add Items</Tab>
           <Tab>View Purchases</Tab>
-          <Tab>
-            View Purchase Bill
-          </Tab>
+          <Tab>View Purchase Bill</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
@@ -185,14 +191,13 @@ const Purchases = () => {
                       <Td>{item.name}</Td>
                       <Td>{item.stock}</Td>
                       <Td>
-                        {/* <Button
+                        <Button
                           size="sm"
                           colorScheme="blue"
-                          mr={2}
-                          onClick={() => handleEditItem(item)}
+                          onClick={() => handleViewItemReport(item)}
                         >
-                          Edit
-                        </Button> */}
+                          View Report
+                        </Button>
                         <Button
                           size="sm"
                           colorScheme="red"
@@ -223,7 +228,7 @@ const Purchases = () => {
                   ))}
                 </Select>
               </Box>
-              
+
               <Input
                 type="date"
                 value={startDate}
@@ -245,10 +250,27 @@ const Purchases = () => {
             </SimpleGrid>
           </TabPanel>
           <TabPanel>
-            <ViewPurchaseBill/>
+            <ViewPurchaseBill />
           </TabPanel>
         </TabPanels>
       </Tabs>
+
+      {/* Modal for viewing item report */}
+      <Modal isOpen={isReportOpen} onClose={() => setIsReportOpen(false)} size="xl">
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Item Report</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {selectedItem && <ItemReport item={selectedItem} />}
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={() => setIsReportOpen(false)}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 };
