@@ -21,7 +21,8 @@ async function getAllSuppliersPaginated(req, res) {
                 { firstName: new RegExp(searchQuery, 'i') },
                 { lastName: new RegExp(searchQuery, 'i') },
                 { contactNumber: new RegExp(searchQuery, 'i') },
-                { email: new RegExp(searchQuery, 'i') }
+                { email: new RegExp(searchQuery, 'i') },
+                { accountType: new RegExp(searchQuery, 'i') },
             ]
         };
 

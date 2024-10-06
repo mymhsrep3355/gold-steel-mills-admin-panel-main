@@ -9,7 +9,7 @@ import { SupplierCreate } from "../../components/SupplierCreate.jsx";
 import { PaginatedButtons } from "../../components/PaginatedButtons.jsx";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../utils.js";
-import { Spinner, Box, Text, InputGroup, InputRightElement } from "@chakra-ui/react";
+import { Spinner, Box, Text, InputGroup, InputRightElement, Select } from "@chakra-ui/react";
 import { useAuthProvider } from "../../hooks/useAuthProvider.js";
 export const Suppliers = () => {
   const [suppliers, setSuppliers] = useState([]);
@@ -98,6 +98,35 @@ export const Suppliers = () => {
     <div className="flex flex-col gap-3">
       <PageHeader title="Suppliers / Customers" />
       <InputGroup size="md">
+
+        <Select
+          onChange={(e) => {
+            
+            if (e.target.value === "all") {
+              setPageNumber(1);
+              setSearchQuery("");
+              setSearchInput("");
+            } else {
+              setPageNumber(1);
+              setSearchQuery(`${e.target.value}`);
+              setSearchInput('');
+            }
+          }}
+          placeholder="Select account type"
+          w="auto"
+          // value={()=>{
+          //   if (searchInput){
+          //     return "all"
+          //   }
+          // }}
+        >
+          <option value="all">All</option>
+          <option value="supplier">Supplier</option>
+          <option value="customer">Customer</option>
+          <option value="vendor">Vendor</option>
+        </Select>
+
+
         <InputField
           value={searchInput}
           setValue={setSearchInput}
@@ -108,6 +137,9 @@ export const Suppliers = () => {
             Search
           </Button>
         </InputRightElement>
+
+        
+        
       </InputGroup>
       {isFetching ? (
         <Box textAlign="center" my={4}>
