@@ -17,21 +17,27 @@ export class Forms{
         {
             label:'Contact Number',
             name:'contactNumber',
-            placeholder:'Contact Number*',
+            placeholder:'Contact Number',
             type:'text'
         },
         {
             label: 'Email',
             name: 'email',
-            placeholder: 'Email*',
+            placeholder: 'Email',
             type: 'email',
         },
         {
             label:'Phone',
             name:'phone',
-            placeholder:'Phone*',
+            placeholder:'Phone',
             type:'text'
         },
+        {
+            label:'Account Type',
+            name:'accountType',
+            placeholder:'Account Type*',
+            type:'text'
+        }
     ];
     static PURCHASE_CREATE=[
         {

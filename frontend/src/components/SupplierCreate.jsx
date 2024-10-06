@@ -14,6 +14,7 @@ import {
   VStack,
   Text,
   useToast,
+  Select,
 } from '@chakra-ui/react';
 import { BASE_URL } from '../utils.js';
 import { useAuthProvider } from '../hooks/useAuthProvider.js';
@@ -40,6 +41,7 @@ export const SupplierCreate = () => {
         contactNumber: formData.get('contactNumber'),
         email: formData.get('email'),
         phone: formData.get('phone'),
+        accountType: formData.get('accountType'),
       },{
         headers: {
           Authorization: `Bearer ${token}`, 
@@ -54,9 +56,10 @@ export const SupplierCreate = () => {
           duration: 3000,
           isClosable: true,
         });
-        e.currentTarget.reset();
+        // e.currentTarget.reset();
       }
     } catch (e) {
+      console.log("ERRRRRRRRROR")
       console.log(e);
       setError(e.response?.data?.message || 'Something went wrong.');
     }
@@ -72,16 +75,33 @@ export const SupplierCreate = () => {
           {Forms.SUPPLIER_CREATE.map((field, index) => (
             <FormControl key={index}>
               <FormLabel htmlFor={field.name}>{field.label}</FormLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type={field.type}
-                placeholder={field.placeholder}
-                focusBorderColor="blue.400"
-                errorBorderColor="red.300"
-                isRequired={field.name === 'firstName' || field.name === 'lastName'}
-              />
-            </FormControl>
+              
+              {field.name === 'accountType' ? (
+                <Select
+                  name={field.name}
+                  placeholder={field.placeholder}
+                  focusBorderColor="blue.400"
+                  errorBorderColor="red.300"
+                  isRequired={true}
+                >
+                  <option value="vendor">vendor</option>
+                  <option value="supplier">supplier</option>
+                  <option value="customer">customer</option>
+                </Select>
+                
+              ) : <Input
+                  id={field.name}
+                  name={field.name}
+                  type={field.type}
+                  placeholder={field.placeholder}
+                  focusBorderColor="blue.400"
+                  errorBorderColor="red.300"
+                  isRequired={field.name === 'firstName' || field.name === 'lastName'}
+                />
+            
+              }
+
+             </FormControl>
           ))}
           <Button
             type="submit"

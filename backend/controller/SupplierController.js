@@ -80,11 +80,11 @@ async function getSupplierById(req, res) {
 
 async function createSupplier(req, res) {
     console.log('Creating new supplier...');
-    const { firstName, lastName, contactNumber, email } = req.body;
+    const { firstName, lastName, contactNumber, email, accountType } = req.body;
 
-    if (!firstName || !lastName) {
+    if (!firstName || !lastName || !accountType) {
         console.log('Missing required fields.');
-        return res.status(400).json({ message: 'First name, last name, and contact number are required.' });
+        return res.status(400).json({ message: 'First name, last name, and account type are required.' });
     }
 
     try {
@@ -102,7 +102,8 @@ async function createSupplier(req, res) {
             paymentReceived: req.body.paymentReceived || 0,
             paymentSent: req.body.paymentSent || 0,
             advance: req.body.advance || 0,
-            balance: req.body.balance || 0
+            balance: req.body.balance || 0,
+            accountType,
         });
 
         const result = await supplier.save();

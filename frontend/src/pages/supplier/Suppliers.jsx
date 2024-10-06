@@ -156,7 +156,7 @@ export const Suppliers = () => {
           </svg>
         </Button>
 
-        <Modal title="Add New Supplier">
+        <Modal title="Add New Account">
           <SupplierCreate />
         </Modal>
       </div>
