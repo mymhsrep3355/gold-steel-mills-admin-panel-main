@@ -21,6 +21,7 @@ import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import { FaRecycle, FaCalendarDay } from "react-icons/fa";
 import { useRecoilValue } from "recoil";
 import DaybookEntryState from "../../atoms/DaybookEntryState";
+import { BASE_URL } from "../../utils";
 
 
 const isValidDate = (date) => {
@@ -29,6 +30,33 @@ const isValidDate = (date) => {
 };
 
 const DaybookTable = ({ daybooks, onEdit, onDelete, initialBalance, setOpeningBalance, refresh, setRefresh }) => {
+
+  useEffect(() => {
+    const getBalance = async () => {
+      try {
+        const balance = await fetch(`${BASE_URL}daybook/balance`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+
+        });
+        const data = await balance.json();
+        setOpeningBalance(data.balance);
+      } catch (error) {
+        console.error('Error fetching balance:', error);
+        setOpeningBalance(0);
+      } finally {
+        console.log('Balance fetched successfully');
+      }
+      
+
+    }
+
+    getBalance();
+    
+  }, [refresh])
   const newDaybookEntry = useRecoilValue(DaybookEntryState);
 
   const [loading, setLoading] = useState(true);
@@ -78,7 +106,7 @@ const DaybookTable = ({ daybooks, onEdit, onDelete, initialBalance, setOpeningBa
         balance += amount;
         totalCredit += amount;
       }
-
+        
       return {
         ...entry,
         debit: entry.type === "debit" ? amount : null,
@@ -100,6 +128,7 @@ const DaybookTable = ({ daybooks, onEdit, onDelete, initialBalance, setOpeningBa
   useEffect(() => {
     setLoading(true);
     setTimeout(() => setLoading(false), 500);
+    
   }, [refresh]);
 
   return (
@@ -164,6 +193,7 @@ const DaybookTable = ({ daybooks, onEdit, onDelete, initialBalance, setOpeningBa
             </Tr>
           </Thead>
           <Tbody>
+            
             {transactionsWithBalance.map((entry) => (
               <Tr key={entry._id}>
                 <Td>{new Date(entry.date).toLocaleDateString()}</Td>

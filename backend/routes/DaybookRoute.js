@@ -10,6 +10,8 @@ router.get('/reports/rates', daybookController.getPurchasesSalesAverageRate); //
 router.get('/reports', daybookController.generateReports); 
 router.get('/reports/supplier/:id', daybookController.getSupplierTransactions);
 
+router.get('/balance', daybookController.getBalance);
+
 // Dynamic route should come after static routes
 router.get('/:id', daybookController.getTransactionById);
 

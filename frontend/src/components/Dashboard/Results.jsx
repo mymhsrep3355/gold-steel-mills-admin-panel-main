@@ -37,6 +37,7 @@ const Results = () => {
         }
       );
       if (response.status === 200) {
+        
         setDaybooks(response.data);
         calculateInitialBalance(response.data);
       }

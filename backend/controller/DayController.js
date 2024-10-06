@@ -83,6 +83,58 @@ async function recordDaybookEntry(req, res) {
 
 // Function to get all transactions from the daybook
 // Function to get all transactions from the daybook, with optimized date filtering
+// const getTransactions = async (req, res) => {
+//     try {
+//         const { startDate, endDate } = req.query;
+
+//         // Build the date filter query
+//         let dateFilter = {};
+
+//         if (startDate && endDate) {
+//             // Convert startDate and endDate to Date objects for the full day
+//             dateFilter.date = {
+//                 $gte: new Date(new Date(startDate).setHours(0, 0, 0, 0)),
+//                 $lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
+//             };
+//         } else if (startDate) {
+//             // Filter for a specific day
+//             dateFilter.date = {
+//                 $gte: new Date(new Date(startDate).setHours(0, 0, 0, 0)),
+//                 $lte: new Date(new Date(startDate).setHours(23, 59, 59, 999))
+//             };
+//         } else if (endDate) {
+//             // Filter for a specific day
+//             dateFilter.date = {
+//                 $gte: new Date(new Date(endDate).setHours(0, 0, 0, 0)),
+//                 $lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
+//             };
+//         }
+
+//         // Fetch transactions with the date filter if provided
+//         const transactions = await Daybook.find(dateFilter).populate('supplier').sort({ date: 1 })
+
+//         // Add the opening balance as the first entry if there are any transactions
+//         if (transactions.length > 0) {
+//             transactions.unshift({
+//                 date: new Date(new Date(startDate).setHours(0, 0, 0, 0)),
+//                 description: "Opening Balance",
+//                 debit: 0,
+//                 credit: 0,
+//                 balance: openingBalance,
+//             });
+//         }
+
+//         res.status(200).json({ transactions, openingBalance });
+
+        
+//         // res.status(200).json(transactions);
+//     } catch (error) {
+//         console.error('Error fetching transactions:', error);
+//         res.status(500).json({ message: 'Internal server error' });
+//     }
+// };
+
+
 const getTransactions = async (req, res) => {
     try {
         const { startDate, endDate } = req.query;
@@ -94,30 +146,76 @@ const getTransactions = async (req, res) => {
             // Convert startDate and endDate to Date objects for the full day
             dateFilter.date = {
                 $gte: new Date(new Date(startDate).setHours(0, 0, 0, 0)),
-                $lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
+                $lte: new Date(new Date(endDate).setHours(23, 59, 59, 999)),
             };
         } else if (startDate) {
             // Filter for a specific day
             dateFilter.date = {
                 $gte: new Date(new Date(startDate).setHours(0, 0, 0, 0)),
-                $lte: new Date(new Date(startDate).setHours(23, 59, 59, 999))
+                $lte: new Date(new Date(startDate).setHours(23, 59, 59, 999)),
             };
         } else if (endDate) {
             // Filter for a specific day
             dateFilter.date = {
                 $gte: new Date(new Date(endDate).setHours(0, 0, 0, 0)),
-                $lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
+                $lte: new Date(new Date(endDate).setHours(23, 59, 59, 999)),
             };
         }
 
-        // Fetch transactions with the date filter if provided
-        const transactions = await Daybook.find(dateFilter).populate('supplier').sort({ date: 1 });
+        // Fetch the last transaction before the startDate to calculate the opening balance
+        let openingBalance = 0;
+        if (startDate) {
+            const getPreviousDate = new Date(new Date(startDate).setHours(0, 0, 0, 0));
+            getPreviousDate.setDate(getPreviousDate.getDate() - 1);
+            const lastDateFilter = {
+                date: {
+                    $gte: new Date(getPreviousDate).setHours(0, 0, 0, 0),
+                    $lte: new Date(new Date(startDate).setHours(23, 59, 59, 999)),
+                },
+            }
+
+            // const lastDayTransactions = await Daybook.find(lastDateFilter).sort({ date: -1 });
+            // if (lastDayTransactions.length > 0) {
+            //     for (const transaction of lastDayTransactions) {
+            //         if (transaction.type === "credit") {
+            //             openingBalance += transaction.amount;
+            //         } else {
+            //             openingBalance -= transaction.amount;
+            //         }
+            //     }
+            // }
+
+
+
+        }
+
+        // Fetch the transactions within the date range
+        const transactions = await Daybook.find(dateFilter).populate("supplier").sort({ date: 1 })
+        // openingBalance = transactions[transactions.length - 1].balance;
+        // console.log("openingBalance:", openingBalance);
+
+        // console.log("Transactions:", transactions);
+        
         res.status(200).json(transactions);
+        // res.status(200).json({ transactions, openingBalance });
     } catch (error) {
-        console.error('Error fetching transactions:', error);
+        console.error("Error fetching transactions:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+
+const getBalance = async (req, res) => {
+    try {
+        const lastTransaction = await Daybook.findOne().sort({ date: -1, _id: -1 });
+        const balance = lastTransaction ? lastTransaction.balance : 0;
+        res.status(200).json({ balance });
+    } catch (error) {
+        console.error('Error fetching balance:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
 
 
 // Function to get a specific transaction by ID
@@ -462,4 +560,5 @@ module.exports = {
     generateReports,
     getSupplierTransactions,
     getPurchasesSalesAverageRate,
+    getBalance,
 };
