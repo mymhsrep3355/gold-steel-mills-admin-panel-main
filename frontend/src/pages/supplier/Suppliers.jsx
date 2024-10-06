@@ -157,7 +157,7 @@ export const Suppliers = () => {
           handleViewLedger={handleViewLedger}
           handleNavigation={handleNavigation}
           deleteURL={`${BASE_URL}/suppliers`}
-          columns={["firstName", "lastName", "contactNumber"]}
+          columns={["firstName", "lastName", "accountType"]}
           data={suppliers}
           refreshData={suppliers}
         />

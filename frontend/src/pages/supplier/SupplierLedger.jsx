@@ -39,6 +39,11 @@ const SupplierLedger = () => {
   const [supplierName, setSupplierName] = useState("");
   const [startDate, setStartDate] = useState(""); // State for start date
   const [endDate, setEndDate] = useState(""); // State for end date
+
+
+  let runningBalance = 0; // Initialize the running balance
+
+
   const componentRef = useRef();
 
   useEffect(() => {
@@ -71,7 +76,7 @@ const SupplierLedger = () => {
       setTotalDebit(totalDebit);
       setTotalCredit(totalCredit);
       if (totalDebit - totalCredit < 0) {
-        setTotalBalance(0);
+        setTotalBalance(-(totalDebit - totalCredit));
       }
       else {
         setTotalBalance(totalDebit - totalCredit);
@@ -92,7 +97,7 @@ const SupplierLedger = () => {
     content: () => componentRef.current,
     pageStyle: `
       @page {
-        size: auto;
+        size: A4;
         margin: 20mm;
       }
       @media print {
@@ -109,7 +114,11 @@ const SupplierLedger = () => {
           background-color: #4A5568;
           color: white;
         }
+        .date-filter {
+          display: none !important; /* Hide date filters in print */
+        }
       }
+
     `,
   });
 
@@ -148,7 +157,7 @@ const SupplierLedger = () => {
         <Divider mb={4} />
 
         {/* Date Filters */}
-        <SimpleGrid columns={[1, 2]} spacing={5} mb={4}>
+        <SimpleGrid columns={[1, 2]} spacing={5} mb={4} className="date-filter">
           <Input
             type="date"
             placeholder="Start Date"
@@ -206,19 +215,32 @@ const SupplierLedger = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {ledgerData?.map((entry, index) => (
-                <Tr key={index}>
-                  <Td>{new Date(entry.date).toLocaleDateString()}</Td>
-                  <Td>{entry.description ? entry.description : "-"}</Td>
-                  <Td isNumeric>
-                    {entry.debit ? entry.debit.toLocaleString() : "-"}
-                  </Td>
-                  <Td isNumeric>
-                    {entry.credit ? entry.credit.toLocaleString() : "-"}
-                  </Td>
-                  <Td isNumeric>{entry.credit - entry.debit}</Td>
-                </Tr>
-              ))}
+            {
+              
+
+              ledgerData?.map((entry, index) => {
+                // Update the running balance based on debit and credit
+                if (entry.debit) {
+                  runningBalance -= entry.debit;
+                }
+                if (entry.credit) {
+                  runningBalance += entry.credit;
+                }
+
+                // totalBalance += runningBalance;
+
+                return (
+                  <Tr key={index}>
+                    <Td>{new Date(entry.date).toLocaleDateString()}</Td>
+                    <Td>{entry.description ? entry.description : "-"}</Td>
+                    <Td isNumeric>{entry.debit ? entry.debit.toLocaleString() : "-"}</Td>
+                    <Td isNumeric>{entry.credit ? entry.credit.toLocaleString() : "-"}</Td>
+                    <Td isNumeric>{Math.abs(runningBalance).toLocaleString()}</Td> {/* Show cumulative balance */}
+                  </Tr>
+                );
+              })
+            }
+
             </Tbody>
             <Tfoot>
               <Tr>

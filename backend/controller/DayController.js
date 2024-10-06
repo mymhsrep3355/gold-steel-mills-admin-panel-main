@@ -365,7 +365,6 @@ const generateReports = async (req, res) => {
     }
 };
 
-
 const getSupplierTransactions = async (req, res) => {
     try {
         const { id } = req.params;
@@ -388,7 +387,7 @@ const getSupplierTransactions = async (req, res) => {
             transactionsQuery.date = dateFilter;
         }
 
-        const transactions = await Daybook.find(transactionsQuery).sort({ date: 1 });
+        const transactions = await Daybook.find(transactionsQuery).sort({ createdAt: -1 });
 
         // Apply date filter to the purchases query
         const purchasesQuery = { supplier: id };
@@ -417,6 +416,7 @@ const getSupplierTransactions = async (req, res) => {
                     description: transaction.description ? transaction.description : 'N/A',
                     debit: transaction.amount,
                     credit: 0,
+                    createdAt: transaction.createdAt // Add createdAt for sorting later
                 });
                 debit += transaction.amount;
             } else if (transaction.type === 'credit') {
@@ -425,6 +425,7 @@ const getSupplierTransactions = async (req, res) => {
                     description: transaction.description ? transaction.description : 'N/A',
                     debit: 0,
                     credit: transaction.amount,
+                    createdAt: transaction.createdAt // Add createdAt for sorting later
                 });
                 credit += transaction.amount;
             }
@@ -451,6 +452,7 @@ const getSupplierTransactions = async (req, res) => {
                     description: `Type: ${itemType.name} || Weight: ${bill.weight} Kaat: ${bill.kaat}`,
                     debit: 0,
                     credit: bill.rate * bill.quantity,
+                    createdAt: purchase.createdAt // Use purchase's createdAt for sorting
                 });
                 credit += bill.rate * bill.quantity;
             }
@@ -477,13 +479,16 @@ const getSupplierTransactions = async (req, res) => {
                     description: `Type: ${itemType?.name} || Weight: ${bill.weight}`,
                     debit: bill.rate * bill.quantity,
                     credit: 0,
+                    createdAt: sale.createdAt // Use sale's createdAt for sorting
                 });
                 debit += bill.rate * bill.quantity;
             }
         }
 
-        // Sort the combined transactions by date
-        combinedTransactions.sort((a, b) => new Date(a.date) - new Date(b.date));
+        // Sort the combined transactions by createdAt
+        // Sort the combined transactions by createdAt in ascending order
+        combinedTransactions.sort((a, b) => b.createdAt - a.createdAt);
+
 
         res.status(200).json({
             combinedTransactions,
@@ -496,6 +501,7 @@ const getSupplierTransactions = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
 
 
 
