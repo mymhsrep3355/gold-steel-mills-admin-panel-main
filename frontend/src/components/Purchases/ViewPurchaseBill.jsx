@@ -74,23 +74,23 @@ const ViewPurchaseBill = () => {
 
     fetchSuppliers();
     fetchItems();
-  }, [token]);
+  }, [token, startDate, endDate]);
 
   const handleSupplierChange = async (event) => {
     const supplier_id = event.target.value;
     setSelectedSupplier(supplier_id);
     
     // Check if both dates are provided
-    if (!startDate || !endDate) {
-      toast({
-        title: "Date Range Required",
-        description: "Please select both start and end dates.",
-        status: "warning",
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
-    }
+    // if (!startDate || !endDate) {
+    //   toast({
+    //     title: "Date Range Required",
+    //     description: "Please select both start and end dates.",
+    //     status: "warning",
+    //     duration: 3000,
+    //     isClosable: true,
+    //   });
+    //   return;
+    // }
 
     try {
       console.log(supplier_id, startDate, endDate);
@@ -145,6 +145,205 @@ const ViewPurchaseBill = () => {
       });
     }
   };
+
+
+  const handleStartDateChange = async (event) => {
+    // if (!selectedSupplier) {
+    //   toast({
+    //     title: "Please select a supplier first.",
+    //     status: "warning",
+    //     duration: 3000,
+    //     isClosable: true,
+    //   });
+    //   return;
+
+    // }
+
+    let supplier_id = null;
+    if (selectedSupplier) {
+      supplier_id = selectedSupplier;
+    }
+
+    
+    setStartDate(event.target.value);
+
+    let endingDate = null;
+
+    if (endDate) {
+      endingDate = endDate;
+    } else {
+      endingDate = new Date().toISOString().slice(0, 10);
+    }
+    
+        
+    // Check if both dates are provided
+    // if (!startDate || !endDate) {
+    //   toast({
+    //     title: "Date Range Required",
+    //     description: "Please select both start and end dates.",
+    //     status: "warning",
+    //     duration: 3000,
+    //     isClosable: true,
+    //   });
+    //   return;
+    // }
+
+    try {
+      console.log(supplier_id, startDate, endDate);
+      const response = await axios.get(`${BASE_URL}purchases/supplier`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          supplierId: supplier_id,
+          startDate,
+          endingDate,
+        },
+      });
+
+      const supplierData = response.data;
+
+      // const selectedSupplierData = suppliers.find((supplier) => supplier._id === supplier_id);
+      // if (!selectedSupplierData) {
+      //   return;
+      // }
+      // setAdvancePayment(selectedSupplierData.advance || 0);
+      // setPreviousBalance(selectedSupplierData.balance || 0);
+
+      setAdvancePayment(0);
+      setPreviousBalance(0);
+
+
+      const purchaseRows = supplierData?.map((bill, index) => ({
+        id: index + 1,
+        items: bill.bills.map((item, itemIndex) => ({
+          id: itemIndex + 1,
+          billNumber: item.bill_no,
+          gatePassNumber: item.gatePassNo,
+          vehicleNumber: item.vehicle_no,
+          itemType: item.itemType,
+          quantity: item.weight,
+          kaat: item.kaat,
+          price: item.rate,
+        })),
+      }));
+
+      setRows(purchaseRows);
+      setUnloading(supplierData.unloading || 0);
+    } catch (error) {
+      console.error("Error fetching purchase details:", error);
+      toast({
+        title: "Failed to fetch purchase details.",
+        description: error.response?.data?.message || "Something went wrong.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+
+  const handleEndDateChange = async (event) => {
+    // if (!selectedSupplier) {
+    //   toast({
+    //     title: "Please select a supplier first.",
+    //     status: "warning",
+    //     duration: 3000,
+    //     isClosable: true,
+    //   });
+    //   return;
+
+    // }
+
+    let supplier_id = null;
+    if (selectedSupplier) {
+      supplier_id = selectedSupplier;
+    }
+
+    
+    setEndDate(event.target.value);
+    let startingDate = null;
+    if (!startDate) {
+      startingDate = new Date().toISOString().slice(0, 10);
+    }
+    else{
+      startingDate = startDate;
+    }
+
+  
+
+    
+    
+    
+        
+    // Check if both dates are provided
+    // if (!startDate || !endDate) {
+    //   toast({
+    //     title: "Date Range Required",
+    //     description: "Please select both start and end dates.",
+    //     status: "warning",
+    //     duration: 3000,
+    //     isClosable: true,
+    //   });
+    //   return;
+    // }
+
+    try {
+      console.log(supplier_id, startDate, endDate);
+      const response = await axios.get(`${BASE_URL}purchases/supplier`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          supplierId: supplier_id,
+          startingDate,
+          endDate,
+        },
+      });
+
+      const supplierData = response.data;
+
+      const selectedSupplierData = suppliers.find((supplier) => supplier._id === supplier_id);
+      if (!selectedSupplierData) {
+        return;
+      }
+      // setAdvancePayment(selectedSupplierData.advance || 0);
+      // setPreviousBalance(selectedSupplierData.balance || 0);
+
+      setAdvancePayment(0);
+      setPreviousBalance(0);
+
+
+      const purchaseRows = supplierData?.map((bill, index) => ({
+        id: index + 1,
+        items: bill.bills.map((item, itemIndex) => ({
+          id: itemIndex + 1,
+          billNumber: item.bill_no,
+          gatePassNumber: item.gatePassNo,
+          vehicleNumber: item.vehicle_no,
+          itemType: item.itemType,
+          quantity: item.weight,
+          kaat: item.kaat,
+          price: item.rate,
+        })),
+      }));
+
+      setRows(purchaseRows);
+      setUnloading(supplierData.unloading || 0);
+    } catch (error) {
+      console.error("Error fetching purchase details:", error);
+      toast({
+        title: "Failed to fetch purchase details.",
+        description: error.response?.data?.message || "Something went wrong.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+
+
 
   const calculateBill = () => {
     let total = 0;
@@ -237,7 +436,7 @@ const ViewPurchaseBill = () => {
             <Input
               type="date"
               value={startDate}
-              onChange={(e) => {setStartDate(e.target.value)}}
+              onChange={(e) => {handleStartDateChange(e)}}
             />
           </FormControl>
           <FormControl>
@@ -245,7 +444,7 @@ const ViewPurchaseBill = () => {
             <Input
               type="date"
               value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
+              onChange={(e) => handleEndDateChange(e)}
             />
           </FormControl>
         </SimpleGrid>

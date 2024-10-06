@@ -44,6 +44,12 @@ const PurchaseForm = () => {
   const toast = useToast();
   const { token } = useAuthProvider();
 
+  // Utility function to format numbers with commas
+  const formatNumberWithCommas = (number) => {
+    if (!number) return '';
+    return new Intl.NumberFormat('en-US').format(number);
+  };
+
   useEffect(() => {
     const fetchSuppliers = async () => {
       try {
@@ -104,18 +110,20 @@ const PurchaseForm = () => {
   };
 
   const updateRow = (rowIndex, itemIndex, field, value) => {
-    const updatedRows = rows.map((row, index) =>
-      index === rowIndex
-        ? {
-            ...row,
-            items: row.items.map((item, i) =>
-              i === itemIndex ? { ...item, [field]: value } : item
-            ),
-          }
-        : row
-    );
-    setRows(updatedRows);
-  };
+  const rawValue = value.replace(/,/g, ''); // Remove commas for raw value
+  const updatedRows = rows.map((row, index) =>
+    index === rowIndex
+      ? {
+          ...row,
+          items: row.items.map((item, i) =>
+            i === itemIndex ? { ...item, [field]: rawValue } : item
+          ),
+        }
+      : row
+  );
+  setRows(updatedRows);
+};
+
 
   const calculateBill = () => {
     let total = 0;
@@ -286,130 +294,135 @@ const PurchaseForm = () => {
             </Select>
           </FormControl>
         </SimpleGrid>
-        <TableContainer overflowX="auto">
-  <Table variant="simple">
-    <Thead bg="teal.600">
-      <Tr>
-        <Th color="white">#</Th>
-        <Th color="white">Bill No</Th>
-        <Th color="white">Gate Pass No</Th>
-        <Th color="white">Vehicle No</Th>
-        <Th color="white">Item Type</Th>
-        <Th color="white">Weight</Th>
-        <Th color="white">Kaat</Th>
-        <Th color="white">Rate</Th>
-        <Th color="white">Total</Th>
-      </Tr>
-    </Thead>
-    <Tbody>
-      {rows.map((row, rowIndex) => (
-        <React.Fragment key={row.id}>
-          {row.items.map((item, itemIndex) => (
-            <Tr key={item.id}>
-              <Td>{itemIndex === 0 ? row.id : ""}</Td>
-              <Td>
-                <Tooltip label="Bill Number">
-                  <Input
-                    type="text"
-                    placeholder="Bill Number"
-                    value={item.billNumber || ""}
-                    onChange={(e) =>
-                      updateRow(rowIndex, itemIndex, "billNumber", e.target.value)
-                    }
-                    style={{ minWidth: '150px', width: '150px' }}
-                  />
-                </Tooltip>
-              </Td>
-              <Td>
-                <Tooltip label="Gate Pass Number">
-                  <Input
-                    type="text"
-                    placeholder="Gate Pass Number"
-                    value={item.gatePassNumber || ""}
-                    onChange={(e) =>
-                      updateRow(rowIndex, itemIndex, "gatePassNumber", e.target.value)
-                    }
-                    style={{ minWidth: '150px', width: '150px' }}
-                  />
-                </Tooltip>
-              </Td>
-              <Td>
-                <Tooltip label="Vehicle Number">
-                  <Input
-                    type="text"
-                    placeholder="Vehicle Number"
-                    value={item.vehicleNumber || ""}
-                    onChange={(e) =>
-                      updateRow(rowIndex, itemIndex, "vehicleNumber", e.target.value)
-                    }
-                    style={{ minWidth: '150px', width: '150px' }}
-                  />
-                </Tooltip>
-              </Td>
-              <Td>
-                <Tooltip label="Item Type">
-                  <Select
-                    placeholder="Select item"
-                    onChange={(e) =>
-                      updateRow(rowIndex, itemIndex, "itemType", e.target.value)
-                    }
-                    style={{ minWidth: '150px', width: '150px' }}
-                  >
-                    {items.map((itemOption) => (
-                      <option key={itemOption._id} value={itemOption._id}>
-                        {itemOption.name}
-                      </option>
-                    ))}
-                  </Select>
-                </Tooltip>
-              </Td>
-              <Td>
-                <Tooltip label="Quantity">
-                  <Input
-                    type="number"
-                    placeholder="Quantity"
-                    value={item.quantity || ""}
-                    onChange={(e) =>
-                      updateRow(rowIndex, itemIndex, "quantity", e.target.value)
-                    }
-                    style={{ minWidth: '150px', width: '150px' }}
-                  />
-                </Tooltip>
-              </Td>
-              <Td>
-                <Tooltip label="Kaat">
-                  <Input
-                    type="number"
-                    placeholder="Kaat"
-                    value={item.kaat || ""}
-                    onChange={(e) =>
-                      updateRow(rowIndex, itemIndex, "kaat", e.target.value)
-                    }
-                    style={{ minWidth: '150px', width: '150px' }}
-                  />
-                </Tooltip>
-              </Td>
-              <Td>
-                <Tooltip label="Price">
-                  <Input
-                    type="number"
-                    placeholder="Price"
-                    value={item.price || ""}
-                    onChange={(e) =>
-                      updateRow(rowIndex, itemIndex, "price", e.target.value)
-                    }
-                    style={{ minWidth: '90px', width: '90px' }}
-                  />
-                </Tooltip>
-              </Td>
-              <Td>{((item.quantity - item.kaat) * (item.price || 0)).toFixed(2)}</Td>
-            </Tr>
-          ))}
-        </React.Fragment>
-      ))}
-    </Tbody>
-  </Table>
+  <TableContainer overflowX="auto">
+    <Table variant="simple">
+      <Thead bg="teal.600">
+        <Tr>
+          <Th color="white">#</Th>
+          <Th color="white">Bill No</Th>
+          <Th color="white">Gate Pass No</Th>
+          <Th color="white">Vehicle No</Th>
+          <Th color="white">Item Type</Th>
+          <Th color="white">Weight</Th>
+          <Th color="white">Kaat</Th>
+          <Th color="white">Rate</Th>
+          <Th color="white">Total</Th>
+        </Tr>
+      </Thead>
+      <Tbody>
+        {rows.map((row, rowIndex) => (
+          <React.Fragment key={row.id}>
+            {row.items.map((item, itemIndex) => (
+              <Tr key={item.id}>
+                <Td>{itemIndex === 0 ? row.id : ""}</Td>
+                <Td>
+                  <Tooltip label="Bill Number">
+                    <Input
+                      type="text"
+                      placeholder="Bill Number"
+                      value={item.billNumber || ""}
+                      onChange={(e) =>
+                        updateRow(rowIndex, itemIndex, "billNumber", e.target.value)
+                      }
+                      style={{ minWidth: '150px', width: '150px' }}
+                    />
+                  </Tooltip>
+                </Td>
+                <Td>
+                  <Tooltip label="Gate Pass Number">
+                    <Input
+                      type="text"
+                      placeholder="Gate Pass Number"
+                      value={item.gatePassNumber || ""}
+                      onChange={(e) =>
+                        updateRow(rowIndex, itemIndex, "gatePassNumber", e.target.value)
+                      }
+                      style={{ minWidth: '150px', width: '150px' }}
+                    />
+                  </Tooltip>
+                </Td>
+                <Td>
+                  <Tooltip label="Vehicle Number">
+                    <Input
+                      type="text"
+                      placeholder="Vehicle Number"
+                      value={item.vehicleNumber || ""}
+                      onChange={(e) =>
+                        updateRow(rowIndex, itemIndex, "vehicleNumber", e.target.value)
+                      }
+                      style={{ minWidth: '150px', width: '150px' }}
+                    />
+                  </Tooltip>
+                </Td>
+                <Td>
+                  <Tooltip label="Item Type">
+                    <Select
+                      placeholder="Select item"
+                      onChange={(e) =>
+                        updateRow(rowIndex, itemIndex, "itemType", e.target.value)
+                      }
+                      style={{ minWidth: '150px', width: '150px' }}
+                    >
+                      {items.map((itemOption) => (
+                        <option key={itemOption._id} value={itemOption._id}>
+                          {itemOption.name}
+                        </option>
+                      ))}
+                    </Select>
+                  </Tooltip>
+                </Td>
+                <Td>
+                  <Tooltip label="Quantity">
+                    <Input
+                      type="text"
+                      placeholder="Quantity"
+                      value={formatNumberWithCommas(item.quantity)}
+                      onChange={(e) =>
+                        updateRow(rowIndex, itemIndex, "quantity", e.target.value)
+                      }
+                      style={{ minWidth: '150px', width: '150px' }}
+                    />
+                  </Tooltip>
+                </Td>
+                <Td>
+                  <Tooltip label="Kaat">
+                    <Input
+                      type="text"
+                      placeholder="Kaat"
+                      value={formatNumberWithCommas(item.kaat)}
+                      onChange={(e) =>
+                        updateRow(rowIndex, itemIndex, "kaat", e.target.value)
+                      }
+                      style={{ minWidth: '150px', width: '150px' }}
+                    />
+                  </Tooltip>
+                </Td>
+                <Td>
+                  <Tooltip label="Price">
+                    <Input
+                      type="text"
+                      placeholder="Price"
+                      value={formatNumberWithCommas(item.price)}
+                      onChange={(e) =>
+                        updateRow(rowIndex, itemIndex, "price", e.target.value)
+                      }
+                      style={{ minWidth: '90px', width: '90px' }}
+                    />
+                  </Tooltip>
+                </Td>
+                <Td>
+                  {formatNumberWithCommas(
+                    (item.quantity - item.kaat) * (item.price || 0)
+                  )}
+                </Td>
+              </Tr>
+            ))}
+          </React.Fragment>
+        ))}
+      </Tbody>
+    </Table>
 </TableContainer>
+
 
 
 
@@ -455,10 +468,10 @@ const PurchaseForm = () => {
         </SimpleGrid>
         <Box fontSize="xl" fontWeight="bold" color="teal.700" mb={8}>
           <Flex justifyContent="space-between">
-            <Text>Total: {total}</Text>
+            <Text>Total: {formatNumberWithCommas(total)}</Text>
             <Tooltip label="Subtotal includes previous balance">
               <Flex align="center">
-                <Text mr={1}>Subtotal: {subtotal}</Text>
+                <Text mr={1}>Subtotal: {formatNumberWithCommas(subtotal)}</Text>
                 <InfoOutlineIcon />
               </Flex>
             </Tooltip>
