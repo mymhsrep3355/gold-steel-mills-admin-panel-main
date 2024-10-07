@@ -22,8 +22,9 @@ import {
   SimpleGrid,
   Select,
   Heading,
+  TableContainer,
 } from "@chakra-ui/react";
-import { AddIcon, InfoOutlineIcon } from "@chakra-ui/icons";
+import { InfoOutlineIcon } from "@chakra-ui/icons";
 import { useReactToPrint } from "react-to-print";
 import axios from "axios";
 import logo from "../../../public/logo.jpeg";
@@ -34,16 +35,24 @@ const ViewPurchaseBill = () => {
   const [rows, setRows] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [selectedSupplier, setSelectedSupplier] = useState("");
+  const [supplierName, setSupplierName] = useState(""); // To store supplier name
   const [advancePayment, setAdvancePayment] = useState(0);
   const [previousBalance, setPreviousBalance] = useState(0);
   const [items, setItems] = useState([]);
+  const [itemTypes, setItemTypes] = useState([]); // To store item types and their names
   const [unloading, setUnloading] = useState(0);
-  const [startDate, setStartDate] = useState("");  // State for start date
-  const [endDate, setEndDate] = useState("");      // State for end date
+  const [startDate, setStartDate] = useState(""); // State for start date
+  const [endDate, setEndDate] = useState(""); // State for end date
+  const [dataFetched, setDataFetched] = useState(false); // To track if data is fetched
 
   const componentRef = useRef();
   const toast = useToast();
   const { token } = useAuthProvider();
+
+  const formatNumberWithCommas = (number) => {
+    if (!number) return "";
+    return new Intl.NumberFormat("en-US").format(number);
+  };
 
   useEffect(() => {
     const fetchSuppliers = async () => {
@@ -72,52 +81,48 @@ const ViewPurchaseBill = () => {
       }
     };
 
+    const fetchItemTypes = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}itemTypes`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setItemTypes(response.data); // Store item types
+      } catch (error) {
+        console.error("Error fetching item types:", error);
+      }
+    };
+
     fetchSuppliers();
     fetchItems();
-  }, [token, startDate, endDate]);
+    fetchItemTypes(); // Fetch item types
+  }, [token]);
 
   const handleSupplierChange = async (event) => {
-    const supplier_id = event.target.value;
-    setSelectedSupplier(supplier_id);
-    
-    // Check if both dates are provided
-    // if (!startDate || !endDate) {
-    //   toast({
-    //     title: "Date Range Required",
-    //     description: "Please select both start and end dates.",
-    //     status: "warning",
-    //     duration: 3000,
-    //     isClosable: true,
-    //   });
-    //   return;
-    // }
+    const selectedId = event.target.value;
+    setSelectedSupplier(selectedId);
 
+    const selectedSupplier = suppliers.find((s) => s._id === selectedId);
+    if (selectedSupplier) {
+      setSupplierName(`${selectedSupplier.firstName} ${selectedSupplier.lastName}`);
+    }
+  };
+
+  const fetchSupplierData = async () => {
     try {
-      console.log(supplier_id, startDate, endDate);
       const response = await axios.get(`${BASE_URL}purchases/supplier`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          supplierId: supplier_id,
+          supplierId: selectedSupplier,
           startDate,
           endDate,
         },
       });
 
       const supplierData = response.data;
-
-      const selectedSupplierData = suppliers.find((supplier) => supplier._id === supplier_id);
-      if (!selectedSupplierData) {
-        return;
-      }
-      // setAdvancePayment(selectedSupplierData.advance || 0);
-      // setPreviousBalance(selectedSupplierData.balance || 0);
-
-      setAdvancePayment(0);
-      setPreviousBalance(0);
-
-
       const purchaseRows = supplierData?.map((bill, index) => ({
         id: index + 1,
         items: bill.bills.map((item, itemIndex) => ({
@@ -125,7 +130,7 @@ const ViewPurchaseBill = () => {
           billNumber: item.bill_no,
           gatePassNumber: item.gatePassNo,
           vehicleNumber: item.vehicle_no,
-          itemType: item.itemType,
+          itemType: item.itemType, // Keep _id but map later
           quantity: item.weight,
           kaat: item.kaat,
           price: item.rate,
@@ -134,6 +139,10 @@ const ViewPurchaseBill = () => {
 
       setRows(purchaseRows);
       setUnloading(supplierData.unloading || 0);
+      setAdvancePayment(0); // Adjust this based on supplier's actual advance payment logic
+      setPreviousBalance(0); // Adjust this based on supplier's actual balance logic
+      setDataFetched(true); // Set data fetched to true once the data is retrieved
+
     } catch (error) {
       console.error("Error fetching purchase details:", error);
       toast({
@@ -143,207 +152,15 @@ const ViewPurchaseBill = () => {
         duration: 3000,
         isClosable: true,
       });
+    } finally {
+      // setDataFetched(false);
     }
   };
 
-
-  const handleStartDateChange = async (event) => {
-    // if (!selectedSupplier) {
-    //   toast({
-    //     title: "Please select a supplier first.",
-    //     status: "warning",
-    //     duration: 3000,
-    //     isClosable: true,
-    //   });
-    //   return;
-
-    // }
-
-    let supplier_id = null;
-    if (selectedSupplier) {
-      supplier_id = selectedSupplier;
-    }
-
-    
-    setStartDate(event.target.value);
-
-    let endingDate = null;
-
-    if (endDate) {
-      endingDate = endDate;
-    } else {
-      endingDate = new Date().toISOString().slice(0, 10);
-    }
-    
-        
-    // Check if both dates are provided
-    // if (!startDate || !endDate) {
-    //   toast({
-    //     title: "Date Range Required",
-    //     description: "Please select both start and end dates.",
-    //     status: "warning",
-    //     duration: 3000,
-    //     isClosable: true,
-    //   });
-    //   return;
-    // }
-
-    try {
-      console.log(supplier_id, startDate, endDate);
-      const response = await axios.get(`${BASE_URL}purchases/supplier`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: {
-          supplierId: supplier_id,
-          startDate,
-          endingDate,
-        },
-      });
-
-      const supplierData = response.data;
-
-      // const selectedSupplierData = suppliers.find((supplier) => supplier._id === supplier_id);
-      // if (!selectedSupplierData) {
-      //   return;
-      // }
-      // setAdvancePayment(selectedSupplierData.advance || 0);
-      // setPreviousBalance(selectedSupplierData.balance || 0);
-
-      setAdvancePayment(0);
-      setPreviousBalance(0);
-
-
-      const purchaseRows = supplierData?.map((bill, index) => ({
-        id: index + 1,
-        items: bill.bills.map((item, itemIndex) => ({
-          id: itemIndex + 1,
-          billNumber: item.bill_no,
-          gatePassNumber: item.gatePassNo,
-          vehicleNumber: item.vehicle_no,
-          itemType: item.itemType,
-          quantity: item.weight,
-          kaat: item.kaat,
-          price: item.rate,
-        })),
-      }));
-
-      setRows(purchaseRows);
-      setUnloading(supplierData.unloading || 0);
-    } catch (error) {
-      console.error("Error fetching purchase details:", error);
-      toast({
-        title: "Failed to fetch purchase details.",
-        description: error.response?.data?.message || "Something went wrong.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
+  const getItemTypeName = (itemTypeId) => {
+    const itemType = itemTypes.find((type) => type._id === itemTypeId);
+    return itemType ? itemType.name : "Unknown";
   };
-
-
-  const handleEndDateChange = async (event) => {
-    // if (!selectedSupplier) {
-    //   toast({
-    //     title: "Please select a supplier first.",
-    //     status: "warning",
-    //     duration: 3000,
-    //     isClosable: true,
-    //   });
-    //   return;
-
-    // }
-
-    let supplier_id = null;
-    if (selectedSupplier) {
-      supplier_id = selectedSupplier;
-    }
-
-    
-    setEndDate(event.target.value);
-    let startingDate = null;
-    if (!startDate) {
-      startingDate = new Date().toISOString().slice(0, 10);
-    }
-    else{
-      startingDate = startDate;
-    }
-
-  
-
-    
-    
-    
-        
-    // Check if both dates are provided
-    // if (!startDate || !endDate) {
-    //   toast({
-    //     title: "Date Range Required",
-    //     description: "Please select both start and end dates.",
-    //     status: "warning",
-    //     duration: 3000,
-    //     isClosable: true,
-    //   });
-    //   return;
-    // }
-
-    try {
-      console.log(supplier_id, startDate, endDate);
-      const response = await axios.get(`${BASE_URL}purchases/supplier`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: {
-          supplierId: supplier_id,
-          startingDate,
-          endDate,
-        },
-      });
-
-      const supplierData = response.data;
-
-      const selectedSupplierData = suppliers.find((supplier) => supplier._id === supplier_id);
-      if (!selectedSupplierData) {
-        return;
-      }
-      // setAdvancePayment(selectedSupplierData.advance || 0);
-      // setPreviousBalance(selectedSupplierData.balance || 0);
-
-      setAdvancePayment(0);
-      setPreviousBalance(0);
-
-
-      const purchaseRows = supplierData?.map((bill, index) => ({
-        id: index + 1,
-        items: bill.bills.map((item, itemIndex) => ({
-          id: itemIndex + 1,
-          billNumber: item.bill_no,
-          gatePassNumber: item.gatePassNo,
-          vehicleNumber: item.vehicle_no,
-          itemType: item.itemType,
-          quantity: item.weight,
-          kaat: item.kaat,
-          price: item.rate,
-        })),
-      }));
-
-      setRows(purchaseRows);
-      setUnloading(supplierData.unloading || 0);
-    } catch (error) {
-      console.error("Error fetching purchase details:", error);
-      toast({
-        title: "Failed to fetch purchase details.",
-        description: error.response?.data?.message || "Something went wrong.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  };
-
-
-
 
   const calculateBill = () => {
     let total = 0;
@@ -357,7 +174,6 @@ const ViewPurchaseBill = () => {
     total -= parseFloat(advancePayment);
     total -= parseFloat(unloading);
     const subtotal = total + parseFloat(previousBalance);
-
     return { total: total.toFixed(2), subtotal: subtotal.toFixed(2) };
   };
 
@@ -368,7 +184,7 @@ const ViewPurchaseBill = () => {
     pageStyle: `
       @page {
         size: A4 landscape;
-        margin: 1mm;
+        margin: 10mm;
       }
       @media print {
         body {
@@ -376,7 +192,6 @@ const ViewPurchaseBill = () => {
           color: black;
         }
         .print-full-width {
-          min-width: fit-content;
           width: auto;
         }
         .print-table th, .print-table td {
@@ -388,27 +203,25 @@ const ViewPurchaseBill = () => {
           background-color: #4A5568;
           color: white;
         }
+        .no-print {
+          display: none !important; /* Hide elements with 'no-print' class */
+        }
       }
-    `
+    `,
   });
 
   return (
-    <Box
-      bg="#f4f4f4"
-      w={"100%"}
-      display="flex"
-      justifyContent="center"
-    >
+    <Box bg="#f4f4f4" w="100%" display="flex" justifyContent="center">
       <Box
         ref={componentRef}
         bg="white"
-        p={8}
+        p={4}
         rounded="lg"
         shadow="lg"
         width="100%"
         className="print-full-width"
       >
-        <HStack justifyContent="space-between" mb={8}>
+        <HStack justifyContent="space-between" mb={4}>
           <Image src={logo} alt="Factory Logo" boxSize="80px" />
           <VStack align="flex-start">
             <Heading as="h1" size="lg" color="gray.700">
@@ -417,13 +230,37 @@ const ViewPurchaseBill = () => {
             <Text color="gray.500">Glotian Mor, Daska</Text>
           </VStack>
         </HStack>
-        <SimpleGrid columns={[1, 3]} spacing={5} mb={8} className="print-full-width">
+
+        {/* Conditionally render Supplier Name, Start Date, and End Date */}
+        {dataFetched && supplierName && (
+          <Box mb={4}>
+            <Text fontWeight="bold">
+              Supplier Name: <span style={{ fontWeight: "normal" }}>{supplierName}</span>
+            </Text>
+          </Box>
+        )}
+
+        {dataFetched && startDate && (
+          <Box mb={4}>
+            <Text fontWeight="bold">
+              Start Date: <span style={{ fontWeight: "normal" }}>{startDate}</span>
+            </Text>
+          </Box>
+        )}
+
+        {dataFetched && endDate && (
+          <Box mb={4}>
+            <Text fontWeight="bold">
+              End Date: <span style={{ fontWeight: "normal" }}>{endDate}</span>
+            </Text>
+          </Box>
+        )}
+
+        {/* Supplier Selection and Date Filters */}
+        <SimpleGrid columns={[1, 3]} spacing={2} mb={4} className="no-print">
           <FormControl>
             <FormLabel>Suppliers</FormLabel>
-            <Select
-              placeholder="Select supplier"
-              onChange={handleSupplierChange}
-            >
+            <Select placeholder="Select supplier" onChange={handleSupplierChange}>
               {suppliers.map((supplier) => (
                 <option key={supplier._id} value={supplier._id}>
                   {supplier.firstName + " " + supplier.lastName}
@@ -431,139 +268,80 @@ const ViewPurchaseBill = () => {
               ))}
             </Select>
           </FormControl>
+
           <FormControl>
             <FormLabel>Start Date</FormLabel>
             <Input
               type="date"
               value={startDate}
-              onChange={(e) => {handleStartDateChange(e)}}
+              onChange={(e) => setStartDate(e.target.value)}
             />
           </FormControl>
+
           <FormControl>
             <FormLabel>End Date</FormLabel>
             <Input
               type="date"
               value={endDate}
-              onChange={(e) => handleEndDateChange(e)}
+              onChange={(e) => setEndDate(e.target.value)}
             />
           </FormControl>
         </SimpleGrid>
-        <Table variant="simple" colorScheme="teal" mb={8} className="print-table">
-          <Thead bg="teal.600">
-            <Tr>
-              <Th color="white">#</Th>
-              <Th color="white">Bill Number</Th>
-              <Th color="white">Gate Pass Number</Th>
-              <Th color="white">Vehicle Number</Th>
-              <Th color="white">Item Type</Th>
-              <Th color="white">Weight/Quantity</Th>
-              <Th color="white">Kaat</Th>
-              <Th color="white">Rate/Price</Th>
-              <Th color="white">Total</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {rows.map((row, rowIndex) => (
-              <React.Fragment key={row.id}>
-                {row.items?.map((item, itemIndex) => (
-                  <Tr key={item.id}>
-                    <Td>{rowIndex + 1 + "." + (itemIndex + 1)}</Td>
-                    <Td>
-                      <Tooltip label="Bill Number">
-                        <Input
-                          type="text"
-                          placeholder="Bill Number"
-                          value={item.billNumber || ""}
-                          readOnly
-                          className="print-full-width"
-                        />
-                      </Tooltip>
-                    </Td>
-                    <Td>
-                      <Tooltip label="Gate Pass Number">
-                        <Input
-                          type="text"
-                          placeholder="Gate Pass Number"
-                          value={item.gatePassNumber || ""}
-                          readOnly
-                          className="print-full-width"
-                        />
-                      </Tooltip>
-                    </Td>
-                    <Td>
-                      <Tooltip label="Vehicle Number">
-                        <Input
-                          type="text"
-                          placeholder="Vehicle Number"
-                          value={item.vehicleNumber || ""}
-                          readOnly
-                          className="print-full-width"
-                        />
-                      </Tooltip>
-                    </Td>
-                    <Td>
-                      <Tooltip label="Item Type">
-                        <Select
-                          value={item.itemType || ""}
-                          readOnly
-                          className="print-full-width"
-                        >
-                          {items.map((itemOption) => (
-                            <option key={itemOption._id} value={itemOption._id}>
-                              {itemOption.name}
-                            </option>
-                          ))}
-                        </Select>
-                      </Tooltip>
-                    </Td>
-                    <Td>
-                      <Tooltip label="Quantity">
-                        <Input
-                          type="number"
-                          placeholder="Quantity"
-                          value={item.quantity || ""}
-                          readOnly
-                          className="print-full-width"
-                        />
-                      </Tooltip>
-                    </Td>
-                    <Td>
-                      <Tooltip label="Kaat">
-                        <Input
-                          type="number"
-                          placeholder="Kaat"
-                          value={item.kaat || ""}
-                          readOnly
-                          className="print-full-width"
-                        />
-                      </Tooltip>
-                    </Td>
-                    <Td>
-                      <Tooltip label="Price">
-                        <Input
-                          type="number"
-                          placeholder="Price"
-                          value={item.price || ""}
-                          readOnly
-                          className="print-full-width"
-                        />
-                      </Tooltip>
-                    </Td>
-                    <Td>{((item.quantity - (item.kaat ||  0)) * (item.price || 0)).toFixed(2)}</Td>
-                  </Tr>
-                ))}
-              </React.Fragment>
-            ))}
-          </Tbody>
-        </Table>
-        <SimpleGrid columns={[1, 3]} spacing={5} mt={8} mb={8} className="print-full-width">
+
+        <Button colorScheme="teal" onClick={fetchSupplierData} mb={4} className="no-print">
+          Fetch Data
+        </Button>
+
+        {/* Table with Horizontal Scrolling */}
+        <TableContainer maxWidth="100%" overflowX="auto">
+          <Table variant="simple" colorScheme="teal" className="print-table">
+            <Thead bg="teal.600">
+              <Tr>
+                <Th color="white">#</Th>
+                <Th color="white">Bill Number</Th>
+                <Th color="white">Gate Pass Number</Th>
+                <Th color="white">Vehicle Number</Th>
+                <Th color="white">Item Type</Th>
+                <Th color="white">Weight/Quantity</Th>
+                <Th color="white">Kaat</Th>
+                <Th color="white">Rate/Price</Th>
+                <Th color="white">Total</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {rows.map((row, rowIndex) => (
+                <React.Fragment key={row.id}>
+                  {row.items.map((item, itemIndex) => (
+                    <Tr key={item.id}>
+                      <Td>{rowIndex + 1 + "." + (itemIndex + 1)}</Td>
+                      <Td>{item.billNumber || "-"}</Td>
+                      <Td>{item.gatePassNumber || "-"}</Td>
+                      <Td>{item.vehicleNumber || "-"}</Td>
+                      <Td>{getItemTypeName(item.itemType)}</Td> {/* Use name instead of _id */}
+                      <Td>{formatNumberWithCommas(item.quantity) || "-"}</Td>
+                      <Td>{formatNumberWithCommas(item.kaat) || "-"}</Td>
+                      <Td>{formatNumberWithCommas(item.price) || "-"}</Td>
+                      <Td>
+                        {formatNumberWithCommas(
+                          ((item.quantity - (item.kaat || 0)) * (item.price || 0)).toFixed(2)
+                        )}
+                      </Td>
+                    </Tr>
+                  ))}
+                </React.Fragment>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
+
+        {/* Billing Information */}
+        <SimpleGrid columns={[1, 3]} spacing={2} mt={4}>
           <FormControl>
             <FormLabel>Advance Payment</FormLabel>
             <Input
               type="number"
               value={advancePayment}
               onChange={(e) => setAdvancePayment(e.target.value)}
-              className="print-full-width"
             />
           </FormControl>
           <FormControl>
@@ -572,7 +350,6 @@ const ViewPurchaseBill = () => {
               type="number"
               value={previousBalance}
               onChange={(e) => setPreviousBalance(e.target.value)}
-              className="print-full-width"
             />
           </FormControl>
           <FormControl>
@@ -580,23 +357,26 @@ const ViewPurchaseBill = () => {
             <Input
               type="number"
               value={unloading}
-              onChange={(e) => setUnloading(e.target.value)}              
-              className="print-full-width"
+              onChange={(e) => setUnloading(e.target.value)}
             />
           </FormControl>
         </SimpleGrid>
-        <Box fontSize="xl" fontWeight="bold" color="teal.700" mb={8}>
+
+        {/* Total Calculation */}
+        <Box fontSize="xl" fontWeight="bold" color="teal.700" mb={4}>
           <Flex justifyContent="space-between">
-            <Text>Total: {total}</Text>
+            <Text>Total: {formatNumberWithCommas(total)}</Text>
             <Tooltip label="Subtotal includes previous balance">
               <Flex align="center">
-                <Text mr={1}>Subtotal: {subtotal}</Text>
+                <Text mr={1}>Subtotal: {formatNumberWithCommas(subtotal)}</Text>
                 <InfoOutlineIcon />
               </Flex>
             </Tooltip>
           </Flex>
         </Box>
-        <HStack justifyContent="space-between" mt={10}>
+
+        {/* Signatures and Print Button */}
+        <HStack justifyContent="space-between" mt={4}>
           <Box textAlign="center" w="45%">
             <Divider />
             <Text mt={2}>Signature of CEO</Text>
@@ -606,7 +386,7 @@ const ViewPurchaseBill = () => {
             <Text mt={2}>Receiver</Text>
           </Box>
         </HStack>
-        <Button mt={5} colorScheme="teal" onClick={handlePrint}>
+        <Button mt={5} colorScheme="teal" onClick={handlePrint} className="no-print">
           Print/Save
         </Button>
       </Box>
