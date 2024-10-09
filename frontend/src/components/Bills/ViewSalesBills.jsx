@@ -22,6 +22,7 @@ import {
   Image,
   SimpleGrid,
   Select,
+  TableContainer,
 } from "@chakra-ui/react";
 import { AddIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { useReactToPrint } from "react-to-print";
@@ -34,15 +35,22 @@ const ViewSalesBills = () => {
   const [rows, setRows] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [selectedSupplier, setSelectedSupplier] = useState("");
+  const [supplierName, setSupplierName] = useState("");
   const [advancePayment, setAdvancePayment] = useState(0);
   const [previousBalance, setPreviousBalance] = useState(0);
   const [items, setItems] = useState([]);
-  const [customerName, setCustomerName] = useState("");
-  const [startDate, setStartDate] = useState(""); // State for start date
-  const [endDate, setEndDate] = useState(""); // State for end date
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const componentRef = useRef();
   const toast = useToast();
   const { token } = useAuthProvider();
+
+  const formatNumberWithCommas = (number) => {
+    if (!number) return "";
+    return new Intl.NumberFormat("en-US").format(number);
+  };
+
+  const removeCommas = (value) => (value ? value.replace(/,/g, "") : "");
 
   useEffect(() => {
     const fetchSuppliers = async () => {
@@ -72,24 +80,13 @@ const ViewSalesBills = () => {
     };
 
     fetchItems();
-
     fetchSuppliers();
   }, [token]);
 
-  const handleSupplier = async (event) => {
-    const supplier_id = event.target.value;
-    setSelectedSupplier(supplier_id);
-
-    // Check if both dates are provided
-    if (!startDate || !endDate) {
-      toast({
-        title: "Date Range Required",
-        description: "Please select both start and end dates.",
-        status: "warning",
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
+  const handleFetchData = async () => {
+    const selectedSupplierObj = suppliers.find((s) => s._id === selectedSupplier);
+    if (selectedSupplierObj) {
+      setSupplierName(`${selectedSupplierObj.firstName} ${selectedSupplierObj.lastName}`);
     }
 
     try {
@@ -98,35 +95,30 @@ const ViewSalesBills = () => {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          supplier: supplier_id,
-          startDate,
-          endDate,
+          supplier: selectedSupplier || undefined,
+          startDate: startDate || undefined,
+          endDate: endDate || undefined,
         },
       });
 
       const salesData = response.data;
 
-      // Filter the data for the selected supplier
-      const matchingSales = salesData.filter(
-        (sale) => sale.supplier && sale.supplier._id === supplier_id
-      );
+      const matchingSales = selectedSupplier
+        ? salesData.filter((sale) => sale.supplier && sale.supplier._id === selectedSupplier)
+        : salesData;
 
       if (matchingSales.length > 0) {
         const lastSale = matchingSales[matchingSales.length - 1];
-        // setAdvancePayment(lastSale.supplier?.advance || 0);
-        // setPreviousBalance(lastSale.supplier?.balance || 0);
-
         setAdvancePayment(0);
         setPreviousBalance(0);
-        
 
         const filledRows = lastSale.bills.map((bill, index) => ({
           id: index + 1,
           billNumber: bill.bill_no,
           gatePassNumber: bill.gatePassNo,
           vehicleNumber: bill.vehicle_no,
-          quantity: bill.quantity,
-          price: bill.rate,
+          quantity: formatNumberWithCommas(bill.quantity),
+          price: formatNumberWithCommas(bill.rate),
         }));
 
         setRows(filledRows);
@@ -136,11 +128,11 @@ const ViewSalesBills = () => {
         setPreviousBalance(0);
       }
     } catch (error) {
-      console.error("Error fetching supplier sales data:", error);
+      console.error("Error fetching sales data:", error);
 
       toast({
-        title: "Failed to fetch supplier data.",
-        description: "Unable to fetch data for the selected supplier.",
+        title: "Failed to fetch data.",
+        description: "Unable to fetch sales data for the selected filters.",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -148,22 +140,11 @@ const ViewSalesBills = () => {
     }
   };
 
-  const addRow = () => {
-    setRows([...rows, { id: rows.length + 1 }]);
-  };
-
-  const updateRow = (index, field, value) => {
-    const updatedRows = rows.map((row, i) =>
-      i === index ? { ...row, [field]: value } : row
-    );
-    setRows(updatedRows);
-  };
-
   const calculateBill = () => {
     let total = 0;
     rows.forEach((row) => {
-      const quantity = parseFloat(row.quantity) || 0;
-      const price = parseFloat(row.price) || 0;
+      const quantity = parseFloat(removeCommas(row.quantity)) || 0;
+      const price = parseFloat(removeCommas(row.price)) || 0;
       total += quantity * price;
     });
 
@@ -176,26 +157,38 @@ const ViewSalesBills = () => {
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
-    pageStyle: () =>
-      `@media print { @page { size: A4 landscape; margin: 1mm } }`,
+    pageStyle: `
+      @page {
+        size: A4 landscape;
+        margin: 10mm;
+      }
+      @media print {
+        body {
+          font-size: 12pt;
+          color: black;
+        }
+        .print-full-width {
+          width: auto;
+        }
+        .print-table th, .print-table td {
+          padding: 8px;
+          font-size: 10pt;
+          border: 1px solid black;
+        }
+        .print-table th {
+          background-color: #4A5568;
+          color: white;
+        }
+        .no-print {
+          display: none !important;
+        }
+      }
+    `,
   });
 
   return (
-    <Box
-      bg="#f4f4f4"
-      minH="100vh"
-      width="100%"
-      display="flex"
-      justifyContent="center"
-    >
-      <Box
-        ref={componentRef}
-        bg="white"
-        p={8}
-        rounded="lg"
-        shadow="lg"
-        width="100%"
-      >
+    <Box bg="#f4f4f4" minH="100vh" width="100%" display="flex" justifyContent="center">
+      <Box ref={componentRef} bg="white" p={8} rounded="lg" shadow="lg" width="100%">
         <HStack justifyContent="space-between" mb={8}>
           <Image src={logo} alt="Factory Logo" boxSize="80px" />
           <VStack align="flex-start">
@@ -205,18 +198,31 @@ const ViewSalesBills = () => {
             <Text color="gray.500">Glotian Mor, Daska</Text>
           </VStack>
         </HStack>
-        <SimpleGrid columns={[1, 3]} spacing={5} mb={8}>
-          {/* <FormControl>
-            <FormLabel>Customer Name</FormLabel>
-            <Input
-              type="text"
-              value={customerName}
-              onChange={(e) => setCustomerName(e.target.value)}
-            />
-          </FormControl> */}
+
+        {/* Display Supplier and Date Range */}
+        {supplierName && (
+          <Box mb={4}>
+            <Text fontWeight="bold">
+              Customer: <span style={{ fontWeight: "normal" }}>{supplierName}</span>
+            </Text>
+          </Box>
+        )}
+        {startDate && (
+          <Text fontWeight="bold">
+            Start Date: <span style={{ fontWeight: "normal" }}>{startDate}</span>
+          </Text>
+        )}
+        {endDate && (
+          <Text fontWeight="bold">
+            End Date: <span style={{ fontWeight: "normal" }}>{endDate}</span>
+          </Text>
+        )}
+
+        {/* Supplier and Date Input Filters */}
+        <SimpleGrid columns={[1, 3]} spacing={5} mb={8} className="no-print">
           <FormControl>
             <FormLabel>Customer</FormLabel>
-            <Select placeholder="Select Customer" onChange={handleSupplier}>
+            <Select placeholder="Select Customer" onChange={(e) => setSelectedSupplier(e.target.value)}>
               {suppliers.map((supplier) => (
                 <option key={supplier._id} value={supplier._id}>
                   {supplier.firstName}
@@ -224,7 +230,6 @@ const ViewSalesBills = () => {
               ))}
             </Select>
           </FormControl>
-          {/* Date filter fields */}
           <FormControl>
             <FormLabel>Start Date</FormLabel>
             <Input
@@ -243,110 +248,99 @@ const ViewSalesBills = () => {
           </FormControl>
         </SimpleGrid>
 
-        <Table variant="simple" colorScheme="teal" mb={8}>
-          <Thead bg="teal.600">
-            <Tr>
-              <Th color="white">#</Th>
-              <Th color="white">Bill Number</Th>
-              <Th color="white">Gate Pass Number</Th>
-              <Th color="white">Vehicle Number</Th>
-              <Th color="white">Item Type</Th>
-              <Th color="white">Weight/Quantity</Th>
-              <Th color="white">Rate/Price</Th>
-              <Th color="white">Total</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {rows.map((row, index) => (
-              <Tr key={row.id}>
-                <Td>{row.id}</Td>
-                <Td>
-                  <Tooltip label="Bill Number">
-                    <Input
-                      type="text"
-                      placeholder="Bill Number"
-                      value={row.billNumber || ""}
-                      onChange={(e) =>
-                        updateRow(index, "billNumber", e.target.value)
-                      }
-                    />
-                  </Tooltip>
-                </Td>
-                <Td>
-                  <Tooltip label="Gate Pass Number">
-                    <Input
-                      type="text"
-                      placeholder="Gate Pass Number"
-                      value={row.gatePassNumber || ""}
-                      onChange={(e) =>
-                        updateRow(index, "gatePassNumber", e.target.value)
-                      }
-                    />
-                  </Tooltip>
-                </Td>
-                <Td>
-                  <Tooltip label="Vehicle Number">
-                    <Input
-                      type="text"
-                      placeholder="Vehicle Number"
-                      value={row.vehicleNumber || ""}
-                      onChange={(e) =>
-                        updateRow(index, "vehicleNumber", e.target.value)
-                      }
-                    />
-                  </Tooltip>
-                </Td>
-
-                <Td>
-                  <Tooltip label="Item Type">
-                    <Select
-                      value={row.itemType || ""}
-                      onChange={(e) =>
-                        updateRow(index, "itemType", e.target.value)
-                      }
-                    >
-                      {items.map((item) => (
-                        <option key={item._id} value={item._id}>
-                          {item.name}
-                        </option>
-                      ))}
-                    </Select>
-                  </Tooltip>
-                </Td>
-                <Td>
-                  <Tooltip label="Quantity">
-                    <Input
-                      type="number"
-                      placeholder="Quantity"
-                      value={row.quantity || ""}
-                      onChange={(e) =>
-                        updateRow(index, "quantity", e.target.value)
-                      }
-                    />
-                  </Tooltip>
-                </Td>
-                <Td>
-                  <Tooltip label="Price">
-                    <Input
-                      type="number"
-                      placeholder="Price"
-                      value={row.price || ""}
-                      onChange={(e) =>
-                        updateRow(index, "price", e.target.value)
-                      }
-                    />
-                  </Tooltip>
-                </Td>
-                <Td>
-                  {((row.quantity || 0) * (row.price || 0)).toFixed(2)}
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-        <Button leftIcon={<AddIcon />} colorScheme="teal" onClick={addRow}>
-          Add Vehicle
+        <Button colorScheme="teal" onClick={handleFetchData} className="no-print">
+          Fetch Data
         </Button>
+
+        {/* Table with Horizontal Scrolling */}
+        <TableContainer maxWidth="100%" overflowX="auto" mt={5}>
+          <Table variant="simple" colorScheme="teal" className="print-table">
+            <Thead bg="teal.600">
+              <Tr>
+                <Th color="white">#</Th>
+                <Th color="white">Bill Number</Th>
+                <Th color="white">Gate Pass Number</Th>
+                <Th color="white">Vehicle Number</Th>
+                <Th color="white">Item Type</Th>
+                <Th color="white">Weight/Quantity</Th>
+                <Th color="white">Rate/Price</Th>
+                <Th color="white">Total</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {rows.map((row, index) => (
+                <Tr key={row.id}>
+                  <Td>{row.id}</Td>
+                  <Td>
+                    <Tooltip label="Bill Number">
+                      <Input
+                        type="text"
+                        placeholder="Bill Number"
+                        value={row.billNumber || ""}
+                        onChange={(e) => updateRow(index, "billNumber", e.target.value)}
+                      />
+                    </Tooltip>
+                  </Td>
+                  <Td>
+                    <Tooltip label="Gate Pass Number">
+                      <Input
+                        type="text"
+                        placeholder="Gate Pass Number"
+                        value={row.gatePassNumber || ""}
+                        onChange={(e) => updateRow(index, "gatePassNumber", e.target.value)}
+                      />
+                    </Tooltip>
+                  </Td>
+                  <Td>
+                    <Tooltip label="Vehicle Number">
+                      <Input
+                        type="text"
+                        placeholder="Vehicle Number"
+                        value={row.vehicleNumber || ""}
+                        onChange={(e) => updateRow(index, "vehicleNumber", e.target.value)}
+                      />
+                    </Tooltip>
+                  </Td>
+                  <Td>
+                    <Tooltip label="Item Type">
+                      <Select
+                        value={row.itemType || ""}
+                        onChange={(e) => updateRow(index, "itemType", e.target.value)}
+                      >
+                        {items.map((item) => (
+                          <option key={item._id} value={item._id}>
+                            {item.name}
+                          </option>
+                        ))}
+                      </Select>
+                    </Tooltip>
+                  </Td>
+                  <Td>
+                    <Tooltip label="Quantity">
+                      <Input
+                        type="text"
+                        placeholder="Quantity"
+                        value={row.quantity || ""}
+                        onChange={(e) => updateRow(index, "quantity", formatNumberWithCommas(e.target.value))}
+                      />
+                    </Tooltip>
+                  </Td>
+                  <Td>
+                    <Tooltip label="Price">
+                      <Input
+                        type="text"
+                        placeholder="Price"
+                        value={row.price || ""}
+                        onChange={(e) => updateRow(index, "price", formatNumberWithCommas(e.target.value))}
+                      />
+                    </Tooltip>
+                  </Td>
+                  <Td>{formatNumberWithCommas(((parseFloat(removeCommas(row.quantity)) || 0) * (parseFloat(removeCommas(row.price)) || 0)).toFixed(2))}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
 
         <SimpleGrid columns={[1, 2]} spacing={5} mt={8} mb={8}>
           <FormControl>
@@ -354,9 +348,7 @@ const ViewSalesBills = () => {
             <Input
               type="number"
               value={advancePayment}
-              onChange={(e) =>
-                setAdvancePayment(parseFloat(e.target.value) || 0)
-              }
+              onChange={(e) => setAdvancePayment(parseFloat(e.target.value) || 0)}
             />
           </FormControl>
           <FormControl>
@@ -364,23 +356,23 @@ const ViewSalesBills = () => {
             <Input
               type="number"
               value={previousBalance}
-              onChange={(e) =>
-                setPreviousBalance(parseFloat(e.target.value) || 0)
-              }
+              onChange={(e) => setPreviousBalance(parseFloat(e.target.value) || 0)}
             />
           </FormControl>
         </SimpleGrid>
+
         <Box fontSize="xl" fontWeight="bold" color="teal.700" mb={8}>
           <Flex justifyContent="space-between">
-            <Text>Total: {total}</Text>
+            <Text>Total: {formatNumberWithCommas(total)}</Text>
             <Tooltip label="Subtotal includes previous balance and deducts advance payment">
               <Flex align="center">
-                <Text mr={1}>Subtotal: {subtotal}</Text>
+                <Text mr={1}>Subtotal: {formatNumberWithCommas(subtotal)}</Text>
                 <InfoOutlineIcon />
               </Flex>
             </Tooltip>
           </Flex>
         </Box>
+
         <HStack justifyContent="space-between" mt={10}>
           <Box textAlign="center" w="45%">
             <Divider />
@@ -391,7 +383,8 @@ const ViewSalesBills = () => {
             <Text mt={2}>Receiver</Text>
           </Box>
         </HStack>
-        <Button mt={5} colorScheme="teal" onClick={handlePrint}>
+
+        <Button mt={5} colorScheme="teal" onClick={handlePrint} className="no-print">
           Print/Save
         </Button>
       </Box>
