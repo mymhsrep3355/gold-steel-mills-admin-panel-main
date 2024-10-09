@@ -1,0 +1,1801 @@
+{
+	"info": {
+		"_postman_id": "3a7c00ce-3c9e-4e64-879a-32da95ac2c9b",
+		"name": "goldsteelmill",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30217964"
+	},
+	"item": [
+		{
+			"name": "User Management API",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Bunty\",\n    \"email\": \"Bunty@example.com\",\n    \"password\": \"Bunty123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Bunty\",\n    \"email\": \"Bunty@example.com\",\n    \"password\": \"Bunty123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by Email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/email/johndoe@example.com",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"email",
+								"johndoe@example.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/id/66b7c56d5ad340508ea465b0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"id",
+								"66b7c56d5ad340508ea465b0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User by ID",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"John Updated\",\n    \"email\": \"johnupdated@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/update/66b7c56d5ad340508ea465b0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"update",
+								"66b7c56d5ad340508ea465b0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/delete/66b7c56d5ad340508ea465b0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"delete",
+								"66b7c56d5ad340508ea465b0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Account Status",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/changeAccountStatus/66c042fe05add31edb1944d6",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"changeAccountStatus",
+								"66c042fe05add31edb1944d6"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Supplier Management API",
+			"item": [
+				{
+					"name": "Get All Suppliers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/suppliers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"suppliers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Supplier by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/suppliers/{{supplierId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"suppliers",
+								"{{supplierId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Supplier",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Testing Daybook\",\n    \"lastName\": \"Incorporatives\",\n    \"contactNumber\": \"0334444244\",\n    \"email\": \"abc@supplier.com\",\n    \"phone\": \"1234567890\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/suppliers/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"suppliers",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Supplier by ID",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Updated Supplier\",\n    \"email\": \"updated@supplier.com\",\n    \"phone\": \"0987654321\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/suppliers/update/66b7d18bb677493cb37ec4e6",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"suppliers",
+								"update",
+								"66b7d18bb677493cb37ec4e6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Supplier by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/suppliers/delete/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"suppliers",
+								"delete",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Payment Received",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"66b7d18bb677493cb37ec4e6\",\n    \"paymentReceived\": 200\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/suppliers/paymentReceived",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"suppliers",
+								"paymentReceived"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Payment Sent",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"66b7d18bb677493cb37ec4e6\",\n    \"paymentSent\": 150\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/suppliers/paymentSent",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"suppliers",
+								"paymentSent"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category Management API",
+			"item": [
+				{
+					"name": "Get All Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/categories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Category by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/categories/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New Category 2\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/categories/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Category",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Category\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/categories/update/66b7d839d26ba699b9614596",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories",
+								"update",
+								"66b7d839d26ba699b9614596"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/categories/delete/66b7d839d26ba699b9614596",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories",
+								"delete",
+								"66b7d839d26ba699b9614596"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Expense Management API",
+			"item": [
+				{
+					"name": "Get All Expenses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/expenses?startDate=2024-05-1&endDate=2024-08-05",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"expenses"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2024-05-1"
+								},
+								{
+									"key": "endDate",
+									"value": "2024-08-05"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Expense by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/expenses/66b7da9d295b1640f7479c4f",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"expenses",
+								"66b7da9d295b1640f7479c4f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Expense",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"category\": \"66b7d832d26ba699b9614593\",\n    \"amount\": 100.50,\n    \"date\": \"2024-08-01\",\n    \"description\": \"Office Supplies\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/expenses/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"expenses",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Expense",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"category\": \"66b7d832d26ba699b9614593\",\n    \"amount\": 200.00,\n    \"date\": \"2024-08-05\",\n    \"description\": \"Updated Office Supplies\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/expenses/update/66b7da9d295b1640f7479c4f",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"expenses",
+								"update",
+								"66b7da9d295b1640f7479c4f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Expense",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/expenses/delete/66b7da9d295b1640f7479c4f",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"expenses",
+								"delete",
+								"66b7da9d295b1640f7479c4f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Expenses by Date",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/expenses?startDate=2024-05-1&endDate=2024-08-05",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"expenses"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2024-05-1"
+								},
+								{
+									"key": "endDate",
+									"value": "2024-08-05"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Item Management API",
+			"item": [
+				{
+					"name": "Get All Items",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/items",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Item by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/items/66b7dce29e5677b44e78f67e",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"items",
+								"66b7dce29e5677b44e78f67e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Item",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Billet\",\n    \"stock\": 100\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/items/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"items",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Item",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Item\",\n    \"stock\": 200\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/items/update/66b7dce29e5677b44e78f67e",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"items",
+								"update",
+								"66b7dce29e5677b44e78f67e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Item",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/items/delete/66b7dce29e5677b44e78f67e",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"items",
+								"delete",
+								"66b7dce29e5677b44e78f67e"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bill Management API",
+			"item": [
+				{
+					"name": "Get All Bills",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/bills",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bills"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Bill by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/bills/66b7ddd48b7dd6d59b29646d",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bills",
+								"66b7ddd48b7dd6d59b29646d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Bill",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"weight\": 1000,\n    \"itemType\": \"66b7dce29e5677b44e78f67e\",\n    \"quantity\": 10,\n    \"vehicle_no\": \"ABC1234\",\n    \"rate\": 50,\n    \"total\": 50000,\n    \"gatePassNo\": \"GP1234\",\n    \"bill_no\": \"BILL1234\",\n    \"date\": \"2024-08-10\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/bills/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bills",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Bill",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"weight\": 1500,\n    \"itemType\": \"60c72b2f9b1d8a001c8e4d7e\",\n    \"quantity\": 15,\n    \"vehicle_no\": \"DEF5678\",\n    \"rate\": 60,\n    \"total\": 90000,\n    \"gatePassNo\": \"GP5678\",\n    \"bill_no\": \"BILL5678\",\n    \"date\": \"2024-08-15\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/bills/update/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bills",
+								"update",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Bill",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/bills/delete/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bills",
+								"delete",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Purchase Management API",
+			"item": [
+				{
+					"name": "Get All Purchases",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/purchases?startDate=2024-08-11&endDate=2024-08-11",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"purchases"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2024-08-11"
+								},
+								{
+									"key": "endDate",
+									"value": "2024-08-11"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Purchase by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/purchases/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"purchases",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "60c72b2f9b1d8a001c8e4d7e"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Purchase",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"supplier\": \"66b869310bae9db901a21aea\",\n    \"bills\": [\n        {\n            \"weight\": 1000,\n            \"itemType\": \"66b869580bae9db901a21af0\",\n            \"quantity\": 10,\n            \"vehicle_no\": \"ABC1234\",\n            \"rate\": 50,\n            \"total\": 50000,\n            \"gatePassNo\": \"GP1234\",\n            \"bill_no\": \"BILL1234\"\n        },\n        {\n            \"weight\": 1500,\n            \"itemType\": \"66b8694b0bae9db901a21aed\",\n            \"quantity\": 15,\n            \"vehicle_no\": \"DEF5678\",\n            \"rate\": 60,\n            \"total\": 90000,\n            \"gatePassNo\": \"GP5678\",\n            \"bill_no\": \"BILL5678\"\n        },\n        {\n            \"weight\": 1500,\n            \"itemType\": \"66b7dce29e5677b44e78f67e\",\n            \"quantity\": 15,\n            \"vehicle_no\": \"DEF5678\",\n            \"rate\": 60,\n            \"total\": 90000,\n            \"gatePassNo\": \"GP5678\",\n            \"bill_no\": \"BILL5678\"\n        },\n        {\n            \"weight\": 1500,\n            \"itemType\": \"66b8694b0bae9db901a21aed\",\n            \"quantity\": 15,\n            \"vehicle_no\": \"DEF5678\",\n            \"rate\": 60,\n            \"total\": 90000,\n            \"gatePassNo\": \"GP5678\",\n            \"bill_no\": \"BILL5678\"\n        }\n    ],\n    \"totalAmount\": 140000\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/purchases/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"purchases",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Purchase",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"supplier\": \"60c72b2f9b1d8a001c8e4d7e\",\n    \"bills\": [\n        \"60d21b2f9b1d8a001c8e4d7e\",\n        \"60d21b3f9b1d8a001c8e4d8e\"\n    ],\n    \"totalAmount\": 150000\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/purchases/update/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"purchases",
+								"update",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "60c72b2f9b1d8a001c8e4d7e"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Purchase",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/purchases/delete/66b86ee8b99c23abb3fba06f",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"purchases",
+								"delete",
+								"66b86ee8b99c23abb3fba06f"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Daybook API Tests",
+			"item": [
+				{
+					"name": "Get All Transactions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/daybook",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"daybook"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Transactions with Date Filter",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/daybook?startDate=2024-08-10&endDate=2024-08-11",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"daybook"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2024-08-10",
+									"description": "(Optional) Start date to filter transactions"
+								},
+								{
+									"key": "endDate",
+									"value": "2024-08-11",
+									"description": "(Optional) End date to filter transactions"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transaction by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/daybook/{{transactionId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"daybook",
+								"{{transactionId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Daybook Entry - Credit Without Supplier",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"date\": \"2024-08-11\",\n    \"description\": \"Payment from client\",\n    \"amount\": 1000,\n    \"type\": \"credit\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/daybook/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"daybook",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Daybook Entry - Debit Without Supplier",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"date\": \"2024-08-11\",\n    \"description\": \"Office Rent\",\n    \"amount\": 500,\n    \"type\": \"debit\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/daybook/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"daybook",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Daybook Entry - Credit With Supplier",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"supplierId\": \"{{supplierId}}\",\n    \"date\": \"2024-08-11\",\n    \"description\": \"Supplier Payment Sent\",\n    \"amount\": 8000,\n    \"type\": \"credit\",\n    \"cash_or_bank\": \"bank\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/daybook/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"daybook",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Daybook Entry - Debit With Supplier",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"supplierId\": \"{{supplierId}}\",\n    \"date\": \"2024-08-11\",\n    \"description\": \"Supplier Payment Received\",\n    \"amount\": 8000,\n    \"type\": \"debit\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/daybook/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"daybook",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Transaction by ID",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"Updated description\",\n    \"amount\": 1100,\n    \"type\": \"credit\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/daybook/update/{{transactionId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"daybook",
+								"update",
+								"{{transactionId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Transaction by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/daybook/delete/{{transactionId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"daybook",
+								"delete",
+								"{{transactionId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Reports",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/daybook/reports?startDate=2024-08-01&endDate=2024-08-31",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"daybook",
+								"reports"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2024-08-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2024-08-31"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Production Management API",
+			"item": [
+				{
+					"name": "Get All Productions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/productions?startDate=2024-08-11&endDate=2024-08-12",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"productions"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2024-08-11"
+								},
+								{
+									"key": "endDate",
+									"value": "2024-08-12"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Production by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/productions/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"productions",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "60c72b2f9b1d8a001c8e4d7e"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Production",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"product\": \"66c0956c5f1c793bafa0cd53\",\n    \"quantity\": 20,\n    \"waste\": 10\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/productions/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"productions",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Production",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"product\": \"60c72b2f9b1d8a001c8e4d7e\",\n    \"quantity\": 150,\n    \"waste\": 20\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/productions/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"productions",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "60c72b2f9b1d8a001c8e4d7e"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Production",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/productions/delete/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"productions",
+								"delete",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "60c72b2f9b1d8a001c8e4d7e"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product Management API",
+			"item": [
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/66bc8c18cb9cf25d80e6c96d",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"66bc8c18cb9cf25d80e6c96d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Product B\",\n    \"stock\": 50\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/products/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Product\",\n    \"stock\": 150\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/products/update/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"update",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "60c72b2f9b1d8a001c8e4d7e"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/delete/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"delete",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "60c72b2f9b1d8a001c8e4d7e"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sales Management API",
+			"item": [
+				{
+					"name": "Get All Sales",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/sales",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sales"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Sales by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/sales/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sales",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "60c72b2f9b1d8a001c8e4d7e"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Sales",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"supplier\": \"66b869310bae9db901a21aea\",\n    \"bills\": [\n        {\n            \"weight\": 1000,\n            \"quantity\": 10,\n            \"vehicle_no\": \"ABC1234\",\n            \"rate\": 50,\n            \"total\": 50000,\n            \"gatePassNo\": \"GP1234\",\n            \"bill_no\": \"BILL1234\"\n        },\n        {\n            \"weight\": 1500,\n            \"quantity\": 15,\n            \"vehicle_no\": \"DEF5678\",\n            \"rate\": 60,\n            \"total\": 90000,\n            \"gatePassNo\": \"GP5678\",\n            \"bill_no\": \"BILL5678\"\n        }\n    ],\n    \"totalAmount\": 140000\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/sales/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sales",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Sales",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"supplier\": \"60c72b2f9b1d8a001c8e4d7e\",\n    \"bills\": [\n        {\"_id\": \"60c72b2f9b1d8a001c8e4d7e\", \"quantity\": 15},\n        {\"_id\": \"60c72b2f9b1d8a001c8e4d7e\", \"quantity\": 25}\n    ],\n    \"totalAmount\": 7500\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/sales/update/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sales",
+								"update",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "60c72b2f9b1d8a001c8e4d7e"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Sales",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/sales/delete/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sales",
+								"delete",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "60c72b2f9b1d8a001c8e4d7e"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "hello world",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/hello",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"hello"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjZiN2M1NmQ1YWQzNDA1MDhlYTQ2NWIwIiwiaWF0IjoxNzIzMzIyNDk3fQ.mfTv_K82duTSUoLTscmBKmQXUEkK_BsEpGGxUXMafoc",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "supplierId",
+			"value": "66b8e06c439372420f22e885",
+			"type": "string"
+		},
+		{
+			"key": "transactionId",
+			"value": "66b8e10e2aedd3e7d07b740e",
+			"type": "string"
+		}
+	]
+}
