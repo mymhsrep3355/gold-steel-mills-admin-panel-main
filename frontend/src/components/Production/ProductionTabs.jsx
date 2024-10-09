@@ -13,6 +13,7 @@ import {
   IconButton,
   useColorModeValue,
   Spinner,
+  useToast,
 } from "@chakra-ui/react";
 import { FaPlus, FaRecycle } from "react-icons/fa";
 import { ProductTable } from "./ProductTable";
@@ -24,12 +25,13 @@ import { useState, useEffect } from "react";
 import { useAuthProvider } from "../../hooks/useAuthProvider";
 import { BASE_URL } from "../../utils";
 
+
 export const ProductionTabs = () => {
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [isProductionModalOpen, setIsProductionModalOpen] = useState(false);
   const [productId, setProductId] = useState("");
   const [productName, setProductName] = useState("");
-  const [stock, setStock] = useState("");
+  const [stock, setStock] = useState(0);
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -46,6 +48,9 @@ export const ProductionTabs = () => {
   const [refresh, setRefresh] = useState(false);
   const [modalType, setModalType] = useState("create");
   const [selectedProductionId , setSelectedProductionId] = useState('')
+
+  const toast = useToast();
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -174,10 +179,45 @@ export const ProductionTabs = () => {
     setSubtotal(0);
   };
 
-  const handleDeleteProduction = (id) => {
-    setProductions(productions.filter((production) => production._id !== id));
+  const handleDeleteProduction = async (id) => {
+    try {
+      const response = await fetch(`${BASE_URL}productions/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (response.ok) {
+        toast({
+          title: "Production deleted successfully.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        setProductions(productions.filter((production) => production._id !== id));
+      } else {
+        const data = await response.json();
+        toast({
+          title: "Failed to delete production.",
+          description: data.message || "Something went wrong.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting production:", error);
+      toast({
+        title: "Error deleting production.",
+        description: error.message || "Something went wrong.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
-
+  
   const handleEditProduction = (id) => {
     setModalType("edit");
     setSelectedProductionId(id)

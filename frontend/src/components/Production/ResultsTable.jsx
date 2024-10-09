@@ -13,9 +13,9 @@ export const ResultsTable = ({ results }) => {
         </Tr>
       </Thead>
       <Tbody>
-        {results.map((result) => (
+        {results.map((result, index) => (
           <Tr key={result?._id}>
-            <Td>{result?._id}</Td>
+            <Td>{index + 1}</Td>
             <Td>{result?.product?.name}</Td>
             <Td>{result?.quantity}</Td>
             <Td>{result?.waste}</Td>

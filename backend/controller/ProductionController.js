@@ -180,15 +180,28 @@ async function deleteProduction(req, res) {
             return res.status(400).json({ message: 'Invalid production ID.' });
         }
 
-        const production = await Production.findByIdAndDelete(productionId);
+        const production = await Production.findByIdAndDelete(productionId).populate('product');
         if (!production) {
             return res.status(404).json({ message: 'Production not found' });
         }
 
+        // console.log(production);
+
         // Update the product stock to remove the effects of the deleted production
-        const productToUpdate = await Product.findById(production.product);
-        productToUpdate.stock -= production.quantity - production.waste;
-        await productToUpdate.save();
+        const productToUpdate = production.product;
+
+        if (!productToUpdate) {
+            res.status(200).json({ message: 'Production deleted successfully without product' });
+            return;
+        }
+        else {
+            productToUpdate.stock -= production.quantity - production.waste;
+            if (productToUpdate.stock < 0) {
+                productToUpdate.stock = 0;
+            }
+            await productToUpdate.save();
+        }
+       
 
         res.status(200).json({ message: 'Production deleted successfully' });
     } catch (error) {

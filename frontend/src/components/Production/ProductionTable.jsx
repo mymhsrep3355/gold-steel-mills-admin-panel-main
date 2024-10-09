@@ -33,7 +33,7 @@ export const ProductionTable = ({ productions, onEdit, onDelete  }) => {
     <Table variant="striped" colorScheme="teal" mt={5}>
       <Thead>
         <Tr>
-          <Th>Product ID</Th>
+          <Th>Product</Th>
           <Th>Quantity</Th>
           <Th>Waste</Th>
           <Th>Subtotal</Th>
